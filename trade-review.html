@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My kaView</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#0e1a2e;
+  --bg2:#152236;
+  --bg3:#1c2f47;
+  --bg4:#223550;
+  --border:#2a4060;
+  --text:#e8f0f8;
+  --text2:#8aa8c8;
+  --text3:#4a6a8a;
+  --green:#00c896;
+  --green2:#00a07a;
+  --red:#ff6b5b;
+  --red2:#cc4433;
+  --amber:#f5a623;
+  --blue:#4a9eff;
+  --teal:#1cc8aa;
+  --accent:#00c896;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
+.app{max-width:980px;margin:0 auto;padding:16px;}
+
+/* ヘッダー */
+.header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.logo{font-size:22px;font-weight:800;color:var(--green);letter-spacing:-0.5px;}
+.logo span{color:var(--text);font-weight:400;}
+.header-sub{font-size:11px;color:var(--text3);margin-left:auto;}
+
+/* タブ */
+.tabs{display:flex;gap:1px;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:18px;flex-wrap:wrap;border:1px solid var(--border);}
+.tab{flex:1;min-width:70px;padding:8px 4px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text3);border-radius:8px;text-align:center;white-space:nowrap;transition:all .15s;}
+.tab:hover{color:var(--text2);}
+.tab.active{background:var(--bg4);color:var(--green);border:1px solid var(--border);}
+.section{display:none;}.section.active{display:block;}
+
+/* カード */
+.card{background:var(--bg2);border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border);}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
+
+/* メトリクス */
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.metric{background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border);}
+.metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
+.metric-value{font-size:22px;font-weight:700;}
+.pos{color:var(--green);}.neg{color:var(--red);}
+
+/* アラート */
+.alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:10px;border:1px solid;}
+.alert-ok{background:rgba(0,200,150,.1);color:var(--green);border-color:rgba(0,200,150,.3);}
+.alert-warn{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.3);}
+.alert-err{background:rgba(255,107,91,.1);color:var(--red);border-color:rgba(255,107,91,.3);}
+.alert-info{background:rgba(74,158,255,.1);color:var(--blue);border-color:rgba(74,158,255,.3);}
+
+/* 手法行 */
+.method-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.method-row:last-child{border-bottom:none;}
+.method-name{font-size:13px;font-weight:500;min-width:92px;color:var(--text);}
+.bar-wrap{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.bar-pos{background:var(--green);}.bar-neg{background:var(--red);}
+.method-stats{display:flex;gap:10px;font-size:11px;min-width:175px;justify-content:flex-end;align-items:center;}
+.mstat{color:var(--text3);}.mstat strong{color:var(--text);}
+
+/* バッジ */
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
+.badge-go{background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.3);}
+.badge-stop{background:rgba(255,107,91,.15);color:var(--red);border:1px solid rgba(255,107,91,.3);}
+.badge-ok{background:rgba(138,168,200,.1);color:var(--text2);border:1px solid var(--border);}
+.badge-hold{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3);}
+
+/* フォーム */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-size:11px;color:var(--text3);font-weight:500;}
+input[type=text],input[type=number],input[type=date],input[type=month]{
+  width:100%;padding:8px 10px;font-size:13px;
+  border:1px solid var(--border);border-radius:8px;
+  background:var(--bg3);color:var(--text);outline:none;
+  transition:border-color .15s;
+}
+input:focus{border-color:var(--green);}
+input::placeholder{color:var(--text3);}
+
+/* タグ */
+.tag-wrap{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+.tag-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--text3);transition:all .15s;}
+.tag-btn:hover{border-color:var(--text2);color:var(--text);}
+.tag-btn.sel{background:rgba(0,200,150,.15);color:var(--green);border-color:var(--green);}
+
+/* ボタン */
+.btn-primary{background:var(--green);color:#0e1a2e;border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
+.btn-primary:hover{background:var(--green2);}
+.btn-sm{font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);white-space:nowrap;transition:all .15s;}
+.btn-sm:hover{border-color:var(--text2);color:var(--text);}
+.btn-sm-ok{border-color:var(--green);color:var(--green);}
+.btn-sm-ok:hover{background:rgba(0,200,150,.1);}
+.btn-del{background:none;color:var(--red);border:1px solid rgba(255,107,91,.4);padding:3px 8px;border-radius:6px;font-size:11px;cursor:pointer;}
+.btn-del:hover{background:rgba(255,107,91,.1);}
+
+/* トレード行 */
+.trade-row,.pos-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.trade-row:last-child,.pos-row:last-child{border-bottom:none;}
+.trade-code{font-weight:700;min-width:50px;font-size:13px;color:var(--text);}
+.trade-name{font-size:11px;color:var(--text3);min-width:80px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.trade-date{font-size:11px;color:var(--text3);min-width:54px;}
+.trade-tags{display:flex;gap:3px;flex:1;flex-wrap:wrap;}
+.ttag{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--bg4);color:var(--text2);}
+.ttag-exit{background:rgba(245,166,35,.15);color:var(--amber);}
+.ttag-none{background:rgba(255,107,91,.1);color:var(--red);}
+.trade-pnl{font-weight:700;font-size:13px;min-width:90px;text-align:right;}
+
+/* チャート */
+.chart-wrap{position:relative;width:100%;height:220px;}
+.scatter-wrap{position:relative;width:100%;height:260px;}
+
+/* 出口カード */
+.exit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.exit-card{background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border);}
+.exit-name{font-size:11px;color:var(--text3);margin-bottom:4px;}
+.exit-pnl{font-size:16px;font-weight:700;}
+
+/* アドバイス */
+.advice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.advice-card{border-radius:10px;padding:14px;border:1px solid;}
+.a-go{background:rgba(0,200,150,.07);border-color:rgba(0,200,150,.25);}
+.a-stop{background:rgba(255,107,91,.07);border-color:rgba(255,107,91,.25);}
+.advice-title{font-size:11px;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;}
+.a-go .advice-title{color:var(--green);}.a-stop .advice-title{color:var(--red);}
+.advice-item{font-size:12px;padding:4px 0;display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.04);}
+.advice-item:last-child{border-bottom:none;}
+.a-go .advice-item{color:rgba(0,200,150,.85);}.a-stop .advice-item{color:rgba(255,107,91,.85);}
+
+/* ドロップゾーン */
+.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);margin-bottom:14px;}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--green);background:rgba(0,200,150,.05);}
+.drop-zone input{display:none;}
+
+/* ペンディング */
+.pending-list{max-height:440px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;}
+.pending-row{padding:10px 12px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:70px 1fr 100px;gap:8px;align-items:start;}
+.pending-row:last-child{border-bottom:none;}
+.pending-row.matched{background:rgba(0,200,150,.04);}
+.pending-row.unmatched{background:rgba(245,166,35,.04);}
+.p-code{font-weight:700;font-size:13px;color:var(--text);}
+.p-date{font-size:10px;color:var(--text3);margin-top:2px;}
+.p-name{font-size:12px;color:var(--text2);margin-bottom:5px;}
+.mini-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
+.mtag{font-size:10px;padding:3px 8px;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--text3);user-select:none;transition:all .1s;}
+.mtag:hover{border-color:var(--text2);}
+.mtag.ms{background:rgba(0,200,150,.15);color:var(--green);border-color:var(--green);}
+.mtag.es{background:rgba(245,166,35,.15);color:var(--amber);border-color:var(--amber);}
+.p-pnl{font-weight:700;font-size:13px;text-align:right;}
+.match-badge{font-size:10px;padding:2px 7px;border-radius:4px;margin-top:4px;display:inline-block;border:1px solid;}
+.mb-ok{background:rgba(0,200,150,.1);color:var(--green);border-color:rgba(0,200,150,.3);}
+.mb-no{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.3);}
+.bulk-bar{display:flex;gap:6px;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;margin-bottom:10px;flex-wrap:wrap;border:1px solid var(--border);}
+
+/* ステップ */
+.step-bar{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);margin-bottom:14px;}
+.sn{width:22px;height:22px;border-radius:50%;background:var(--bg4);color:var(--text3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);}
+.sn.act{background:rgba(0,200,150,.2);color:var(--green);border-color:var(--green);}
+.sn.don{background:var(--green);color:#0e1a2e;border-color:var(--green);}
+.step-sep{flex:1;height:1px;background:var(--border);}
+
+/* 設定タグ表示 */
+.stag{display:inline-flex;align-items:center;gap:4px;background:var(--bg4);border-radius:20px;padding:4px 10px;font-size:11px;margin:2px;border:1px solid var(--border);color:var(--text2);}
+.stag button{border:none;background:none;cursor:pointer;color:var(--text3);font-size:12px;padding:0;line-height:1;}
+.stag button:hover{color:var(--red);}
+
+.note{font-size:11px;color:var(--text3);padding:10px;background:var(--bg3);border-radius:8px;margin-top:10px;border:1px solid var(--border);line-height:1.6;}
+.empty{text-align:center;padding:28px;color:var(--text3);font-size:13px;}
+
+/* 総損益ヒーローカード */
+.hero-card{background:var(--bg2);border-radius:14px;padding:20px 20px 16px;margin-bottom:14px;border:1px solid var(--border);text-align:center;}
+.hero-label{font-size:12px;color:var(--text3);margin-bottom:6px;}
+.hero-value{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.hero-sub{font-size:12px;color:var(--text3);margin-top:8px;}
+
+@media(max-width:620px){
+  .metric-grid{grid-template-columns:repeat(2,1fr);}
+  .exit-grid{grid-template-columns:repeat(2,1fr);}
+  .advice-grid,.form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+  .pending-row{grid-template-columns:56px 1fr 80px;}
+  .hero-value{font-size:30px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">my ka<span>View</span></div>
+    <div class="header-sub">トレード振り返り｜買い時タグ登録 → CSV自動紐付け</div>
+  </div>
+
+  <div class="tabs" id="main-tabs">
+    <button class="tab active" onclick="showTab('dashboard')">損益</button>
+    <button class="tab" onclick="showTab('methods')">手法別</button>
+    <button class="tab" onclick="showTab('exits')">出口分析</button>
+    <button class="tab" onclick="showTab('advice')">やるべき</button>
+    <button class="tab" onclick="showTab('positions')">📌 買い登録</button>
+    <button class="tab" onclick="showTab('import')">📂 SBI取込</button>
+    <button class="tab" onclick="showTab('settings')">⚙ 設定</button>
+  </div>
+
+  <!-- ダッシュボード -->
+  <div id="sec-dashboard" class="section active">
+    <div class="hero-card" id="hero-card">
+      <div class="hero-label">確定損益（累計）</div>
+      <div class="hero-value" id="hero-value">--</div>
+      <div class="hero-sub" id="hero-sub"></div>
+    </div>
+    <div class="metric-grid" id="dash-metrics"></div>
+    <div id="dash-alerts"></div>
+    <div class="card">
+      <div class="card-title">手法別 損益ランキング</div>
+      <div id="method-ranking"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">月次 損益推移</div>
+      <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 手法別 -->
+  <div id="sec-methods" class="section">
+    <div class="card">
+      <div class="card-title">手法別 詳細スコアカード</div>
+      <div id="method-detail"></div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="card-title">勝率 vs 平均損益（バブル＝取引回数）</div>
+      <div class="scatter-wrap"><canvas id="scatterChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 出口分析 -->
+  <div id="sec-exits" class="section">
+    <div class="card">
+      <div class="card-title">出口タグ別 サマリー</div>
+      <div class="exit-grid" id="exit-cards"></div>
+      <div class="chart-wrap" style="height:180px;"><canvas id="exitChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- アドバイス -->
+  <div id="sec-advice" class="section">
+    <div id="advice-content"></div>
+  </div>
+
+  <!-- 買い登録 -->
+  <div id="sec-positions" class="section">
+    <div class="card">
+      <div class="card-title">買いポジションを登録する</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <div class="form-label">銘柄コード *</div>
+          <input type="text" id="p-code" placeholder="例: 7203">
+        </div>
+        <div class="form-group">
+          <div class="form-label">取得日（買った日）*</div>
+          <input type="date" id="p-date">
+        </div>
+        <div class="form-group full">
+          <div class="form-label">銘柄名・メモ（任意）</div>
+          <input type="text" id="p-name" placeholder="例: トヨタ、TOB狙いなど">
+        </div>
+        <div class="form-group full">
+          <div class="form-label">手法タグ *（複数選択可）</div>
+          <div class="tag-wrap" id="pos-method-tags"></div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addPosition()" style="margin-top:14px;">登録する</button>
+    </div>
+    <div class="card">
+      <div class="card-title">保有中のポジション（<span id="pos-count">0</span>件）</div>
+      <div id="pos-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">売却済みトレード（<span id="trade-count">0</span>件）</div>
+      <div id="trade-list"></div>
+    </div>
+  </div>
+
+  <!-- SBI取込 -->
+  <div id="sec-import" class="section">
+    <div class="card">
+      <div class="card-title">SBI証券 取引履歴CSVを取り込む</div>
+      <div class="step-bar">
+        <div class="sn act" id="sn1">1</div><span>CSVを選択</span>
+        <div class="step-sep"></div>
+        <div class="sn" id="sn2">2</div><span>内容確認・タグ調整</span>
+        <div class="step-sep"></div>
+        <div class="sn" id="sn3">3</div><span>完了</span>
+      </div>
+      <div class="drop-zone" id="drop-zone"
+        onclick="document.getElementById('csv-input').click()"
+        ondragover="onDragOver(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
+        <input type="file" id="csv-input" accept=".csv" onchange="onFileSelect(event)">
+        <div style="font-size:30px;margin-bottom:10px;">📂</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px;color:var(--text);">CSVをここにドロップ、またはクリックして選択</div>
+        <div style="font-size:12px;color:var(--text3);">SBI証券「特定口座損益明細」CSV（Shift-JIS）に対応</div>
+      </div>
+      <div id="import-msg"></div>
+    </div>
+    <div class="card" id="pending-card" style="display:none;">
+      <div class="card-title">取り込んだ売却データを確認する</div>
+      <div class="note" style="margin-bottom:12px;">
+        🟢 緑の行 = 買い登録と自動紐付け済み（タグ引き継ぎ完了）<br>
+        🟡 黄の行 = 買い登録が見つからなかった行 → 手動でタグを付けてください
+      </div>
+      <div class="bulk-bar">
+        <span style="font-size:11px;color:var(--text3);white-space:nowrap;">未紐付け行に一括適用：</span>
+        <div id="bulk-tags" class="tag-wrap" style="flex:1;"></div>
+        <button class="btn-sm btn-sm-ok" onclick="bulkApply()">適用</button>
+        <button class="btn-sm" onclick="clearBulk()">クリア</button>
+      </div>
+      <div class="pending-list" id="pending-list"></div>
+      <div style="margin-top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="commitImport()">確定して追加する</button>
+        <button class="btn-sm" style="padding:9px 16px;" onclick="cancelImport()">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 設定 -->
+  <div id="sec-settings" class="section">
+    <div class="card">
+      <div class="card-title">手法タグを管理する</div>
+      <div class="tag-wrap" id="settings-method-tags"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+        <input type="text" id="new-method-tag" placeholder="新しいタグ名（例：TOB狙い）" style="width:200px;">
+        <button class="btn-sm btn-sm-ok" onclick="addMethodTag()">追加</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">出口タグを管理する</div>
+      <div class="tag-wrap" id="settings-exit-tags"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+        <input type="text" id="new-exit-tag" placeholder="新しいタグ名" style="width:200px;">
+        <button class="btn-sm btn-sm-ok" onclick="addExitTag()">追加</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">手動でトレードを追加（先物・FX・商品など）</div>
+      <div class="form-grid">
+        <div class="form-group"><div class="form-label">銘柄・商品名 *</div><input type="text" id="m-code" placeholder="例: N225、USDJPY"></div>
+        <div class="form-group"><div class="form-label">年月 *</div><input type="month" id="m-date"></div>
+        <div class="form-group"><div class="form-label">損益（円）*</div><input type="number" id="m-pnl" placeholder="損なら -50000"></div>
+        <div class="form-group"><div class="form-label">メモ</div><input type="text" id="m-memo" placeholder="任意"></div>
+        <div class="form-group full"><div class="form-label">手法タグ *</div><div class="tag-wrap" id="manual-method-tags"></div></div>
+        <div class="form-group full"><div class="form-label">出口タグ</div><div class="tag-wrap" id="manual-exit-tags"></div></div>
+      </div>
+      <button class="btn-primary" onclick="addManualTrade()" style="margin-top:14px;">追加する</button>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,91,.3);">
+      <div class="card-title" style="color:var(--red);">データ管理</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn-sm" onclick="exportData()" style="border-color:var(--blue);color:var(--blue);">📤 データをエクスポート</button>
+        <label class="btn-sm" style="border-color:var(--green);color:var(--green);cursor:pointer;">📥 データをインポート<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+        <button class="btn-sm" onclick="resetData()" style="border-color:var(--red);color:var(--red);">🗑 全データをリセット</button>
+      </div>
+      <div class="note" style="margin-top:10px;">エクスポートでJSONファイルとして保存、インポートで別端末に引き継ぎできます。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORE_KEY='mykaview_v1';
+function saveData(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify({METHOD_TAGS,EXIT_TAGS,positions,trades,nextId}));}
+  catch(e){console.warn('保存失敗',e);}
+}
+function loadData(){
+  try{
+    const raw=localStorage.getItem(STORE_KEY);
+    if(!raw)return;
+    const d=JSON.parse(raw);
+    if(d.METHOD_TAGS)METHOD_TAGS=d.METHOD_TAGS;
+    if(d.EXIT_TAGS)EXIT_TAGS=d.EXIT_TAGS;
+    if(d.positions)positions=d.positions;
+    if(d.trades)trades=d.trades;
+    if(d.nextId)nextId=d.nextId;
+  }catch(e){console.warn('読み込み失敗',e);}
+}
+let METHOD_TAGS=['決算跨ぎ','決算初動','押し目買い','ブレイクアウト','リバウンド','材料株','テーマ株','需給','大口追随','スイング','デイトレ','感情トレード'];
+let EXIT_TAGS=['利確早売り','目標到達','損切りルール','なんとなく売り','持ちすぎ','寄り売り','引け売り'];
+let positions=[],trades=[];
+let nextId=1;
+let pending=[],pendingTags={};
+let charts={monthly:null,exit:null,scatter:null};
+let manSelM=[],manSelE=[],posSelM=[];
+
+const C={green:'#00c896',red:'#ff6b5b',amber:'#f5a623',blue:'#4a9eff',text:'#e8f0f8',text2:'#8aa8c8',text3:'#4a6a8a',bg3:'#1c2f47',bg4:'#223550',border:'#2a4060'};
+
+function fmt(v){return(v>=0?'+':'')+v.toLocaleString()+'円';}
+function wr(s){return s.count?Math.round(s.wins/s.count*100):0;}
+function calcMethod(){
+  const s={};METHOD_TAGS.forEach(m=>s[m]={count:0,wins:0,total:0});
+  trades.forEach(t=>t.methods.forEach(m=>{if(s[m]){s[m].count++;s[m].total+=t.pnl;if(t.pnl>0)s[m].wins++;}}));
+  return s;
+}
+function calcExit(){
+  const s={};EXIT_TAGS.forEach(e=>s[e]={count:0,wins:0,total:0});
+  trades.forEach(t=>t.exits.forEach(e=>{if(s[e]){s[e].count++;s[e].total+=t.pnl;if(t.pnl>0)s[e].wins++;}}));
+  return s;
+}
+
+function showTab(name){
+  const names=['dashboard','methods','exits','advice','positions','import','settings'];
+  document.querySelectorAll('#main-tabs .tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  const fn={dashboard:renderDash,methods:renderMethods,exits:renderExits,advice:renderAdvice,positions:renderPositions,settings:renderSettings};
+  if(fn[name])fn[name]();
+}
+
+// ===== ダッシュボード =====
+function renderDash(){
+  const alertEl=document.getElementById('dash-alerts');alertEl.innerHTML='';
+  const total=trades.reduce((a,t)=>a+t.pnl,0);
+  const wins=trades.filter(t=>t.pnl>0).length;
+  const wr2=trades.length?Math.round(wins/trades.length*100):0;
+  const avg=trades.length?Math.round(total/trades.length):0;
+
+  document.getElementById('hero-value').textContent=trades.length?total.toLocaleString()+'円':'--';
+  document.getElementById('hero-value').className='hero-value '+(total>=0?'pos':'neg');
+  document.getElementById('hero-sub').textContent=trades.length?`${trades.length}トレード | 勝率 ${wr2}% | 平均 ${fmt(avg)}`:'まだトレードがありません';
+
+  document.getElementById('dash-metrics').innerHTML=trades.length||positions.length?`
+    <div class="metric"><div class="metric-label">売却済みトレード</div><div class="metric-value" style="color:var(--text);">${trades.length}回</div></div>
+    <div class="metric"><div class="metric-label">勝率</div><div class="metric-value ${wr2>=50?'pos':'neg'}">${wr2}%</div></div>
+    <div class="metric"><div class="metric-label">平均損益</div><div class="metric-value ${avg>=0?'pos':'neg'}">${avg>=0?'+':''}${avg.toLocaleString()}円</div></div>
+    <div class="metric"><div class="metric-label">保有中ポジション</div><div class="metric-value badge-hold" style="color:var(--blue);">${positions.length}件</div></div>`:'';
+
+  const untagged=trades.filter(t=>!t.methods.length).length;
+  if(untagged)alertEl.innerHTML+=`<div class="alert alert-warn">⚠ ${untagged}件のトレードに手法タグが未設定です</div>`;
+  if(positions.length)alertEl.innerHTML+=`<div class="alert alert-info">📌 保有中 ${positions.length}件：${positions.slice(0,6).map(p=>p.code).join('・')}${positions.length>6?'…':''}</div>`;
+
+  if(!trades.length){
+    document.getElementById('method-ranking').innerHTML='<div class="empty">まだデータがありません。「📌 買い登録」タブでポジションを登録してください。</div>';
+    if(charts.monthly){charts.monthly.destroy();charts.monthly=null;}
+    return;
+  }
+
+  const ms=calcMethod();
+  const sorted=METHOD_TAGS.filter(m=>ms[m].count>0).sort((a,b)=>ms[b].total-ms[a].total);
+  const maxA=Math.max(...sorted.map(m=>Math.abs(ms[m].total)),1);
+  document.getElementById('method-ranking').innerHTML=sorted.length?sorted.map(m=>{
+    const s=ms[m],pos=s.total>=0,pct=Math.round(Math.abs(s.total)/maxA*100),w=wr(s);
+    const badge=pos&&w>=55?'<span class="badge badge-go">◎ 得意</span>':(!pos||w<40)?'<span class="badge badge-stop">✕ 苦手</span>':'<span class="badge badge-ok">△ 普通</span>';
+    return `<div class="method-row">
+      <div class="method-name">${m}</div>
+      <div class="bar-wrap"><div class="bar-fill ${pos?'bar-pos':'bar-neg'}" style="width:${pct}%"></div></div>
+      <div class="method-stats"><span class="mstat">勝率<strong> ${w}%</strong></span><span class="${pos?'pos':'neg'}">${fmt(s.total)}</span>${badge}</div>
+    </div>`;
+  }).join(''):'<div class="empty">タグが付いたトレードがありません</div>';
+
+  const months=[...new Set(trades.map(t=>(t.sellDate||t.date||'').substring(0,7)))].filter(Boolean).sort();
+  const mpnl=months.map(m=>trades.filter(t=>(t.sellDate||t.date||'').startsWith(m)).reduce((a,t)=>a+t.pnl,0));
+  if(charts.monthly)charts.monthly.destroy();
+  if(!months.length){charts.monthly=null;return;}
+  charts.monthly=new Chart(document.getElementById('monthlyChart'),{
+    type:'bar',
+    data:{labels:months,datasets:[{data:mpnl,backgroundColor:mpnl.map(v=>v>=0?'rgba(0,200,150,.6)':'rgba(255,107,91,.6)'),borderColor:mpnl.map(v=>v>=0?C.green:C.red),borderWidth:1,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{font:{size:10},color:C.text3},grid:{display:false},border:{color:C.border}},
+        y:{ticks:{callback:v=>(v>=0?'+':'')+Math.round(v/10000)+'万',font:{size:10},color:C.text3},grid:{color:'rgba(42,64,96,.5)'},border:{color:C.border}}
+      }
+    }
+  });
+}
+
+// ===== 手法別 =====
+function renderMethods(){
+  const ms=calcMethod();const active=METHOD_TAGS.filter(m=>ms[m].count>0);
+  document.getElementById('method-detail').innerHTML=active.length?active.map(m=>{
+    const s=ms[m],pos=s.total>=0,w=wr(s),avg=Math.round(s.total/s.count);
+    const g=pos&&w>=55?['badge-go','◎ 得意']:(!pos||w<40)?['badge-stop','✕ 苦手']:['badge-ok','△ 普通'];
+    return `<div class="method-row" style="padding:10px 0;">
+      <div class="method-name">${m}</div>
+      <div style="flex:1;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;">
+        <span class="mstat">${s.count}回</span>
+        <span class="mstat">勝率<strong style="color:${w>=50?C.green:C.red}"> ${w}%</strong></span>
+        <span class="mstat">平均<strong class="${avg>=0?'pos':'neg'}"> ${fmt(avg)}</strong></span>
+        <span class="mstat">合計<strong class="${pos?'pos':'neg'}"> ${fmt(s.total)}</strong></span>
+      </div><span class="badge ${g[0]}">${g[1]}</span>
+    </div>`;
+  }).join(''):'<div class="empty">タグが付いたトレードがありません</div>';
+  if(!active.length){if(charts.scatter){charts.scatter.destroy();charts.scatter=null;}return;}
+  const wrA=active.map(m=>Math.round(ms[m].wins/ms[m].count*100));
+  const avgA=active.map(m=>Math.round(ms[m].total/ms[m].count));
+  const cntA=active.map(m=>ms[m].count);
+  const maxC=Math.max(...cntA,1);
+  if(charts.scatter)charts.scatter.destroy();
+  charts.scatter=new Chart(document.getElementById('scatterChart'),{
+    type:'bubble',
+    data:{datasets:[{data:active.map((m,i)=>({x:wrA[i],y:avgA[i],r:Math.max(7,cntA[i]/maxC*22),label:m})),backgroundColor:active.map((_,i)=>avgA[i]>=0?'rgba(0,200,150,.5)':'rgba(255,107,91,.5)'),borderColor:active.map((_,i)=>avgA[i]>=0?C.green:C.red),borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return `${d.label}: 勝率${d.x}% / 平均${d.y>=0?'+':''}${d.y.toLocaleString()}円`;}},backgroundColor:'#152236',titleColor:C.text,bodyColor:C.text2,borderColor:C.border,borderWidth:1}},
+      scales:{
+        x:{min:0,max:100,title:{display:true,text:'勝率（%）',font:{size:10},color:C.text3},grid:{color:'rgba(42,64,96,.5)'},ticks:{color:C.text3},border:{color:C.border}},
+        y:{title:{display:true,text:'平均損益（円）',font:{size:10},color:C.text3},ticks:{callback:v=>(v>=0?'+':'')+v.toLocaleString(),color:C.text3},grid:{color:'rgba(42,64,96,.5)'},border:{color:C.border}}
+      }
+    }
+  });
+}
+
+// ===== 出口分析 =====
+function renderExits(){
+  const es=calcExit();const active=EXIT_TAGS.filter(e=>es[e].count>0);
+  document.getElementById('exit-cards').innerHTML=active.length?active.map(e=>{
+    const s=es[e],pos=s.total>=0;
+    return `<div class="exit-card"><div class="exit-name">${e}（${s.count}回）</div><div class="exit-pnl ${pos?'pos':'neg'}">${fmt(s.total)}</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">勝率 ${wr(s)}%</div></div>`;
+  }).join(''):'<div class="empty" style="grid-column:1/-1;">出口タグが付いたトレードがありません</div>';
+  if(!active.length){if(charts.exit){charts.exit.destroy();charts.exit=null;}return;}
+  const epnl=active.map(e=>es[e].total);
+  if(charts.exit)charts.exit.destroy();
+  charts.exit=new Chart(document.getElementById('exitChart'),{
+    type:'bar',
+    data:{labels:active,datasets:[{data:epnl,backgroundColor:epnl.map(v=>v>=0?'rgba(0,200,150,.6)':'rgba(255,107,91,.6)'),borderColor:epnl.map(v=>v>=0?C.green:C.red),borderWidth:1,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},
+      scales:{x:{ticks:{callback:v=>(v>=0?'+':'')+Math.round(v/10000)+'万',font:{size:10},color:C.text3},grid:{color:'rgba(42,64,96,.5)'},border:{color:C.border}},y:{ticks:{font:{size:11},color:C.text2},grid:{display:false},border:{color:C.border}}}
+    }
+  });
+}
+
+// ===== アドバイス =====
+function renderAdvice(){
+  const ms=calcMethod();
+  const go=METHOD_TAGS.filter(m=>{const s=ms[m];return s.count>=2&&s.total>0&&wr(s)>=50;}).sort((a,b)=>ms[b].total-ms[a].total).slice(0,5);
+  const stop=METHOD_TAGS.filter(m=>{const s=ms[m];return s.count>=2&&(s.total<0||wr(s)<40);}).sort((a,b)=>ms[a].total-ms[b].total).slice(0,5);
+  const es=calcExit();
+  const goodEx=EXIT_TAGS.filter(e=>{const s=es[e];return s.count>=2&&s.total>0;});
+  const badEx=EXIT_TAGS.filter(e=>{const s=es[e];return s.count>=2&&s.total<0;}).sort((a,b)=>es[a].total-es[b].total);
+  document.getElementById('advice-content').innerHTML=`
+    <div class="advice-grid">
+      <div class="advice-card a-go"><div class="advice-title">✓ やるべき手法</div>
+        ${go.length?go.map(m=>`<div class="advice-item"><span>${m}</span><span style="font-size:11px;">勝率${wr(ms[m])}% / ${fmt(ms[m].total)}</span></div>`).join(''):'<div style="font-size:12px;color:var(--green);padding:4px 0;opacity:.6;">データ不足（2回以上必要）</div>'}
+      </div>
+      <div class="advice-card a-stop"><div class="advice-title">✕ やめるべき手法</div>
+        ${stop.length?stop.map(m=>`<div class="advice-item"><span>${m}</span><span style="font-size:11px;">勝率${wr(ms[m])}% / ${fmt(ms[m].total)}</span></div>`).join(''):'<div style="font-size:12px;color:var(--red);padding:4px 0;opacity:.6;">データ不足</div>'}
+      </div>
+    </div>
+    <div class="advice-grid" style="margin-top:10px;">
+      <div class="advice-card a-go"><div class="advice-title">✓ うまい出口</div>
+        ${goodEx.length?goodEx.map(e=>`<div class="advice-item"><span>${e}</span><span style="font-size:11px;">${fmt(es[e].total)}</span></div>`).join(''):'<div style="font-size:12px;color:var(--green);padding:4px 0;opacity:.6;">データ不足</div>'}
+      </div>
+      <div class="advice-card a-stop"><div class="advice-title">✕ 損を生む出口</div>
+        ${badEx.length?badEx.map(e=>`<div class="advice-item"><span>${e}</span><span style="font-size:11px;">${fmt(es[e].total)}</span></div>`).join(''):'<div style="font-size:12px;color:var(--red);padding:4px 0;opacity:.6;">データ不足</div>'}
+      </div>
+    </div>
+    <div class="note">※ 2回以上のトレードがある手法のみ集計。記録が増えるほど精度が上がります。</div>`;
+}
+
+// ===== 買い登録 =====
+function renderPositions(){
+  const mW=document.getElementById('pos-method-tags');
+  if(!mW.children.length)buildTagButtons(mW,METHOD_TAGS,posSelM);
+  document.getElementById('pos-count').textContent=positions.length;
+  document.getElementById('pos-list').innerHTML=positions.length?positions.map(p=>`
+    <div class="pos-row">
+      <div class="trade-code">${p.code}</div>
+      <div class="trade-name">${p.name||''}</div>
+      <div class="trade-date">${p.buyDate}</div>
+      <div class="trade-tags">${p.methods.length?p.methods.map(m=>`<span class="ttag">${m}</span>`).join(''):'<span class="ttag ttag-none">未タグ</span>'}</div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="closePosition(${p.id})" style="background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.4);padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;">売り切り ✓</button>
+        <button class="btn-del" onclick="delPosition(${p.id})">削除</button>
+      </div>
+    </div>`).join(''):'<div class="empty">保有中のポジションはありません</div>';
+  document.getElementById('trade-count').textContent=trades.length;
+  document.getElementById('trade-list').innerHTML=trades.length?[...trades].sort((a,b)=>b.id-a.id).map(t=>`
+    <div class="trade-row">
+      <div class="trade-code">${t.code}</div>
+      <div class="trade-name">${t.name||''}</div>
+      <div class="trade-date">${(t.sellDate||'').substring(0,10)||t.date||''}</div>
+      <div class="trade-tags">
+        ${t.methods.length?t.methods.map(m=>`<span class="ttag">${m}</span>`).join(''):'<span class="ttag ttag-none">未タグ</span>'}
+        ${t.exits.map(e=>`<span class="ttag ttag-exit">${e}</span>`).join('')}
+      </div>
+      <div class="trade-pnl ${t.pnl>=0?'pos':'neg'}">${fmt(t.pnl)}</div>
+      <button class="btn-del" onclick="delTrade(${t.id})">削除</button>
+    </div>`).join(''):'<div class="empty">まだ売却済みトレードはありません</div>';
+}
+
+function addPosition(){
+  const code=document.getElementById('p-code').value.trim();
+  const buyDate=document.getElementById('p-date').value;
+  const name=document.getElementById('p-name').value.trim();
+  if(!code||!buyDate){alert('銘柄コードと取得日は必須です');return;}
+  if(!posSelM.length){alert('手法タグを1つ以上選んでください');return;}
+  positions.push({id:nextId++,code,name,buyDate,methods:[...posSelM]});
+  document.getElementById('p-code').value='';document.getElementById('p-name').value='';
+  document.querySelectorAll('#pos-method-tags .tag-btn.sel').forEach(b=>b.classList.remove('sel'));
+  posSelM=[];saveData();renderPositions();
+}
+function closePosition(id){
+  const p=positions.find(x=>x.id===id);
+  if(!p)return;
+  if(!confirm(`${p.code} を売り切りとしてポジションから削除しますか？`))return;
+  positions=positions.filter(x=>x.id!==id);
+  saveData();renderPositions();
+}
+function delPosition(id){if(!confirm('このポジションを削除しますか？（売り切りではなく登録ミスなどの場合に使用）'))return;positions=positions.filter(p=>p.id!==id);saveData();renderPositions();}
+function delTrade(id){if(!confirm('削除しますか？'))return;trades=trades.filter(t=>t.id!==id);saveData();renderPositions();}
+
+// ===== SBI CSV =====
+function decodeSJIS(buf){try{return new TextDecoder('shift-jis').decode(buf);}catch(e){return new TextDecoder('utf-8').decode(buf);}}
+function parseSBI(text){
+  const out=[];
+  for(const raw of text.split(/\r?\n/)){
+    const line=raw.trim();
+    if(!line||!line.startsWith('"'))continue;
+    const cols=splitCSV(line);
+    if(cols.length<12)continue;
+    const buyDateRaw=cols[9],sellDateRaw=cols[3];
+    if(!sellDateRaw.match(/\d{4}\/\d{2}\/\d{2}/))continue;
+    const pnlStr=cols[11].replace(/[^\d\-\+]/g,'');
+    if(!pnlStr||pnlStr==='-'||pnlStr==='+')continue;
+    const pnl=parseInt(pnlStr,10);if(isNaN(pnl))continue;
+    const buyDate=buyDateRaw.match(/\d{4}\/\d{2}\/\d{2}/)?buyDateRaw.replace(/\//g,'-'):'';
+    out.push({id:nextId++,code:cols[0].replace(/\s/g,''),name:cols[1],buyDate,sellDate:sellDateRaw.replace(/\//g,'-'),pnl,methods:[],exits:[],memo:'',source:'sbi'});
+  }
+  return out;
+}
+function splitCSV(line){const cols=[];let cur='',inQ=false;for(const c of line){if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){cols.push(cur.trim());cur='';}else cur+=c;}cols.push(cur.trim());return cols;}
+function matchPositions(rows){
+  let n=0;
+  rows.forEach(row=>{
+    if(!row.buyDate)return;
+    const pos=positions.find(p=>p.code===row.code&&p.buyDate===row.buyDate);
+    if(pos){row.methods=[...pos.methods];row._matched=true;n++;}else{row._matched=false;}
+  });
+  return n;
+}
+function onDragOver(e){e.preventDefault();document.getElementById('drop-zone').classList.add('drag');}
+function onDragLeave(){document.getElementById('drop-zone').classList.remove('drag');}
+function onDrop(e){e.preventDefault();onDragLeave();const f=e.dataTransfer.files[0];if(f)readFile(f);}
+function onFileSelect(e){const f=e.target.files[0];if(f)readFile(f);}
+function readFile(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    const text=decodeSJIS(e.target.result);
+    const parsed=parseSBI(text);
+    const msg=document.getElementById('import-msg');
+    if(!parsed.length){msg.innerHTML='<div class="alert alert-err">⚠ トレード行が見つかりませんでした</div>';return;}
+    const mc=matchPositions(parsed);
+    pending=parsed;pendingTags={};
+    parsed.forEach(t=>{pendingTags[t.id]={methods:[...t.methods],exits:[]};});
+    msg.innerHTML=`<div class="alert alert-ok">✓ ${parsed.length}件を読み込みました。うち <strong>${mc}件</strong> は買い登録と自動紐付け済みです。</div>`;
+    document.getElementById('sn1').className='sn don';
+    document.getElementById('sn2').className='sn act';
+    buildBulkTags();renderPending();
+    document.getElementById('pending-card').style.display='block';
+    document.getElementById('pending-card').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  r.readAsArrayBuffer(file);
+}
+function buildBulkTags(){
+  const w=document.getElementById('bulk-tags');w.innerHTML='';
+  METHOD_TAGS.forEach(t=>{const b=document.createElement('button');b.className='tag-btn';b.textContent=t;b.dataset.t=t;b.onclick=()=>b.classList.toggle('sel');w.appendChild(b);});
+}
+function renderPending(){
+  document.getElementById('pending-list').innerHTML=pending.map(row=>{
+    const tm=pendingTags[row.id];
+    const mHtml=METHOD_TAGS.map(tag=>`<span class="mtag${tm.methods.includes(tag)?' ms':''}" onclick="togglePTag(${row.id},'m','${tag}',this)">${tag}</span>`).join('');
+    const eHtml=EXIT_TAGS.map(tag=>`<span class="mtag${tm.exits.includes(tag)?' es':''}" onclick="togglePTag(${row.id},'e','${tag}',this)">${tag}</span>`).join('');
+    const mbadge=row._matched?'<span class="match-badge mb-ok">✓ 自動紐付け</span>':'<span class="match-badge mb-no">⚠ 手動タグ付け</span>';
+    return `<div class="pending-row ${row._matched?'matched':'unmatched'}">
+      <div><div class="p-code">${row.code}</div><div class="p-date">買${row.buyDate||'不明'}</div><div class="p-date">売${row.sellDate}</div>${mbadge}</div>
+      <div><div class="p-name">${row.name}</div><div class="mini-tags">${mHtml}</div><div class="mini-tags" style="margin-top:4px;">${eHtml}</div></div>
+      <div class="p-pnl ${row.pnl>=0?'pos':'neg'}">${row.pnl>=0?'+':''}${row.pnl.toLocaleString()}円</div>
+    </div>`;
+  }).join('');
+}
+function togglePTag(id,type,tag,el){
+  const arr=type==='m'?pendingTags[id].methods:pendingTags[id].exits;
+  const i=arr.indexOf(tag);
+  if(i>=0){arr.splice(i,1);el.classList.remove('ms','es');}else{arr.push(tag);el.classList.add(type==='m'?'ms':'es');}
+}
+function bulkApply(){
+  const tags=[...document.querySelectorAll('#bulk-tags .tag-btn.sel')].map(b=>b.dataset.t);
+  if(!tags.length){alert('適用するタグを選んでください');return;}
+  pending.filter(r=>!r._matched).forEach(r=>{tags.forEach(tag=>{if(!pendingTags[r.id].methods.includes(tag))pendingTags[r.id].methods.push(tag);});});
+  renderPending();
+}
+function clearBulk(){document.querySelectorAll('#bulk-tags .tag-btn.sel').forEach(b=>b.classList.remove('sel'));}
+function commitImport(){
+  const untagged=pending.filter(r=>pendingTags[r.id].methods.length===0).length;
+  if(untagged&&!confirm(`${untagged}件に手法タグが未設定です。このまま追加しますか？`))return;
+  pending.forEach(row=>{
+    row.methods=pendingTags[row.id].methods;row.exits=pendingTags[row.id].exits;
+    trades.push(row);
+  });
+  const n=pending.length;pending=[];pendingTags={};
+  document.getElementById('pending-card').style.display='none';
+  document.getElementById('import-msg').innerHTML=`<div class="alert alert-ok">✓ ${n}件を追加しました。売り切ったポジションは「📌 買い登録」タブで「売り切り」ボタンを押して削除してください。</div>`;
+  document.getElementById('sn2').className='sn don';document.getElementById('sn3').className='sn don';
+  document.getElementById('csv-input').value='';saveData();
+}
+function cancelImport(){
+  pending=[];pendingTags={};
+  document.getElementById('pending-card').style.display='none';
+  document.getElementById('import-msg').innerHTML='';
+  document.getElementById('csv-input').value='';
+  ['sn1','sn2','sn3'].forEach((id,i)=>{document.getElementById(id).className='sn'+(i===0?' act':'');});
+}
+
+// ===== 設定 =====
+function renderSettings(){
+  renderTagSettings();
+  const mW=document.getElementById('manual-method-tags');const eW=document.getElementById('manual-exit-tags');
+  mW.innerHTML='';eW.innerHTML='';
+  buildTagButtons(mW,METHOD_TAGS,manSelM);buildTagButtons(eW,EXIT_TAGS,manSelE);
+  const d=new Date();
+  if(!document.getElementById('m-date').value)
+    document.getElementById('m-date').value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function renderTagSettings(){
+  document.getElementById('settings-method-tags').innerHTML=METHOD_TAGS.map((t,i)=>`<span class="stag">${t}<button onclick="removeMethodTag(${i})">✕</button></span>`).join('');
+  document.getElementById('settings-exit-tags').innerHTML=EXIT_TAGS.map((t,i)=>`<span class="stag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.2);color:var(--amber);">${t}<button onclick="removeExitTag(${i})">✕</button></span>`).join('');
+}
+function addMethodTag(){const v=document.getElementById('new-method-tag').value.trim();if(!v)return;if(METHOD_TAGS.includes(v)){alert('同じタグ名がすでにあります');return;}METHOD_TAGS.push(v);document.getElementById('new-method-tag').value='';saveData();renderTagSettings();}
+function addExitTag(){const v=document.getElementById('new-exit-tag').value.trim();if(!v)return;if(EXIT_TAGS.includes(v)){alert('同じタグ名がすでにあります');return;}EXIT_TAGS.push(v);document.getElementById('new-exit-tag').value='';saveData();renderTagSettings();}
+function removeMethodTag(i){if(!confirm(`「${METHOD_TAGS[i]}」を削除しますか？`))return;METHOD_TAGS.splice(i,1);saveData();renderTagSettings();}
+function removeExitTag(i){if(!confirm(`「${EXIT_TAGS[i]}」を削除しますか？`))return;EXIT_TAGS.splice(i,1);saveData();renderTagSettings();}
+function addManualTrade(){
+  const code=document.getElementById('m-code').value.trim();
+  const date=document.getElementById('m-date').value;
+  const pnl=parseInt(document.getElementById('m-pnl').value);
+  const memo=document.getElementById('m-memo').value.trim();
+  if(!code||isNaN(pnl)){alert('銘柄・商品名と損益（円）は必須です');return;}
+  if(!manSelM.length){alert('手法タグを1つ以上選んでください');return;}
+  trades.push({id:nextId++,code,name:memo,sellDate:'',date,pnl,methods:[...manSelM],exits:[...manSelE],memo,source:'manual'});
+  ['m-code','m-pnl','m-memo'].forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('#manual-method-tags .tag-btn.sel,#manual-exit-tags .tag-btn.sel').forEach(b=>b.classList.remove('sel'));
+  manSelM=[];manSelE=[];saveData();renderSettings();alert('追加しました！');
+}
+
+// ===== タグボタンビルダー =====
+function buildTagButtons(wrap,tags,selArr){
+  wrap.innerHTML='';
+  tags.forEach(t=>{
+    const b=document.createElement('button');b.className='tag-btn';b.textContent=t;
+    b.onclick=()=>{b.classList.toggle('sel');selArr.length=0;wrap.querySelectorAll('.tag-btn.sel').forEach(x=>selArr.push(x.textContent));};
+    wrap.appendChild(b);
+  });
+}
+
+function exportData(){
+  const data=JSON.stringify({METHOD_TAGS,EXIT_TAGS,positions,trades,nextId},null,2);
+  const a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);
+  a.download='mykaview_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(!confirm('現在のデータをインポートしたデータで上書きします。よろしいですか？'))return;
+      if(d.METHOD_TAGS)METHOD_TAGS=d.METHOD_TAGS;
+      if(d.EXIT_TAGS)EXIT_TAGS=d.EXIT_TAGS;
+      if(d.positions)positions=d.positions;
+      if(d.trades)trades=d.trades;
+      if(d.nextId)nextId=d.nextId;
+      saveData();renderDash();alert('インポートしました！');
+    }catch(err){alert('ファイルの読み込みに失敗しました');}
+  };
+  r.readAsText(file);
+  e.target.value='';
+}
+function resetData(){
+  if(!confirm('全データを削除します。この操作は取り消せません。よろしいですか？'))return;
+  METHOD_TAGS=['決算跨ぎ','決算初動','押し目買い','ブレイクアウト','リバウンド','材料株','テーマ株','需給','大口追随','スイング','デイトレ','感情トレード'];
+  EXIT_TAGS=['利確早売り','目標到達','損切りルール','なんとなく売り','持ちすぎ','寄り売り','引け売り'];
+  positions=[];trades=[];nextId=1;
+  saveData();renderDash();alert('リセットしました');
+}
+loadData();
+renderDash();
+</script>
+</body>
+</html>
