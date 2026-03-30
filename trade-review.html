@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -29,93 +30,93 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:va
 .app{max-width:980px;margin:0 auto;padding:16px;}
 
 /* ヘッダー */
-.header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.logo{font-size:22px;font-weight:800;color:var(--green);letter-spacing:-0.5px;}
-.logo span{color:var(--text);font-weight:400;}
-.header-sub{font-size:11px;color:var(--text3);margin-left:auto;}
+.header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(–border);}
+.logo{font-size:22px;font-weight:800;color:var(–green);letter-spacing:-0.5px;}
+.logo span{color:var(–text);font-weight:400;}
+.header-sub{font-size:11px;color:var(–text3);margin-left:auto;}
 
 /* タブ */
-.tabs{display:flex;gap:1px;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:18px;flex-wrap:wrap;border:1px solid var(--border);}
-.tab{flex:1;min-width:70px;padding:8px 4px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text3);border-radius:8px;text-align:center;white-space:nowrap;transition:all .15s;}
-.tab:hover{color:var(--text2);}
-.tab.active{background:var(--bg4);color:var(--green);border:1px solid var(--border);}
+.tabs{display:flex;gap:1px;background:var(–bg3);border-radius:10px;padding:3px;margin-bottom:18px;flex-wrap:wrap;border:1px solid var(–border);}
+.tab{flex:1;min-width:70px;padding:8px 4px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:none;color:var(–text3);border-radius:8px;text-align:center;white-space:nowrap;transition:all .15s;}
+.tab:hover{color:var(–text2);}
+.tab.active{background:var(–bg4);color:var(–green);border:1px solid var(–border);}
 .section{display:none;}.section.active{display:block;}
 
 /* カード */
-.card{background:var(--bg2);border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border);}
-.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
+.card{background:var(–bg2);border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(–border);}
+.card-title{font-size:11px;font-weight:600;color:var(–text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
 
 /* メトリクス */
 .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
-.metric{background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border);}
-.metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
+.metric{background:var(–bg3);border-radius:10px;padding:14px;border:1px solid var(–border);}
+.metric-label{font-size:11px;color:var(–text3);margin-bottom:6px;}
 .metric-value{font-size:22px;font-weight:700;}
-.pos{color:var(--green);}.neg{color:var(--red);}
+.pos{color:var(–green);}.neg{color:var(–red);}
 
 /* アラート */
 .alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:10px;border:1px solid;}
-.alert-ok{background:rgba(0,200,150,.1);color:var(--green);border-color:rgba(0,200,150,.3);}
-.alert-warn{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.3);}
-.alert-err{background:rgba(255,107,91,.1);color:var(--red);border-color:rgba(255,107,91,.3);}
-.alert-info{background:rgba(74,158,255,.1);color:var(--blue);border-color:rgba(74,158,255,.3);}
+.alert-ok{background:rgba(0,200,150,.1);color:var(–green);border-color:rgba(0,200,150,.3);}
+.alert-warn{background:rgba(245,166,35,.1);color:var(–amber);border-color:rgba(245,166,35,.3);}
+.alert-err{background:rgba(255,107,91,.1);color:var(–red);border-color:rgba(255,107,91,.3);}
+.alert-info{background:rgba(74,158,255,.1);color:var(–blue);border-color:rgba(74,158,255,.3);}
 
 /* 手法行 */
-.method-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.method-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(–border);}
 .method-row:last-child{border-bottom:none;}
-.method-name{font-size:13px;font-weight:500;min-width:92px;color:var(--text);}
-.bar-wrap{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.method-name{font-size:13px;font-weight:500;min-width:92px;color:var(–text);}
+.bar-wrap{flex:1;height:5px;background:var(–bg4);border-radius:3px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:3px;}
-.bar-pos{background:var(--green);}.bar-neg{background:var(--red);}
+.bar-pos{background:var(–green);}.bar-neg{background:var(–red);}
 .method-stats{display:flex;gap:10px;font-size:11px;min-width:175px;justify-content:flex-end;align-items:center;}
-.mstat{color:var(--text3);}.mstat strong{color:var(--text);}
+.mstat{color:var(–text3);}.mstat strong{color:var(–text);}
 
 /* バッジ */
 .badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
-.badge-go{background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.3);}
-.badge-stop{background:rgba(255,107,91,.15);color:var(--red);border:1px solid rgba(255,107,91,.3);}
-.badge-ok{background:rgba(138,168,200,.1);color:var(--text2);border:1px solid var(--border);}
-.badge-hold{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3);}
+.badge-go{background:rgba(0,200,150,.15);color:var(–green);border:1px solid rgba(0,200,150,.3);}
+.badge-stop{background:rgba(255,107,91,.15);color:var(–red);border:1px solid rgba(255,107,91,.3);}
+.badge-ok{background:rgba(138,168,200,.1);color:var(–text2);border:1px solid var(–border);}
+.badge-hold{background:rgba(74,158,255,.15);color:var(–blue);border:1px solid rgba(74,158,255,.3);}
 
 /* フォーム */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .form-group{display:flex;flex-direction:column;gap:5px;}
 .form-group.full{grid-column:1/-1;}
-.form-label{font-size:11px;color:var(--text3);font-weight:500;}
+.form-label{font-size:11px;color:var(–text3);font-weight:500;}
 input[type=text],input[type=number],input[type=date],input[type=month]{
-  width:100%;padding:8px 10px;font-size:13px;
-  border:1px solid var(--border);border-radius:8px;
-  background:var(--bg3);color:var(--text);outline:none;
-  transition:border-color .15s;
+width:100%;padding:8px 10px;font-size:13px;
+border:1px solid var(–border);border-radius:8px;
+background:var(–bg3);color:var(–text);outline:none;
+transition:border-color .15s;
 }
-input:focus{border-color:var(--green);}
-input::placeholder{color:var(--text3);}
+input:focus{border-color:var(–green);}
+input::placeholder{color:var(–text3);}
 
 /* タグ */
 .tag-wrap{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
-.tag-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--text3);transition:all .15s;}
-.tag-btn:hover{border-color:var(--text2);color:var(--text);}
-.tag-btn.sel{background:rgba(0,200,150,.15);color:var(--green);border-color:var(--green);}
+.tag-btn{font-size:11px;padding:4px 10px;border:1px solid var(–border);border-radius:20px;cursor:pointer;background:var(–bg3);color:var(–text3);transition:all .15s;}
+.tag-btn:hover{border-color:var(–text2);color:var(–text);}
+.tag-btn.sel{background:rgba(0,200,150,.15);color:var(–green);border-color:var(–green);}
 
 /* ボタン */
-.btn-primary{background:var(--green);color:#0e1a2e;border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
-.btn-primary:hover{background:var(--green2);}
-.btn-sm{font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);white-space:nowrap;transition:all .15s;}
-.btn-sm:hover{border-color:var(--text2);color:var(--text);}
-.btn-sm-ok{border-color:var(--green);color:var(--green);}
+.btn-primary{background:var(–green);color:#0e1a2e;border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
+.btn-primary:hover{background:var(–green2);}
+.btn-sm{font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid var(–border);background:var(–bg3);color:var(–text2);white-space:nowrap;transition:all .15s;}
+.btn-sm:hover{border-color:var(–text2);color:var(–text);}
+.btn-sm-ok{border-color:var(–green);color:var(–green);}
 .btn-sm-ok:hover{background:rgba(0,200,150,.1);}
-.btn-del{background:none;color:var(--red);border:1px solid rgba(255,107,91,.4);padding:3px 8px;border-radius:6px;font-size:11px;cursor:pointer;}
+.btn-del{background:none;color:var(–red);border:1px solid rgba(255,107,91,.4);padding:3px 8px;border-radius:6px;font-size:11px;cursor:pointer;}
 .btn-del:hover{background:rgba(255,107,91,.1);}
 
 /* トレード行 */
-.trade-row,.pos-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.trade-row,.pos-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(–border);flex-wrap:wrap;}
 .trade-row:last-child,.pos-row:last-child{border-bottom:none;}
-.trade-code{font-weight:700;min-width:50px;font-size:13px;color:var(--text);}
-.trade-name{font-size:11px;color:var(--text3);min-width:80px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.trade-date{font-size:11px;color:var(--text3);min-width:54px;}
+.trade-code{font-weight:700;min-width:50px;font-size:13px;color:var(–text);}
+.trade-name{font-size:11px;color:var(–text3);min-width:80px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.trade-date{font-size:11px;color:var(–text3);min-width:54px;}
 .trade-tags{display:flex;gap:3px;flex:1;flex-wrap:wrap;}
-.ttag{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--bg4);color:var(--text2);}
-.ttag-exit{background:rgba(245,166,35,.15);color:var(--amber);}
-.ttag-none{background:rgba(255,107,91,.1);color:var(--red);}
+.ttag{font-size:10px;padding:2px 6px;border-radius:4px;background:var(–bg4);color:var(–text2);}
+.ttag-exit{background:rgba(245,166,35,.15);color:var(–amber);}
+.ttag-none{background:rgba(255,107,91,.1);color:var(–red);}
 .trade-pnl{font-weight:700;font-size:13px;min-width:90px;text-align:right;}
 
 /* チャート */
@@ -124,8 +125,8 @@ input::placeholder{color:var(--text3);}
 
 /* 出口カード */
 .exit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.exit-card{background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border);}
-.exit-name{font-size:11px;color:var(--text3);margin-bottom:4px;}
+.exit-card{background:var(–bg3);border-radius:10px;padding:12px 14px;border:1px solid var(–border);}
+.exit-name{font-size:11px;color:var(–text3);margin-bottom:4px;}
 .exit-pnl{font-size:16px;font-weight:700;}
 
 /* アドバイス */
@@ -134,66 +135,67 @@ input::placeholder{color:var(--text3);}
 .a-go{background:rgba(0,200,150,.07);border-color:rgba(0,200,150,.25);}
 .a-stop{background:rgba(255,107,91,.07);border-color:rgba(255,107,91,.25);}
 .advice-title{font-size:11px;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;}
-.a-go .advice-title{color:var(--green);}.a-stop .advice-title{color:var(--red);}
+.a-go .advice-title{color:var(–green);}.a-stop .advice-title{color:var(–red);}
 .advice-item{font-size:12px;padding:4px 0;display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.04);}
 .advice-item:last-child{border-bottom:none;}
 .a-go .advice-item{color:rgba(0,200,150,.85);}.a-stop .advice-item{color:rgba(255,107,91,.85);}
 
 /* ドロップゾーン */
-.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);margin-bottom:14px;}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--green);background:rgba(0,200,150,.05);}
+.drop-zone{border:2px dashed var(–border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(–bg3);margin-bottom:14px;}
+.drop-zone:hover,.drop-zone.drag{border-color:var(–green);background:rgba(0,200,150,.05);}
 .drop-zone input{display:none;}
 
 /* ペンディング */
-.pending-list{max-height:440px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;}
-.pending-row{padding:10px 12px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:70px 1fr 100px;gap:8px;align-items:start;}
+.pending-list{max-height:440px;overflow-y:auto;border:1px solid var(–border);border-radius:10px;}
+.pending-row{padding:10px 12px;border-bottom:1px solid var(–border);display:grid;grid-template-columns:70px 1fr 100px;gap:8px;align-items:start;}
 .pending-row:last-child{border-bottom:none;}
 .pending-row.matched{background:rgba(0,200,150,.04);}
 .pending-row.unmatched{background:rgba(245,166,35,.04);}
-.p-code{font-weight:700;font-size:13px;color:var(--text);}
-.p-date{font-size:10px;color:var(--text3);margin-top:2px;}
-.p-name{font-size:12px;color:var(--text2);margin-bottom:5px;}
+.p-code{font-weight:700;font-size:13px;color:var(–text);}
+.p-date{font-size:10px;color:var(–text3);margin-top:2px;}
+.p-name{font-size:12px;color:var(–text2);margin-bottom:5px;}
 .mini-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
-.mtag{font-size:10px;padding:3px 8px;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--text3);user-select:none;transition:all .1s;}
-.mtag:hover{border-color:var(--text2);}
-.mtag.ms{background:rgba(0,200,150,.15);color:var(--green);border-color:var(--green);}
-.mtag.es{background:rgba(245,166,35,.15);color:var(--amber);border-color:var(--amber);}
+.mtag{font-size:10px;padding:3px 8px;border:1px solid var(–border);border-radius:20px;cursor:pointer;background:var(–bg3);color:var(–text3);user-select:none;transition:all .1s;}
+.mtag:hover{border-color:var(–text2);}
+.mtag.ms{background:rgba(0,200,150,.15);color:var(–green);border-color:var(–green);}
+.mtag.es{background:rgba(245,166,35,.15);color:var(–amber);border-color:var(–amber);}
 .p-pnl{font-weight:700;font-size:13px;text-align:right;}
 .match-badge{font-size:10px;padding:2px 7px;border-radius:4px;margin-top:4px;display:inline-block;border:1px solid;}
-.mb-ok{background:rgba(0,200,150,.1);color:var(--green);border-color:rgba(0,200,150,.3);}
-.mb-no{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.3);}
-.bulk-bar{display:flex;gap:6px;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;margin-bottom:10px;flex-wrap:wrap;border:1px solid var(--border);}
+.mb-ok{background:rgba(0,200,150,.1);color:var(–green);border-color:rgba(0,200,150,.3);}
+.mb-no{background:rgba(245,166,35,.1);color:var(–amber);border-color:rgba(245,166,35,.3);}
+.bulk-bar{display:flex;gap:6px;align-items:center;padding:10px 12px;background:var(–bg3);border-radius:8px;margin-bottom:10px;flex-wrap:wrap;border:1px solid var(–border);}
 
 /* ステップ */
-.step-bar{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);margin-bottom:14px;}
-.sn{width:22px;height:22px;border-radius:50%;background:var(--bg4);color:var(--text3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);}
-.sn.act{background:rgba(0,200,150,.2);color:var(--green);border-color:var(--green);}
-.sn.don{background:var(--green);color:#0e1a2e;border-color:var(--green);}
-.step-sep{flex:1;height:1px;background:var(--border);}
+.step-bar{display:flex;align-items:center;gap:6px;font-size:12px;color:var(–text3);margin-bottom:14px;}
+.sn{width:22px;height:22px;border-radius:50%;background:var(–bg4);color:var(–text3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(–border);}
+.sn.act{background:rgba(0,200,150,.2);color:var(–green);border-color:var(–green);}
+.sn.don{background:var(–green);color:#0e1a2e;border-color:var(–green);}
+.step-sep{flex:1;height:1px;background:var(–border);}
 
 /* 設定タグ表示 */
-.stag{display:inline-flex;align-items:center;gap:4px;background:var(--bg4);border-radius:20px;padding:4px 10px;font-size:11px;margin:2px;border:1px solid var(--border);color:var(--text2);}
-.stag button{border:none;background:none;cursor:pointer;color:var(--text3);font-size:12px;padding:0;line-height:1;}
-.stag button:hover{color:var(--red);}
+.stag{display:inline-flex;align-items:center;gap:4px;background:var(–bg4);border-radius:20px;padding:4px 10px;font-size:11px;margin:2px;border:1px solid var(–border);color:var(–text2);}
+.stag button{border:none;background:none;cursor:pointer;color:var(–text3);font-size:12px;padding:0;line-height:1;}
+.stag button:hover{color:var(–red);}
 
-.note{font-size:11px;color:var(--text3);padding:10px;background:var(--bg3);border-radius:8px;margin-top:10px;border:1px solid var(--border);line-height:1.6;}
-.empty{text-align:center;padding:28px;color:var(--text3);font-size:13px;}
+.note{font-size:11px;color:var(–text3);padding:10px;background:var(–bg3);border-radius:8px;margin-top:10px;border:1px solid var(–border);line-height:1.6;}
+.empty{text-align:center;padding:28px;color:var(–text3);font-size:13px;}
 
 /* 総損益ヒーローカード */
-.hero-card{background:var(--bg2);border-radius:14px;padding:20px 20px 16px;margin-bottom:14px;border:1px solid var(--border);text-align:center;}
-.hero-label{font-size:12px;color:var(--text3);margin-bottom:6px;}
+.hero-card{background:var(–bg2);border-radius:14px;padding:20px 20px 16px;margin-bottom:14px;border:1px solid var(–border);text-align:center;}
+.hero-label{font-size:12px;color:var(–text3);margin-bottom:6px;}
 .hero-value{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1;}
-.hero-sub{font-size:12px;color:var(--text3);margin-top:8px;}
+.hero-sub{font-size:12px;color:var(–text3);margin-top:8px;}
 
 @media(max-width:620px){
-  .metric-grid{grid-template-columns:repeat(2,1fr);}
-  .exit-grid{grid-template-columns:repeat(2,1fr);}
-  .advice-grid,.form-grid{grid-template-columns:1fr;}
-  .form-group.full{grid-column:1;}
-  .pending-row{grid-template-columns:56px 1fr 80px;}
-  .hero-value{font-size:30px;}
+.metric-grid{grid-template-columns:repeat(2,1fr);}
+.exit-grid{grid-template-columns:repeat(2,1fr);}
+.advice-grid,.form-grid{grid-template-columns:1fr;}
+.form-group.full{grid-column:1;}
+.pending-row{grid-template-columns:56px 1fr 80px;}
+.hero-value{font-size:30px;}
 }
 </style>
+
 </head>
 <body>
 <div class="app">
@@ -213,6 +215,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- ダッシュボード -->
+
   <div id="sec-dashboard" class="section active">
     <div class="hero-card" id="hero-card">
       <div class="hero-label">確定損益（累計）</div>
@@ -232,6 +235,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- 手法別 -->
+
   <div id="sec-methods" class="section">
     <div class="card">
       <div class="card-title">手法別 詳細スコアカード</div>
@@ -244,6 +248,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- 出口分析 -->
+
   <div id="sec-exits" class="section">
     <div class="card">
       <div class="card-title">出口タグ別 サマリー</div>
@@ -253,18 +258,20 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- アドバイス -->
+
   <div id="sec-advice" class="section">
     <div id="advice-content"></div>
   </div>
 
   <!-- 買い登録 -->
+
   <div id="sec-positions" class="section">
     <div class="card">
       <div class="card-title">買いポジションを登録する</div>
       <div class="form-grid">
         <div class="form-group">
           <div class="form-label">銘柄コード *</div>
-          <input type="text" id="p-code" placeholder="例: 7203">
+          <input type="text" id="p-code" placeholder="例: 7203" oninput="onCodeInput(this.value,'p-name')" maxlength="6" style="text-transform:uppercase;">
         </div>
         <div class="form-group">
           <div class="form-label">取得日（買った日）*</div>
@@ -272,7 +279,7 @@ input::placeholder{color:var(--text3);}
         </div>
         <div class="form-group full">
           <div class="form-label">銘柄名・メモ（任意）</div>
-          <input type="text" id="p-name" placeholder="例: トヨタ、TOB狙いなど">
+          <input type="text" id="p-name" placeholder="銘柄コードを入力すると自動入力" id="p-name">
         </div>
         <div class="form-group full">
           <div class="form-label">手法タグ *（複数選択可）</div>
@@ -292,6 +299,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- SBI取込 -->
+
   <div id="sec-import" class="section">
     <div class="card">
       <div class="card-title">SBI証券 取引履歴CSVを取り込む</div>
@@ -333,6 +341,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- 設定 -->
+
   <div id="sec-settings" class="section">
     <div class="card">
       <div class="card-title">手法タグを管理する</div>
@@ -353,7 +362,7 @@ input::placeholder{color:var(--text3);}
     <div class="card">
       <div class="card-title">手動でトレードを追加（先物・FX・商品など）</div>
       <div class="form-grid">
-        <div class="form-group"><div class="form-label">銘柄・商品名 *</div><input type="text" id="m-code" placeholder="例: N225、USDJPY"></div>
+        <div class="form-group"><div class="form-label">銘柄・商品名 *</div><input type="text" id="m-code" placeholder="例: N225、USDJPY、7203" oninput="onCodeInput(this.value,'m-memo')"></div>
         <div class="form-group"><div class="form-label">年月 *</div><input type="month" id="m-date"></div>
         <div class="form-group"><div class="form-label">損益（円）*</div><input type="number" id="m-pnl" placeholder="損なら -50000"></div>
         <div class="form-group"><div class="form-label">メモ</div><input type="text" id="m-memo" placeholder="任意"></div>
@@ -375,6 +384,8 @@ input::placeholder{color:var(--text3);}
 </div>
 
 <script>
+const STOCK_MASTER={"1301": "極洋", "1305": "ダイワ上場投信-トピックス", "1306": "NEXT FUNDS TOPIX連動型", "1308": "上場インデックスファンドTOPIX", "1320": "ダイワ上場投信-日経225", "1321": "NEXT FUNDS 日経225連動型", "1330": "上場インデックスファンド225", "1332": "ニッスイ", "1333": "マルハニチロ", "1343": "NEXT FUNDS 東証REIT指数", "1376": "カネコ種苗", "1414": "ショーボンドホールディングス", "1417": "ミライト・ワン", "1419": "タマホーム", "1420": "サンヨーホームズ", "1433": "ベステラ", "1435": "乃村工藝社", "1436": "ソネック", "1437": "グッドホールディングス", "1438": "岐阜造園", "1446": "キャンディル", "1447": "ITbook", "1448": "ソーシャルワイヤー", "1449": "フジ・コーポレーション", "1450": "田辺工業", "1451": "KHC", "1452": "松尾建設", "1514": "住石ホールディングス", "1515": "日鉄鉱業", "1518": "三井松島ホールディングス", "1519": "太平洋石炭販売輸送", "1520": "日産東京販売ホールディングス", "1526": "一の傳", "1527": "ジャパン・ゴールド", "1528": "Jトラスト", "1541": "日本テレホン", "1542": "純金上場信託", "1543": "純銀上場信託", "1570": "NEXT FUNDS 日経平均レバレッジ・インデックス連動型", "1571": "NEXT FUNDS 日経平均インバース・インデックス連動型", "1572": "中国H株・ブル2倍上場投信", "1579": "日経平均ブル2倍上場投信", "1580": "日経平均ベア上場投信", "1585": "iFreeETF 東証REIT指数", "1591": "NEXT FUNDS JPX日経インデックス400連動型", "1605": "INPEX", "1606": "日鉄鉱業", "1607": "ホクホクフィナンシャルグループ", "1611": "東海カーボン", "1612": "不二越", "1615": "NEXT FUNDS 東証銀行業株価指数連動型", "1616": "大阪製鐵", "1617": "NEXT FUNDS 食料品（TOPIX-17）上場投信", "1619": "NEXT FUNDS エネルギー資源（TOPIX-17）上場投信", "1620": "NEXT FUNDS 建設・資材（TOPIX-17）上場投信", "1628": "NEXT FUNDS 自動車・輸送機（TOPIX-17）上場投信", "1629": "NEXT FUNDS 鉄鋼・非鉄（TOPIX-17）上場投信", "1631": "NEXT FUNDS 機械（TOPIX-17）上場投信", "1633": "NEXT FUNDS 電機・精密（TOPIX-17）上場投信", "1634": "NEXT FUNDS 情報通信・サービスその他（TOPIX-17）上場投信", "1635": "NEXT FUNDS 電力・ガス（TOPIX-17）上場投信", "1636": "NEXT FUNDS 運輸・物流（TOPIX-17）上場投信", "1637": "NEXT FUNDS 商社・卸売（TOPIX-17）上場投信", "1638": "NEXT FUNDS 小売（TOPIX-17）上場投信", "1639": "NEXT FUNDS 銀行（TOPIX-17）上場投信", "1640": "NEXT FUNDS 金融（除く銀行）（TOPIX-17）上場投信", "1641": "NEXT FUNDS 不動産（TOPIX-17）上場投信", "2001": "ニップン", "2002": "日清製粉グループ本社", "2003": "日東富士製粉", "2004": "昭和産業", "2006": "明治ホールディングス", "2009": "山崎製パン", "2010": "ヤクルト本社", "2011": "石光商事", "2012": "スノーピーク", "2013": "エスフーズ", "2014": "伊藤ハム米久ホールディングス", "2015": "イートアンドホールディングス", "2016": "雪印メグミルク", "2017": "グリコ", "2031": "NEXT FUNDS 外国株式・MSCI-KOKUSAI指数（為替ヘッジなし）連動型", "2108": "日本甜菜製糖", "2109": "DM三井製糖ホールディングス", "2114": "フジ日本精糖", "2115": "大日本明治製糖", "2117": "日新製糖", "2120": "ネクスト", "2121": "MIXI", "2122": "インタースペース", "2124": "JAC Recruitment", "2127": "日本M&Aセンターホールディングス", "2128": "ノバレーゼ", "2130": "メンバーズ", "2131": "アコム", "2132": "エイチ・アイ・エス", "2133": "エコナックホールディングス", "2134": "燦ホールディングス", "2136": "ヒップ", "2137": "光ハイツ・ヴェルス", "2138": "クルーズ", "2139": "中広", "2140": "鎌倉新書", "2160": "ジーエヌアイグループ", "2163": "アルトナー", "2164": "地域新聞社", "2168": "パソナグループ", "2169": "CDS", "2170": "リンクアンドモチベーション", "2171": "OKAN", "2172": "インソース", "2173": "博展", "2175": "エス・エム・エス", "2176": "Inter Action", "2177": "ツクイスタッフ", "2178": "トライステージ", "2180": "サニーサイドアップグループ", "2181": "テンプホールディングス", "2182": "インターワークス", "2183": "リニカル", "2185": "シーイーシー", "2186": "ソーバル", "2193": "クックパッド", "2195": "アミタホールディングス", "2196": "エスクリ", "2198": "アイ・ケイ・ケイホールディングス", "2200": "一休", "2201": "森永製菓", "2202": "森永乳業", "2204": "中村屋", "2205": "山崎製パン", "2206": "江崎グリコ", "2207": "名糖産業", "2208": "ブルボン", "2209": "井村屋グループ", "2210": "明治ホールディングス", "2211": "不二家", "2212": "日本ハム", "2213": "亀田製菓", "2214": "中栄", "2215": "第一屋製パン", "2216": "カンロ", "2217": "モロゾフ", "2218": "日糧製パン", "2220": "亀田製菓", "2221": "岩塚製菓", "2222": "寿スピリッツ", "2223": "亀屋万年堂", "2224": "コモ", "2226": "湖池屋", "2227": "不二製油グループ本社", "2229": "カルビー", "2230": "東ハト", "2231": "クリスピー・クリーム・ドーナツ・ジャパン", "2264": "森永乳業", "2267": "ヤクルト本社", "2268": "B-Rサーティワンアイスクリーム", "2269": "明治ホールディングス", "2270": "雪印メグミルク", "2281": "プリマハム", "2282": "日本ハム", "2283": "マルハニチロ", "2284": "石井食品", "2285": "東洋水産", "2286": "林兼産業", "2288": "丸大食品", "2289": "フード・データサイエンス", "2290": "武蔵野フーズ", "2291": "福留ハム", "2292": "S Foods", "2293": "滝沢ハム", "2294": "柿安本店", "2296": "伊藤ハム米久ホールディングス", "2298": "ローソン", "2301": "学情", "2302": "ミロク情報サービス", "2303": "ドーン", "2304": "CSSホールディングス", "2305": "スタジオアリス", "2306": "アバールデータ", "2307": "クロスキャット", "2308": "オプト", "2309": "シミック", "2310": "エヌ・ティ・ティ・データ", "2315": "カイカグループホールディングス", "2317": "システナ", "2318": "ソフトブレーン", "2321": "ソフトフロントホールディングス", "2325": "NJS", "2327": "日鉄ソリューションズ", "2328": "東海ソフト", "2329": "東芝デジタルソリューションズ", "2330": "フォーサイド", "2331": "アルソック", "2332": "クエスト", "2333": "アイフル", "2334": "イオレ", "2335": "キューブシステム", "2336": "ユニバーサルコンピューター", "2337": "いちご", "2338": "デジタルアーツ", "2340": "極楽湯ホールディングス", "2341": "アルバイト・タイムス", "2342": "トランスジェニック", "2344": "平安レイサービス", "2345": "クシム", "2349": "エヌアイデイ", "2351": "ASJ", "2352": "エスクローAIM", "2353": "日本駐車場開発", "2354": "ダイヤモンドエレクトリックホールディングス", "2356": "スタネット", "2357": "ヒューマンクリエイションホールディングス", "2359": "コア", "2360": "ソードアートオンライン", "2362": "夢真ホールディングス", "2363": "アイカサ", "2379": "ディップ", "2384": "SBS ホールディングス", "2385": "総医研ホールディングス", "2389": "デジタルホールディングス", "2390": "ヒューマン・アソシエイツ・ホールディングス", "2391": "プラネット", "2395": "新日本科学", "2396": "トランスコスモス", "2397": "DNAチップ研究所", "2399": "キーウェアソリューションズ", "2400": "メッセージ", "2401": "エムアップホールディングス", "2402": "アマナ", "2404": "鉄人化計画", "2405": "マザーズ情報技術", "2406": "アルテ サロン ホールディングス", "2408": "KG情報", "2409": "ジェイテック", "2410": "キャリアデザインセンター", "2411": "ゲンダイエージェンシー", "2412": "ベネフィット・ワン", "2413": "エムスリー", "2415": "ヒューマンホールディングス", "2416": "フジスタッフ", "2417": "ジーダット", "2418": "ツカダ・グローバルホールディング", "2419": "カーライルグループ", "2420": "キャリアインデックス", "2421": "ソフトウェア・サービス", "2423": "ブランジスタ", "2424": "ブラス", "2425": "ケアサービス", "2426": "バックスグループ", "2427": "アウトソーシング", "2428": "ウェルネット", "2429": "ワールドホールディングス", "2430": "森ビルリート投資法人", "2432": "ディー・エヌ・エー", "2433": "博報堂DYホールディングス", "2434": "シグマクシス・ホールディングス", "2435": "シダー", "2436": "共同ピーアール", "2437": "Shinwa Wise Holdings", "2438": "アスカネット", "2440": "ぐるなび", "2441": "ライク", "2442": "サイバード", "2443": "大盛工業", "2445": "タナベコンサルティンググループ", "2447": "ジオネクスト", "2449": "プラップジャパン", "2450": "ヴィンクス", "2451": "フレームワークス", "2452": "ジャパン・システム", "2453": "ジャパンベストレスキューシステム", "2454": "オールアバウト", "2455": "株式会社シーエー・アドバンス", "2456": "サクラインターネット", "2461": "ファンコミュニケーションズ", "2462": "ライズ・コンサルティング・グループ", "2463": "グリーンシーズグループ", "2464": "パソナグループ", "2465": "ビジネスエンジニアリング", "2466": "フォーカスシステムズ", "2467": "バリューゴルフ", "2468": "フュートレック", "2471": "エスプール", "2472": "ストリーム", "2473": "ベネ・フィット", "2475": "WDBホールディングス", "2477": "手間いらず", "2479": "ジェイドグループ", "2480": "システムリサーチ", "2481": "タウンニュース社", "2482": "ロジザード", "2483": "翻訳センター", "2484": "出前館", "2485": "ティア", "2488": "JMSホールディングス", "2489": "アドウェイズ", "2491": "バリューコマース", "2492": "インフォマート", "2493": "イーサポートリンク", "2498": "オリエントコーポレーション", "1801": "大成建設", "1802": "大林組", "1803": "清水建設", "1804": "太平工業", "1805": "飛島建設", "1806": "奥村組", "1807": "五洋建設", "1808": "長谷工コーポレーション", "1809": "日本国土開発", "1810": "松井建設", "1811": "錢高組", "1812": "鹿島建設", "1813": "不動テトラ", "1814": "大末建設", "1815": "鉄建建設", "1816": "三菱地所", "1817": "第一建設工業", "1818": "三井住友建設", "1819": "太洋基礎工業", "1820": "西松建設", "1821": "三平建設", "1822": "大豊建設", "1823": "鴻池組", "1824": "前田建設工業", "1825": "安藤・間", "1826": "佐田建設", "1827": "ナカノフドー建設", "1828": "田辺工業", "1829": "田中建設工業", "1830": "ユーテック", "1832": "北野建設", "1833": "鴻池組", "1834": "大和ハウス工業", "1835": "東鉄工業", "1836": "朝日建設", "1837": "保土谷建設", "1838": "東急建設", "1839": "西部電気工業", "1840": "土屋ホールディングス", "1841": "サンユー建設", "1843": "コプロ・ホールディングス", "1844": "大盛工業", "1845": "大気社", "1846": "光陽社", "1847": "イチケン", "1848": "富士ピー・エス", "1850": "南海辰村建設", "1851": "中山福", "1852": "淺沼組", "1853": "森組", "1854": "東急建設", "1855": "NKSJホールディングス", "1856": "ヤマト", "1857": "ウッドフレンズ", "1858": "三英建設", "1860": "戸田建設", "1861": "熊谷組", "1862": "TSS", "1863": "西松建設", "1864": "北陸電気工事", "1865": "大盛工業", "1866": "北野建設", "1867": "植木組", "1868": "レナウン", "1869": "名工建設", "1870": "矢作建設工業", "1871": "ピーエス三菱", "1872": "アジア航測", "1873": "日本ハウスホールディングス", "1874": "ライト工業", "1875": "ヒノキヤグループ", "1876": "廣済堂", "1877": "北海道コカ・コーラボトリング", "1878": "大東建託", "1879": "新日本建設", "1880": "東急建設", "1881": "NIPPO", "1882": "東亜道路工業", "1883": "前田道路", "1884": "日本道路", "1885": "東亜建設工業", "1886": "大豊建設", "1887": "日本電設工業", "1888": "若築建設", "1889": "日特建設", "1890": "東洋建設", "1891": "五洋建設", "1892": "東洋建設", "1893": "五洋建設", "1894": "東急建設", "1895": "大成ロテック", "1896": "大林道路", "1897": "電気化学工業", "1898": "世紀東急工業", "1899": "福田組", "6501": "日立製作所", "6502": "東芝", "6503": "三菱電機", "6504": "富士電機", "6505": "東洋電機製造", "6506": "安川電機", "6507": "日本電産（ニデック）", "6508": "明電舎", "6509": "明電舎", "6510": "東洋電機製造", "6511": "東芝プラントシステム", "6512": "日本信号", "6513": "Origin", "6514": "明電舎", "6515": "椿本チエイン", "6516": "安川電機", "6517": "デンヨー", "6518": "三相電機", "6519": "エネクスインフラ投資法人", "6520": "サイレックス・テクノロジー", "6521": "オキサイド", "6522": "アスタリスク", "6523": "PHCホールディングス", "6524": "光陽社", "6526": "ソシオネクスト", "6527": "RPA ホールディングス", "6528": "ビーバンド", "6529": "平河ヒューテック", "6530": "テスHD", "6532": "ベイカレント・コンサルティング", "6533": "Orchestra Holdings", "6534": "サーキュレーション", "6536": "スタートトゥデイ", "6539": "MS-Japan", "6540": "船場", "6541": "グレイステクノロジー", "6544": "ジャパンエレベーターサービスホールディングス", "6546": "フルテック", "6547": "グリーンズ", "6548": "コプロ・ホールディングス", "6549": "ディーエムソリューションズ", "6551": "ツナグ・ソリューションズ", "6552": "GameWith", "6553": "ソウルドアウト", "6554": "エスユーエス", "6555": "MS&ADインシュアランスグループホールディングス", "6556": "ウェルビー", "6557": "ABホテル", "6558": "クックビズ", "6559": "イーグランド", "6560": "エル・ティー・エス", "6561": "HANATOUR JAPAN", "6562": "ジーニー", "6563": "みらいワークス", "6564": "MIDAホールディングス", "6565": "ABホテル", "6566": "テモナ", "6567": "SRSホールディングス", "6568": "神奈川中央交通", "6569": "アウトソーシングテクノロジー", "6570": "共和コーポレーション", "6571": "キュービーネットホールディングス", "6572": "RPAホールディングス", "6573": "アジャイルメディア・ネットワーク", "6574": "コンヴァノ", "6575": "ウイングアーク1st", "6576": "テクノスデータサイエンス・エンジニアリング", "6577": "ベストワンドットコム", "6578": "コンサルティング", "6579": "ログリー", "6580": "ライトアップ", "6581": "日立工機", "6582": "日立建機", "6583": "ファインシンター", "6584": "三桜工業", "6585": "プレミアアンチエイジング", "6586": "マキタ", "6587": "パワーソリューションズ", "6588": "東芝テック", "6589": "西部電気工業", "6590": "芝浦メカトロニクス", "6591": "西芝電機", "6592": "マブチモーター", "6593": "ミツバ", "6594": "日本電産（ニデック）", "6595": "ミネベアミツミ", "6596": "北川鉄工所", "6597": "HPCシステムズ", "6598": "BeeX", "6599": "EBILAB", "6600": "日本システム技術", "6601": "富士通", "6602": "安川電機", "6603": "NEC", "6604": "ソニーグループ", "6605": "東芝", "6606": "三菱電機", "6607": "富士電機", "6608": "日立製作所", "6609": "パナソニックホールディングス", "6610": "シャープ", "6611": "NEC", "6612": "京セラ", "6613": "QDレーザ", "6614": "昭和真空", "6615": "UMCエレクトロニクス", "6616": "トレックス・セミコンダクター", "6617": "木村電機", "6618": "大泉製作所", "6619": "ダブル・スコープ", "6620": "岩崎電気", "6621": "高岳製作所", "6622": "ダイヘン", "6623": "愛知電機", "6624": "田淵電機", "6625": "JALCO HD", "6626": "SEMITEC", "6627": "テラプローブ", "6628": "オンキョーホームエンターテイメント", "6629": "テクノホライゾン", "6630": "ヤーマン", "6631": "JVCケンウッド", "6632": "JVCケンウッド", "6633": "C&Gシステムズ", "6634": "ネクスグループ", "6635": "大日光・エンジニアリング", "6636": "イーシーセンター", "6637": "寺崎電気産業", "6638": "ミマキエンジニアリング", "6639": "コンテック", "6640": "第一精工", "6641": "日新電機", "6643": "大崎電気工業", "6645": "オムロン", "6646": "星光PMC", "6647": "エスプリライン", "6648": "河村電器産業", "6649": "亜幹工業", "6650": "SMK", "6651": "日東工業", "6652": "IDEC", "6653": "正興電機製作所", "6654": "不二電機工業", "6655": "東洋電制製作所", "6656": "インスペック", "6657": "東光高岳", "6658": "シライ電子工業", "6659": "メディアリンクス", "6660": "オリオン電機", "6661": "UQコミュニケーションズ", "6662": "ユビキタスAI", "6663": "太洋工業", "6664": "オプトエレクトロニクス", "6665": "エルピーダメモリ", "6666": "リバーエレテック", "6667": "セイコーエプソン", "6668": "アドバンテック", "6669": "シーイーエス", "6670": "MCJ", "6671": "日本航空電子工業", "6672": "日本ライフライン", "6673": "東洋電機製造", "6674": "GSユアサ", "6675": "サクサホールディングス", "6676": "メルコホールディングス", "6677": "エスケーエレクトロニクス", "6678": "テクノメディカ", "6679": "田中精密工業", "6680": "日本ライトン", "6681": "アイレック技建", "6682": "エーアイテイー", "6683": "スタンダード電気", "6684": "ローム", "6685": "スミダコーポレーション", "6686": "ARRK", "6687": "ニチコン", "6688": "NISSHA", "6689": "エルナー", "6690": "日本トリム", "6691": "エヌリンクス", "6692": "ツルハホールディングス", "6693": "COMSYS HD", "6694": "ズームホールディングス", "6695": "コスモス薬品", "6696": "トリドールホールディングス", "6697": "テクノスジャパン", "6698": "ダイハツディーゼル", "6699": "池上通信機", "6700": "国際チャート", "6701": "NEC", "6702": "富士通", "6703": "沖電気工業", "6704": "岩崎通信機", "6705": "NTTデータ", "6706": "電気興業", "6707": "サンケン電気", "6708": "エコー電子工業", "6709": "明電舎", "6710": "日本電波工業", "6711": "日本光電工業", "6712": "サン電子", "6713": "三洋電機", "6714": "相互電業", "6715": "ナカヨ", "6716": "サンケン電気", "6717": "岩崎電気", "6718": "アイホン", "6719": "富士通コンポーネント", "6720": "シチズン時計", "6721": "ウインテスト", "6722": "エイチアイ", "6723": "ルネサスエレクトロニクス", "6724": "セイコーエプソン", "6725": "エイアンドティー", "6726": "OKI（沖電気工業）", "6727": "ワコム", "6728": "アルバック", "6729": "キョーリン製薬ホールディングス", "6730": "アクセル", "6731": "ピクセラ", "6732": "アイデアインターナショナル", "6733": "プラズマ", "6734": "ナノキャリア", "6735": "アドバンテスト", "6736": "サン電子", "6737": "EIZO", "6738": "パナソニック液晶ディスプレイ", "6739": "スクウェア・エニックス・ホールディングス", "6740": "ジャパンディスプレイ", "6741": "日本信号", "6742": "京三製作所", "6743": "大同信号", "6744": "能美防災", "6745": "ホーチキ", "6746": "タカショー", "6747": "船井電機", "6748": "スター精密", "6749": "京セラドキュメントソリューションズ", "6750": "エレコム", "6751": "日本無線", "6752": "パナソニックホールディングス", "6753": "シャープ", "6754": "アンリツ", "6755": "富士通フロンテック", "6756": "日立国際電気", "6757": "OSGコーポレーション", "6758": "ソニーグループ", "6759": "TDK", "6760": "岩崎電気", "6761": "帝国通信工業", "6762": "TDK", "6763": "帝国通信工業", "6764": "三洋電機", "6765": "京セラ", "6766": "池上通信機", "6767": "ミツミ電機", "6768": "タムラ製作所", "6769": "ザインエレクトロニクス", "6770": "アルプスアルパイン", "6771": "池上通信機", "6772": "東光", "6773": "パイオニア", "6774": "パナソニック", "6775": "TB&Sホールディングス", "6776": "天昇電気工業", "6777": "サイバーステップ", "6778": "アルチザネットワークス", "6779": "日本電波工業", "6780": "太陽誘電", "6781": "日亜化学工業", "6782": "ニッポン高度紙工業", "6783": "磁気研究所", "6784": "ミツミ電機", "6785": "スズキ", "6786": "RVH", "6787": "メイコー", "6788": "日本トリム", "6789": "ローランド ディー.ジー.", "6790": "小糸製作所", "6791": "日本コロムビア", "6792": "東京エレクトロン デバイス", "6793": "山水電気", "6794": "フォスター電機", "6795": "富士機械製造", "6796": "クラリオン", "6797": "ナガセエレックス", "6798": "SMK", "6799": "新光商事", "6800": "ヨコオ", "6801": "東光", "6802": "三明電機", "6803": "ティアック", "6804": "ホシデン", "6805": "ソリトンシステムズ", "6806": "ヒロセ電機", "6807": "日本航空電子工業", "6808": "太陽誘電", "6809": "TOA", "6810": "マクセルホールディングス", "6811": "日本ケミコン", "6812": "ゲートウェイ", "6813": "スタックエレクトロニクス", "6814": "古野電気", "6815": "ユニデン", "6816": "アルパイン", "6817": "スミダコーポレーション", "6818": "中央電気工業", "6819": "伊豆シャボテンリゾート", "6820": "アイコム", "6821": "岩崎電気", "6822": "大井電気", "6823": "リード", "6824": "新コスモス電機", "6825": "光電製作所", "6826": "本多通信工業", "6827": "ラピスセミコンダクタ", "6828": "小野測器", "6829": "NTTアドバンステクノロジ", "6830": "日本アビオニクス", "6832": "アオイ電子", "6833": "特殊電極", "6834": "精工技研", "6835": "アライドテレシスホールディングス", "6836": "ぷらっとホーム", "6837": "京写", "6838": "多摩川ホールディングス", "6839": "船井電機", "6840": "AKIBAホールディングス", "6841": "横河電機", "6842": "横河ブリッジホールディングス", "6843": "マクセル", "6844": "新電元工業", "6845": "アズビル", "6846": "中央監視製作所", "6847": "カスタム", "6848": "東亜ディーケーケー", "6849": "日本光電工業", "6850": "チノー", "6851": "日本光電", "6852": "旭化成", "6853": "共和電業", "6854": "石塚硝子", "6855": "日本電子材料", "6856": "堀場製作所", "6857": "アドバンテスト", "6858": "小野測器", "6859": "エスペック", "6860": "東京精密", "6861": "キーエンス", "6862": "ミナトホールディングス", "6863": "ニレコ", "6864": "NFホールディングス", "6865": "フルハシEPO", "6866": "HIOKI", "6867": "リーダー電子", "6868": "燦キャピタルマネージメント", "6869": "シスメックス", "6870": "日本フェンオール", "6871": "マイクロネット", "6872": "メガチップス", "6873": "INSPEC", "6874": "協立電機", "6875": "メガチップス", "6876": "光伸光学工業", "6877": "OBARA GROUP", "6878": "ASTI", "6879": "イマジニア", "6880": "ゼニス羽田ホールディングス", "6881": "共立エレックス", "6882": "三社電機製作所", "6883": "日和産業", "6884": "システムリード", "6885": "ステラ ケミファ", "6886": "大電", "6887": "三桂製作", "6888": "アクモス", "6889": "鷹山", "6890": "フェローテックホールディングス", "6891": "ニチコン", "6892": "日本電気硝子", "6893": "RSコンポーネンツ", "6894": "パルステック工業", "6895": "大同信号", "6896": "北斗", "6897": "ツインバード工業", "6898": "トミタ電機", "6899": "ASTI", "6900": "石崎電機製作所", "6901": "澤藤電機", "6902": "デンソー", "6903": "日本ドライケミカル", "6904": "原田工業", "6905": "コーセル", "6906": "岩崎電気", "6907": "ジオマテック", "6908": "イリソ電子工業", "6909": "シンフォニアテクノロジー", "6910": "日立金属", "6911": "新日本無線", "6912": "菊水電子工業", "6913": "日本精器", "6914": "オプトス", "6915": "千代田インテグレ", "6916": "iEntertainment Network", "6917": "一正蒲鉾", "6918": "アバールデータ", "6919": "ケル", "6920": "レーザーテック", "6921": "東芝ライテック", "6922": "ダイポール・フォース", "6923": "スタンレー電気", "6924": "岩崎電気", "6925": "ウシオ電機", "6926": "岡谷電機産業", "6927": "ヘリオステクノホールディング", "6928": "エノモト", "6929": "日本セラミック", "6930": "日本アンテナ", "6931": "東洋合成工業", "6932": "遠藤照明", "6933": "テクノスマート", "6934": "シークス", "6935": "日本通信", "6936": "NTTDATA", "6937": "古河電池", "6938": "双信電機", "6939": "エイトレッド", "6940": "日本電産コパル電子", "6941": "山一電機", "6942": "双葉電子工業", "6943": "NKK", "6944": "タカタ", "6945": "富士機械製造", "6946": "日本アビオニクス", "6947": "横河電機", "6948": "住友電気工業", "6949": "アドソル日進", "6950": "日本真空技術", "6951": "日本電子", "6952": "カシオ計算機", "6953": "NECエレクトロニクス", "6954": "ファナック", "6955": "FDK", "6956": "ユーザックシステム", "6957": "芝浦電子", "6958": "日本CMK", "6959": "九州電機製造", "6960": "フクダ電子", "6961": "エンプラス", "6962": "大真空", "6963": "ローム", "6964": "サンコール", "6965": "浜松ホトニクス", "6966": "三井ハイテック", "6967": "新光電気工業", "6968": "富士電機", "6969": "松尾電機", "6970": "信越ポリマー", "6971": "京セラ", "6972": "コーア", "6973": "協栄産業", "6974": "日本インター", "6975": "北川工業", "6976": "太陽誘電", "6977": "日本抵抗器製作所", "6978": "EG", "6979": "UTグループ", "6980": "ユニオンツール", "6981": "村田製作所", "6982": "太陽誘電", "6983": "キーエンス", "6984": "ニデック", "6985": "シチズン時計", "6986": "双葉電子工業", "6987": "日本ケミコン", "6988": "日東電工", "6989": "北陸電気工業", "6990": "日清紡ホールディングス", "6991": "松尾電機", "6992": "京写", "6993": "日本電気工業", "6994": "ソーラーフロンティア", "6995": "東海交通事業", "6996": "ニチコン", "6997": "日本電気硝子", "6998": "NTT", "6999": "KOA", "7201": "日産自動車", "7202": "いすゞ自動車", "7203": "トヨタ自動車", "7204": "旭テック", "7205": "日野自動車", "7206": "富士重工業（SUBARU）", "7207": "セイテック", "7208": "カネミツ", "7209": "ユニプレス", "7210": "エクセディ", "7211": "三菱自動車工業", "7212": "エフテック", "7213": "レオパレス21", "7214": "GMB", "7215": "ファルテック", "7216": "中央自動車工業", "7217": "テイン", "7218": "田中精密工業", "7219": "エイチワン", "7220": "武蔵精密工業", "7221": "トヨタ車体", "7222": "日産車体", "7223": "東洋シート", "7224": "新明工業", "7225": "東洋ゴム工業", "7226": "極東開発工業", "7227": "アラコ", "7228": "デイトナ", "7229": "ユタカ技研", "7230": "日信工業", "7231": "トピー工業", "7232": "オートリブ", "7233": "大同メタル工業", "7234": "タカタ", "7235": "東京ラヂエーター製造", "7236": "ティラド", "7237": "日産ディーゼル工業", "7238": "曙ブレーキ工業", "7239": "タチエス", "7240": "NOK", "7241": "フタバ産業", "7242": "カヤバ工業", "7243": "シロキ工業", "7244": "市光工業", "7245": "大東工業", "7246": "プレス工業", "7247": "ミクニ", "7248": "カルソニックカンセイ", "7249": "尾張精機", "7250": "太平洋工業", "7251": "KYB", "7252": "オーエム製作所", "7253": "大日本印刷", "7254": "ユニバンス", "7255": "坂本工業", "7256": "河西工業", "7257": "カネソウ", "7258": "自動車部品工業", "7259": "アイシン", "7260": "富士機工", "7261": "マツダ", "7262": "ダイハツ工業", "7263": "愛知機械工業", "7264": "ムロコーポレーション", "7265": "エイケン工業", "7266": "今仙電機製作所", "7267": "本田技研工業", "7268": "タニタ", "7269": "スズキ", "7270": "SUBARU", "7271": "ヤマハ発動機", "7272": "ヤマハ発動機", "7273": "日清紡ホールディングス", "7274": "豊田合成", "7275": "曙ブレーキ工業", "7276": "小糸製作所", "7277": "TBK", "7278": "エクセディ", "7279": "日高精機", "7280": "ミツバ", "7281": "トヨタ紡織", "7282": "豊田合成", "7283": "愛三工業", "7284": "盟和産業", "7285": "リズム", "7286": "ニフコ", "7287": "日本精機", "7288": "澤藤電機", "7289": "東洋電装", "7290": "日本プラスト", "7291": "日本テクニカ", "7292": "村上開明堂", "7293": "関東自動車工業", "7294": "ヨロズ", "7295": "萩原工業", "7296": "エフ・シー・シー", "7297": "カーメイト", "7298": "八千代工業", "7299": "フジオーゼックス", "8001": "伊藤忠商事", "8002": "丸紅", "8003": "トーメン", "8004": "ニカ", "8005": "スクロール", "8006": "ユニー・ファミリーマートホールディングス", "8007": "高島", "8008": "ヨンドシーホールディングス", "8009": "ナガホリ", "8010": "綿半ホールディングス", "8011": "三陽商会", "8012": "長瀬産業", "8013": "ナイガイ", "8014": "蝶理", "8015": "豊田通商", "8016": "オンワードホールディングス", "8017": "王子ホールディングス", "8018": "三共生興", "8020": "兼松", "8021": "豊田通商", "8022": "ミズノ", "8023": "大興電子通信", "8024": "シード", "8025": "ツカモトコーポレーション", "8026": "ユニーグループ・ホールディングス", "8027": "長崎屋", "8028": "ファミリーマート", "8029": "ルックホールディングス", "8030": "中央魚類", "8031": "三井物産", "8032": "ジェビス", "8033": "日本電解", "8034": "セキ", "8035": "東京エレクトロン", "8036": "日立ハイテク", "8037": "カメヤマ", "8038": "東都水産", "8039": "中央商産業", "8040": "東京ラジエーター製造", "8041": "OUGホールディングス", "8042": "日本ライフライン", "8043": "スターバックスコーヒージャパン", "8044": "大東紡織", "8045": "神戸物産", "8046": "丸藤シートパイル", "8047": "王将フードサービス", "8048": "岩塚製菓", "8049": "明治チョコレート", "8050": "セイコーホールディングス", "8051": "山善", "8052": "椎野商事", "8053": "住友商事", "8054": "ポプラ", "8055": "ITOCHU Techno-Electronics", "8056": "日本ユニシス", "8057": "内田洋行", "8058": "三菱商事", "8059": "阪和興業", "8060": "日本シイエムケイ", "8061": "西華産業", "8062": "ロック・フィールド", "8063": "日本紙パルプ商事", "8064": "ナリス化粧品", "8065": "佐藤商事", "8066": "三谷商事", "8067": "太陽化学", "8068": "菱電商事", "8069": "東急百貨店", "8070": "東京産業", "8071": "東海電子", "8072": "日本出版販売", "8073": "ヴィレッジヴァンガードコーポレーション", "8074": "ユアサ商事", "8075": "神鋼商事", "8076": "カネ美食品", "8077": "トルクコントロール", "8078": "阪食", "8079": "正栄食品工業", "8080": "ジョイフル本田", "8081": "キムラユニティー", "8082": "豊商事", "8083": "ビューカード", "8084": "リョーサン菱洋ホールディングス", "8085": "ナラサキ産業", "8086": "ニプロ", "8087": "東京アパレル", "8088": "岩谷産業", "8089": "ナイス", "8090": "中央化学", "8091": "ニチモウ", "8092": "中部鋼鈑", "8093": "極東貿易", "8094": "スプレモ", "8095": "アステナホールディングス", "8096": "兼松エレクトロニクス", "8097": "三愛石油", "8098": "稲畑産業", "8099": "野村不動産ホールディングス", "8301": "日本銀行", "8303": "新生銀行", "8304": "あおぞら銀行", "8305": "三菱UFJフィナンシャル・グループ", "8306": "三菱UFJフィナンシャル・グループ", "8307": "芙蓉総合リース", "8308": "りそなホールディングス", "8309": "三井住友トラスト・ホールディングス", "8310": "三井住友フィナンシャルグループ", "8311": "みずほ銀行", "8312": "日本精工", "8313": "GFJホールディングス", "8314": "大光銀行", "8315": "岩手銀行", "8316": "三井住友フィナンシャルグループ", "8317": "伊予銀行", "8318": "熊本銀行", "8319": "近畿大阪銀行", "8320": "仙台銀行", "8321": "三重銀行", "8322": "豊和銀行", "8323": "大東銀行", "8324": "第三銀行", "8325": "みやこ銀行", "8326": "山形銀行", "8327": "佐賀銀行", "8328": "富山銀行", "8329": "東邦銀行", "8330": "滋賀銀行", "8331": "千葉銀行", "8332": "横浜銀行", "8333": "常陽銀行", "8334": "群馬銀行", "8335": "栃木銀行", "8336": "武蔵野銀行", "8337": "千葉興業銀行", "8338": "筑波銀行", "8339": "東京スター銀行", "8340": "奥羽銀行", "8341": "七十七銀行", "8342": "東北銀行", "8343": "秋田銀行", "8344": "山形銀行", "8345": "岩手銀行", "8346": "東邦銀行", "8347": "荘内銀行", "8348": "大光銀行", "8349": "東北銀行", "8350": "北日本銀行", "8351": "静岡銀行", "8352": "清水銀行", "8353": "十六銀行", "8354": "ふくおかフィナンシャルグループ", "8355": "静岡銀行", "8356": "十六銀行", "8357": "静岡銀行", "8358": "スルガ銀行", "8359": "八十二銀行", "8360": "山梨中央銀行", "8361": "長野銀行", "8362": "北陸銀行", "8363": "北越銀行", "8364": "富山銀行", "8365": "富山第一銀行", "8366": "滋賀銀行", "8367": "南都銀行", "8368": "百五銀行", "8369": "京都銀行", "8370": "奈良銀行", "8371": "但馬銀行", "8372": "鳥取銀行", "8373": "山陰合同銀行", "8374": "岡山銀行", "8375": "中国銀行", "8376": "広島銀行", "8377": "もみじ銀行", "8378": "山口銀行", "8379": "西日本シティ銀行", "8380": "佐賀銀行", "8381": "親和銀行", "8382": "長崎銀行", "8383": "肥後銀行", "8384": "大分銀行", "8385": "宮崎銀行", "8386": "鹿児島銀行", "8387": "四国銀行", "8388": "阿波銀行", "8389": "伊予銀行", "8390": "百十四銀行", "8391": "琉球銀行", "8392": "沖縄銀行", "8393": "沖縄海邦銀行", "8394": "みずほフィナンシャルグループ", "8395": "みずほコーポレート銀行", "8396": "みずほ証券", "8397": "みずほインベスターズ証券", "8398": "東海東京フィナンシャル・ホールディングス", "8399": "北洋銀行", "8400": "いよぎん地域経済研究センター", "8401": "北陸銀行", "8402": "三菱UFJ証券ホールディングス", "8403": "住友ライフ・イノベーション", "8404": "あいホールディングス", "8405": "みずほ信託銀行", "8406": "みずほフィナンシャルグループ", "8407": "八十二銀行", "8408": "池田泉州ホールディングス", "8409": "プロクレアホールディングス", "8410": "セブン銀行", "8411": "みずほフィナンシャルグループ", "8412": "みずほ銀行", "8413": "三菱UFJ銀行", "8414": "三菱UFJモルガン・スタンレー証券", "8415": "山口フィナンシャルグループ", "8416": "みちのく銀行", "8417": "紀陽銀行", "8418": "山口銀行", "8419": "東日本銀行", "8420": "みずほ証券", "8421": "信金中央金庫", "8422": "愛知銀行", "8423": "芙蓉総合リース", "8424": "芙蓉総合リース", "8425": "みずほリース", "8426": "日本貸金業協会", "8427": "北國フィナンシャルホールディングス", "8428": "アーバンコーポレイション", "8429": "東日本銀行", "8430": "みずほ銀行", "8431": "みずほコーポレート銀行", "8432": "北海道銀行", "8433": "コア", "8434": "GMOフィナンシャルホールディングス", "8435": "カーチスホールディングス", "8436": "ソニー銀行", "8437": "西日本シティ銀行", "8438": "伊予銀行", "8439": "東京センチュリー", "8440": "大垣共立銀行", "8441": "四国銀行", "8442": "中国銀行", "8443": "ハウスコム", "8444": "ヤマザキ", "8445": "みずほ信託銀行", "8446": "近畿産業信用組合", "8447": "西日本シティ銀行", "8448": "みずほコーポレート銀行", "8449": "東映エージエンシー", "8450": "セブン＆アイ・ホールディングス", "8451": "ファイナンシャルエージェンシー", "8452": "みずほ銀行", "8453": "みずほ証券", "8454": "みずほインベスターズ証券", "8455": "みずほ信託銀行", "8456": "山梨中央銀行", "8457": "みずほフィナンシャルグループ", "8458": "みずほ銀行", "8459": "オリコ", "8460": "ウエスタン・デジタル", "8461": "ジャパンネット銀行", "8462": "フューチャーベンチャーキャピタル", "8463": "東海東京証券", "8464": "北洋銀行", "8465": "日新", "8466": "ニッセンホールディングス", "8467": "岩国市", "8468": "セキュリタス", "8469": "地方銀行", "8470": "野村ホールディングス", "8471": "山一証券", "8472": "日本興亜損害保険", "8473": "SBIホールディングス", "8474": "SBIホールディングス", "8475": "東京海上日動火災保険", "8476": "アクセル", "8477": "NEXT FUNDS 銀行業指数連動型", "8478": "丸三証券", "8479": "岡三証券グループ", "8480": "ニッポン放送", "8481": "イントラスト", "8482": "中央商産業", "8483": "東京楽天地", "8484": "リース・ファイナンス", "8485": "東通", "8486": "アーツホールディングス", "8487": "ソフトバンク", "8488": "日本生命保険", "8489": "SBI生命保険", "8490": "損保ジャパン", "8491": "みずほ銀行", "8492": "ラクーンフィナンシャル", "8493": "みずほ銀行", "8494": "TBSホールディングス", "8495": "スカパーJSATホールディングス", "8496": "東洋証券", "8497": "やまぎん", "8498": "カーチスホールディングス", "8499": "共立証券", "8500": "山口", "8501": "みずほ", "8502": "日本コムシス", "8503": "みずほ証券", "8504": "みずほ銀行", "8505": "みずほ証券", "8506": "NECキャピタルソリューション", "8507": "スペースバリューホールディングス", "8508": "JALUX", "8509": "みずほリース", "8510": "あおぞら証券", "8511": "日本証券金融", "8512": "みずほ投信投資顧問", "8513": "近鉄百貨店", "8514": "J.フロントリテイリング", "8515": "アイフル", "8516": "みずほ銀行", "8517": "みずほ証券", "8518": "日本アジア投資", "8519": "みずほリース", "8520": "岡山銀行", "8521": "みずほ銀行", "8522": "中京銀行", "8523": "北洋銀行", "8524": "北日本銀行", "8525": "三重銀行", "8526": "みずほ銀行", "8527": "愛媛銀行", "8528": "みずほ銀行", "8529": "みずほ銀行", "8530": "みずほ証券", "8531": "みずほ銀行", "8532": "みずほ銀行", "8533": "みずほ銀行", "8534": "みずほ銀行", "8535": "みずほ銀行", "8536": "みずほ銀行", "8537": "みずほ銀行", "8538": "みずほ銀行", "8539": "みずほ銀行", "8540": "みずほ銀行", "8541": "みずほ銀行", "8542": "みずほ銀行", "8543": "みずほ銀行", "8544": "みずほ銀行", "8545": "みずほ銀行", "8601": "大和証券グループ本社", "8602": "東海東京フィナンシャル・ホールディングス", "8604": "野村ホールディングス", "8605": "光世証券", "8606": "新光証券", "8609": "岡三証券グループ", "8613": "丸三証券", "8616": "東海東京証券", "8628": "松井証券", "8630": "SOMPOホールディングス", "8632": "ニッポン生命", "8633": "日本生命保険", "8634": "東京海上ホールディングス", "8635": "MS&ADインシュアランスグループホールディングス", "8639": "損害保険ジャパン", "8641": "大同生命保険", "8642": "太陽生命保険", "8644": "明治安田生命保険", "8648": "住友生命保険", "8651": "第一生命ホールディングス", "8652": "エステートグループ", "8655": "東京海上日動火災保険", "8656": "野村生命保険", "8657": "かんぽ生命保険", "8664": "SBI損保", "8665": "アフラック生命保険", "8675": "ソニー生命保険", "8681": "日本投資環境研究所", "8685": "三井生命保険", "8697": "日本取引所グループ", "8698": "マネックスグループ", "8699": "あかつき証券", "8700": "岡藤日産証券", "8703": "カブドットコム証券", "8707": "岩井コスモ証券", "8708": "藍沢証券", "8714": "池田泉州TT証券", "8715": "アニコムホールディングス", "8716": "日本投資環境研究所", "8718": "楽天証券", "8720": "日本新薬", "8721": "エフ・ディ・シィ・フーズ", "8725": "MS&ADインシュアランスグループホールディングス", "8726": "東京海上ホールディングス", "8729": "ソニー生命保険", "8731": "大東銀行", "8732": "マネーパートナーズグループ", "8733": "オリオン機械", "8734": "ストリーム", "8739": "スパークス・グループ", "8740": "ジャパン投資顧問", "8741": "全国保証", "8742": "藍沢証券", "8745": "損害保険ジャパン", "8750": "第一生命ホールディングス", "8752": "三井住友海上火災保険", "8753": "日新火災海上保険", "8754": "ニッセイ・ウェルス生命保険", "8755": "ソニーフィナンシャルホールディングス", "8766": "東京海上ホールディングス", "8795": "太陽生命保険", "8801": "三井不動産", "8802": "三菱地所", "8803": "平和不動産", "8804": "東京建物", "8805": "ニチモ", "8806": "新日本製鐵", "8807": "スターマイカ・ホールディングス", "8808": "日本シーム", "8809": "八重洲無線", "8810": "日本エスコン", "8811": "日神グループホールディングス", "8812": "綜合スーパー", "8813": "マブチモーター", "8814": "東急不動産ホールディングス", "8815": "東急不動産ホールディングス", "8816": "東急不動産ホールディングス", "8817": "東急建設", "8818": "ランド", "8819": "イー・ギャランティ", "8820": "大阪市", "8821": "建設省", "8822": "住友林業", "8823": "大建工業", "8824": "東急", "8825": "カナデン", "8826": "日本地所", "8827": "インデックス", "8828": "長谷工コーポレーション", "8829": "新日本建物", "8830": "住友不動産", "8831": "東急不動産ホールディングス", "8832": "東急ホールディングス", "8833": "センチュリー21・ジャパン", "8834": "住友林業", "8835": "太平洋興発", "8836": "RISE", "8837": "日本土地建物", "8838": "オキナワ", "8839": "東急ホールディングス", "8840": "大成建設", "8841": "スカイプラス", "8842": "東急不動産ホールディングス", "8843": "ユニバーサルホーム", "8844": "コスモスイニシア", "8845": "HDC神鋼リアルエステート", "8846": "サンコーインダストリー", "8847": "イオンモール", "8848": "レオパレス21", "8849": "ファースト住建", "8850": "スターツコーポレーション", "8851": "ウィルプラスホールディングス", "8852": "東急不動産ホールディングス", "8853": "イオンタウン", "8854": "大東建託", "8855": "パシフィックスター不動産", "8856": "日本ハウスホールディングス", "8857": "東急ホールディングス", "8858": "リログループ", "8859": "東急不動産ホールディングス", "8860": "フジ住宅", "8861": "東急不動産ホールディングス", "8862": "三菱地所", "8863": "三井不動産", "8864": "空港施設", "8865": "ダイサン", "8866": "ハウスフリーダム", "8867": "タカラレーベン", "8868": "アーバネットコーポレーション", "8869": "明和地所", "8870": "住友不動産", "8871": "ゴールドクレスト", "8872": "リベレステ", "8873": "サンフロンティア不動産", "8874": "エスリード", "8875": "東海住宅", "8876": "リロ・ホールディング", "8877": "エスリード", "8878": "REVOLUTION", "8879": "東京建物不動産販売", "8880": "日本住宅ローン", "8881": "日神グループホールディングス", "8882": "毎日コムネット", "8883": "日本エスコン", "8884": "日本海水", "8885": "東急不動産ホールディングス", "8886": "ウッドフレンズ", "8887": "センチュリー21・ジャパン", "8888": "クリード", "8889": "アパマンショップホールディングス", "8890": "レーサム", "8891": "AMGホールディングス", "8892": "東京不動産管理", "8893": "新日本建物", "8894": "ヤングリーフ", "8895": "日神グループホールディングス", "8896": "MDI", "8897": "タカラレーベン", "8898": "センチュリー21・ジャパン", "8899": "日商エステム", "9432": "NTT（日本電信電話）", "9433": "KDDI", "9434": "ソフトバンク", "9435": "光通信", "9436": "沖縄セルラー電話", "9437": "NTTドコモ", "9438": "エムティーアイ", "9439": "エムケー精工", "9440": "テレックスリムジン", "9441": "ベルパーク", "9442": "テレコムウェイブ", "9443": "ネットワンシステムズ", "9444": "トラス・ホールディングス", "9449": "GMO インターネットグループ", "9450": "ファインドスター", "9452": "テレビ朝日ホールディングス", "9453": "JCN", "9455": "テレビ東京ホールディングス", "9456": "日本通信", "9457": "Jストリーム", "9458": "CAICA DIGITAL", "9459": "アイビーシー", "9460": "光ネットワーク", "9461": "東京電力ホールディングス", "9462": "インターメスティック", "9463": "ラクーン", "9464": "ウォルト・ディズニー・ジャパン", "9465": "フォーシーズホールディングス", "9466": "アイドマ・ホールディングス", "9467": "アルファポリス", "9468": "KADOKAWA", "9469": "アルファグループ", "9470": "トッパン・フォームズ", "9471": "文渓堂", "9472": "デジタルプラス", "9473": "小学館", "9474": "ゼンリン", "9475": "昭文社ホールディングス", "9476": "中央経済社ホールディングス", "9477": "角川書店", "9478": "ＳＥホールディングス・アンド・インキュベーションズ", "9479": "インプレスホールディングス", "9480": "明治図書", "9481": "ベクトル", "9482": "大日本印刷", "9483": "J-TEC", "9484": "アルファグループ", "9485": "ネットエイジグループ", "9486": "テレビ西日本", "9487": "福岡放送", "9488": "RKB毎日放送", "9489": "GMOペパボ", "9490": "コーエーテクモホールディングス", "9491": "日本BS放送", "9492": "東急ホテルズ＆リゾーツ", "9493": "ユーソニック", "9494": "ダイアモンドヘッド", "9495": "スカパーJSATホールディングス", "9496": "ソネット", "9497": "SBC メディカルグループホールディングス", "9498": "デジタルメディアソリューションズ", "9499": "ジャストシステム", "2651": "ローソン", "2670": "ABCマート", "2678": "アスクル", "2681": "ゲオホールディングス", "2695": "くら寿司", "2702": "日本マクドナルドホールディングス", "2729": "JALUX", "2730": "エディオン", "2740": "近鉄百貨店", "2747": "フルッタフルッタ", "2750": "石光商事", "2753": "あみやき亭", "2760": "東京エレクトロンデバイス", "2762": "三光マーケティングフーズ", "2763": "エフ・マリオン", "2764": "ひらまつ", "2767": "エコロス", "2768": "双日", "2769": "ヴィレッジヴァンガードコーポレーション", "2780": "コメ兵ホールディングス", "2782": "セリア", "2784": "アルフレッサホールディングス", "2790": "ナフコ", "2791": "大黒天物産", "2792": "ハニーズホールディングス", "2795": "日本プリメックス", "2797": "日本たばこ産業", "2798": "ワイン", "2801": "キッコーマン", "2802": "味の素", "2804": "ブルドックソース", "2805": "エスビー食品", "2806": "ユタカフーズ", "2809": "キユーピー", "2810": "ハウス食品グループ本社", "2811": "カゴメ", "2812": "焼津水産化学工業", "2813": "和弘食品", "2814": "太田油脂", "2815": "アリアケジャパン", "2816": "キリンホールディングス", "2817": "エルサンクジャポン", "2818": "ピエトロ", "2819": "エバラ食品工業", "2820": "やまみ", "2898": "ニシン", "2899": "永谷園ホールディングス", "3382": "セブン＆アイ・ホールディングス", "3401": "帝人", "3402": "東レ", "3403": "東レ", "3404": "三菱ケミカルホールディングス", "3405": "クラレ", "3406": "カネカ", "3407": "旭化成", "3408": "サカイオーベックス", "3409": "北越コーポレーション", "3410": "コーア商事ホールディングス", "3411": "中央繊維", "3412": "丸三産業", "3413": "帝国繊維", "3414": "東レ", "3415": "TSON", "3416": "押尾産業", "3417": "大木ヘルスケアホールディングス", "3418": "バルニバービ", "3419": "遠州トラック", "3420": "ケーエスケー", "3421": "稲葉製作所", "3422": "ネポン", "3423": "エスイー", "3424": "ホーブ", "3425": "ノダ", "3426": "アルインコ", "3427": "おかもと", "3428": "エスビー食品", "3429": "木村鉄工", "3430": "池田糖化工業", "3431": "宮地エンジニアリンググループ", "3432": "菊水化学工業", "3433": "トーカロ", "3434": "アルファ", "3435": "サンリツ", "3436": "SUMCO", "3437": "東海カーボン", "3438": "フジキン", "3439": "三ツ星", "3440": "日亜鋼業", "3441": "山王", "3442": "三ッ矢", "3443": "川田テクノロジーズ", "3444": "菊池製作所", "3445": "RSC", "3446": "ジャパンマテリアル", "3447": "信和", "3448": "ジェイテクト", "3449": "東北特殊鋼", "3450": "日本精工", "3451": "トーカイ", "3452": "ベステラ", "3453": "ケネディクス", "3454": "ファーストブラザーズ", "3455": "ヘルスケア＆メディカル投資法人", "3456": "グッドホールディングス", "3457": "ハウスドゥ", "3458": "シーアールイー", "3459": "サムティ・レジデンシャル投資法人", "3460": "ジェイ・エス・ビー", "3461": "パルグループホールディングス", "3462": "野村不動産マスターファンド投資法人", "3463": "いちご", "3464": "ポラリス・ホールディングス", "3465": "ケイアイスター不動産", "3466": "ラサールロジポート投資法人", "3467": "アグレ都市デザイン", "3468": "スターアジア不動産投資法人", "3469": "デュアルタップ", "3470": "マリモ地方創生リート投資法人", "3471": "三井不動産ロジスティクスパーク投資法人", "3472": "大江戸温泉リート投資法人", "3473": "さくら総合リート投資法人", "3474": "G-FACTORY", "3475": "グッドコムアセット", "3476": "投資法人みらい", "3477": "フォーライフ", "3478": "森トラスト・ホテルリート投資法人", "3479": "TKP", "3480": "ジェイ・エス・ビー", "3481": "三菱地所物流リート投資法人", "3482": "ロードスターキャピタル", "3483": "積水ハウス・リート投資法人", "3484": "テンポイノベーション", "3485": "フォーバル・リアルストレート", "3486": "グローバル・リンク・マネジメント", "3487": "CREロジスティクスファンド投資法人", "3488": "ザイマックス・リート投資法人", "3489": "いちごオフィスリート投資法人", "3490": "いちごホテルリート投資法人", "3632": "グリー", "3633": "GMOペパボ", "3634": "ソケッツ", "3635": "コーエーテクモホールディングス", "3636": "三菱総合研究所", "3637": "テコテック", "3638": "コナミグループ", "3639": "ボルテージ", "3640": "電算", "3641": "パピレス", "3642": "スタジオカラー", "3643": "ピクシーダストテクノロジーズ", "3644": "インタートレード", "3645": "メディカルネット", "3646": "駅探", "3647": "ジー・スリーホールディングス", "3648": "AGS", "3649": "テクノスジャパン", "3650": "ネットイヤーグループ", "3651": "メディアシーク", "3652": "ドリームアーツ", "3653": "モルフォ", "3654": "ヒトメディア", "3655": "ブレインパッド", "3656": "KLab", "3657": "ポールトゥウィン・ピットクルーホールディングス", "3658": "イードホールディングス", "3659": "ネクソン", "3660": "アイスタイル", "3661": "エムアップホールディングス", "3662": "エイチーム", "3663": "セレス", "3664": "モバイルファクトリー", "3665": "エニグモ", "3666": "テクノスデータサイエンス・エンジニアリング", "3667": "enish", "3668": "コlopl", "3669": "モバイルクリエイト", "3670": "協立情報通信", "3671": "ソフトマックス", "3672": "オルトプラス", "3673": "ブロードリーフ", "3674": "楽天グループ", "3675": "クロス・マーケティンググループ", "3676": "デジタルハーツホールディングス", "3677": "システム情報", "3678": "メディアドゥ", "3679": "じげん", "3680": "ホットリンク", "3681": "ブイキューブ", "3682": "エンカレッジ・テクノロジ", "3683": "サイバーリンクス", "3684": "ピアズ", "3685": "チェンジ", "3686": "デジタルアーツ", "3687": "フィックスターズ", "3688": "CARTA HOLDINGS", "3689": "イグニス", "3690": "イトクロ", "3691": "デジタルプラス", "3692": "FFRI security", "3693": "日本システム技術", "3694": "OPTiM", "3695": "GMOリサーチ", "3696": "セレスポ", "3697": "スカラ", "3698": "CRI・ミドルウェア", "3699": "SKIYAKI", "3700": "東洋合成工業", "3701": "松風", "3702": "情報企画", "3703": "インフォコム", "3704": "トレードワークス", "3705": "アスクル", "3706": "プロシップ", "3707": "東京エレクトロン", "3708": "特種東海フォレスト", "3709": "オービックビジネスコンサルタント", "3710": "ジョルダン", "3711": "創通", "3712": "情報企画", "3713": "ドーン", "3714": "アルバイト・タイムス", "3715": "中国ネット", "3716": "コーエーテクモホールディングス", "3717": "Jトラスト", "3718": "スタジオ地図", "3719": "メタップス", "3720": "エルテス", "3721": "ネオジャパン", "3722": "日本クリエイト", "3723": "日本ファルコム", "3724": "モバイルソリューションズ", "3725": "タイムインターメディア", "3726": "フォーエス", "3727": "アプリックスIPホールディングス", "3728": "テクノスデータサイエンス・エンジニアリング", "3729": "ネットイヤーグループ", "3730": "フルスピード", "3731": "Net Marketing", "3732": "ジョルダン", "3733": "ソフトウェア・サービス", "3734": "ネットプライスドットコム", "3735": "インフォコム", "3736": "ライフネット生命保険", "3737": "インターアクション", "3738": "ティーライフ", "3739": "スタジオアリス", "3740": "サイオス", "4151": "協和キリン", "4152": "大日本住友製薬", "4153": "三和化学研究所", "4154": "持田製薬", "4155": "ミルテルコーポレーション", "4156": "東邦薬品ホールディングス", "4157": "デジタルホールディングス", "4158": "サノフィ", "4159": "タカラバイオ", "4160": "ソレイジア・ファーマ", "4161": "エーザイ", "4162": "ワイエイシイホールディングス", "4163": "MOTIONホールディングス", "4164": "東洋インキSCホールディングス", "4165": "プレイドホールディングス", "4166": "コラントッテ", "4167": "Kaizen Platform", "4168": "ジラフ", "4169": "ENECHANGE", "4170": "カオナビ", "4171": "グローバルインフォメーション", "4172": "東海ソフト", "4173": "WACUL", "4174": "アピックヤマダ", "4175": "cocolive", "4176": "coconala", "4177": "オープンハウスグループ", "4178": "イノベーション", "4179": "Photosynth", "4180": "Appier Group", "4181": "三井化学", "4182": "三菱瓦斯化学", "4183": "三井化学", "4184": "三菱ケミカルグループ", "4185": "JSR", "4186": "東京応化工業", "4187": "大阪有機化学工業", "4188": "三菱ケミカルグループ", "4189": "KHネオケム", "4190": "レゾナック・ホールディングス", "4191": "Fringe81", "4192": "スパイダープラス", "4193": "クロスボーダー・マーケティング", "4194": "ビジョナル", "4195": "ビズリーチ", "4196": "セルム", "4197": "シェアリングテクノロジー", "4198": "エンカレッジ・テクノロジ", "4199": "エコノス", "4200": "住友ベークライト", "4201": "日本合成化学工業", "4202": "ダイセル", "4203": "住友ベークライト", "4204": "積水化学工業", "4205": "日本ゼオン", "4206": "アイカ工業", "4207": "積水化成品工業", "4208": "宇部興産", "4209": "日本触媒", "4210": "日本ペイントホールディングス", "4211": "積水樹脂", "4212": "積水フーラー", "4213": "三菱エンジニアリングプラスチックス", "4214": "エンジン", "4215": "タキロンシーアイ", "4216": "旭有機材工業", "4217": "日立化成", "4218": "日本カーボン", "4219": "ニチアス", "4220": "ロンシール工業", "4221": "大倉工業", "4222": "ケミプロ化成", "4223": "ダウ・ケミカル日本", "4224": "ロンシール工業", "4225": "電気化学工業", "4226": "三菱樹脂", "4227": "三井化学", "4228": "積水化成品工業", "4229": "群栄化学工業", "4230": "日本板硝子", "4231": "タイガースポリマー", "4232": "エクソール", "4233": "ロード", "4234": "サンケミカル", "4235": "ウルトラファブリクス", "4236": "NIHON POLYMER", "4237": "藤森工業", "4238": "三菱レイヨン", "4239": "ニチエイ", "4240": "クラスターテクノロジー", "4241": "アトム", "4242": "タツモ", "4243": "日本ケミテック", "4244": "サンスター", "4245": "ダイキョーニシカワ", "4246": "ダイキョーニシカワ", "4247": "ポリプラスチックス", "4248": "竹本容器", "4249": "森六ホールディングス", "4250": "日本新薬", "4251": "恵和", "4252": "三恵技研工業", "4253": "クレイグインターナショナル", "4254": "Jマテリアルズ", "4255": "ナノキャリア", "4256": "エーアイティー", "4257": "エイジス", "4403": "日油", "4404": "日本油脂", "4405": "日本油脂", "4406": "新田ゼラチン", "4407": "大阪ソーダ", "4408": "太陽化学", "4409": "東京化成工業", "4410": "ハリマ化成グループ", "4411": "大同化成工業", "4412": "ナガセ", "4413": "ボードルア", "4414": "ブレインロジック", "4415": "ブロードエンタープライズ", "4416": "Pアンチエイジング", "4417": "グローバルグループ", "4418": "Mobility Technologies", "4419": "フレアス", "4420": "エル・ティー・エス", "4421": "テクノスデータサイエンス・エンジニアリング", "4422": "Uzabase", "4423": "コプロ・ホールディングス", "4424": "Amazia", "4425": "Kudan", "4426": "エフアンドエム", "4427": "EduLab", "4428": "シーユーシー", "4429": "リックソフト", "4430": "東海ソフト", "4431": "スマレジ", "4432": "ウォンテッドリー", "4433": "Branding Engineer", "4434": "サーバーワークス", "4435": "カオナビ", "4436": "ミンカブ・ジ・インフォノイド", "4437": "gooddaysホールディングス", "4438": "ウェルスナビ", "4439": "HEROZ", "4440": "ヴィッツ", "4441": "トビラシステムズ", "4442": "ベーシック", "4443": "Sansan", "4444": "KIMC", "4452": "花王", "4453": "クラシエホールディングス", "4454": "プロ", "4455": "Leverage", "4456": "ウルシステムズ", "4457": "データXホールディングス", "4458": "ペイロール", "4459": "ブルーイン", "4460": "ヒューマンテクノロジーズ", "4461": "第一工業製薬", "4462": "石原ケミカル", "4463": "日華化学", "4464": "ソフト99コーポレーション", "4465": "ライオン", "4466": "ロードスターキャピタル", "4467": "プロパティエージェント", "4468": "Finatext HD", "4469": "GENOVA", "4470": "ダブルスタンダード", "4471": "三洋化成工業", "4472": "フォーサイト", "4473": "ブリッジインターナショナル", "4474": "DELTA-FLY Pharma", "4475": "HENNGE", "4476": "AI inside", "4477": "BASE", "4478": "freee", "4480": "メドレー", "4481": "ベース", "4482": "ウィルズ", "4483": "JMDC", "4484": "ランサーズ", "4485": "JTOWER", "4486": "ユニコムグループホールディングス", "4487": "スペースマーケット", "4488": "AI CROSS", "4489": "ペアーズ", "4490": "ファーマライズホールディングス", "4491": "コンピューターマネージメント", "4492": "ネクスウェイ", "4493": "サイバーセキュリティクラウド", "4494": "バリオセキュア", "4495": "アイ・ビー・イー", "4496": "コマースOneホールディングス", "4497": "チェンジ", "4498": "サイバー・バズ", "4499": "フィードフォースグループ", "4500": "シミック", "4501": "第一三共", "4502": "武田薬品工業", "4503": "アステラス製薬", "4504": "マルホ", "4505": "大洋薬品工業", "4506": "大日本住友製薬", "4507": "塩野義製薬", "4508": "田辺三菱製薬", "4509": "日本新薬", "4510": "鳥居薬品", "4511": "持田製薬", "4512": "わかもと製薬", "4513": "大塚ホールディングス", "4514": "あすか製薬", "4515": "クラシエホールディングス", "4516": "日本新薬", "4517": "大正製薬ホールディングス", "4518": "富士製薬工業", "4519": "中外製薬", "4520": "クラレ", "4521": "科研製薬", "4522": "エーザイ", "4523": "エーザイ", "4524": "森下仁丹", "4525": "救急薬品工業", "4526": "大日本住友製薬", "4527": "ロート製薬", "4528": "小野薬品工業", "4529": "太陽ファルマ", "4530": "久光製薬", "4531": "有機合成薬品工業", "4532": "旭化成ファーマ", "4533": "東和薬品", "4534": "持田製薬", "4535": "大洋薬品工業", "4536": "参天製薬", "4537": "テルモ", "4538": "扶桑薬品工業", "4539": "日本ケミファ", "4540": "ツムラ", "4541": "日医工", "4542": "Que", "4543": "テルモ", "4544": "HUグループホールディングス", "4545": "みらかホールディングス", "4546": "持田製薬", "4547": "キッセイ薬品工業", "4548": "生化学工業", "4549": "栄研化学", "4550": "日水製薬", "4551": "日本医薬品工業", "4552": "JCRファーマ", "4553": "東和薬品", "4554": "富士フイルムホールディングス", "4555": "沢井製薬", "4556": "カリモク家具", "4557": "医学生物学研究所", "4558": "中京医薬品", "4559": "ゼリア新薬工業", "4560": "ソレイジア・ファーマ", "4561": "第一薬品工業", "4562": "アンジェス", "4563": "アンジェス", "4564": "オンコリスバイオファーマ", "4565": "そーせいグループ", "4566": "ディー・ディー・エス", "4567": "Delta-Fly Pharma", "4568": "第一三共", "4569": "キョーリン製薬ホールディングス", "4570": "免疫生物研究所", "4571": "ナノキャリア", "4572": "カルナバイオサイエンス", "4573": "レキオファーマ", "4574": "大幸薬品", "4575": "キャンバス", "4576": "デルタ-フライ ファーマ", "4577": "大塚ホールディングス", "4578": "大塚ホールディングス", "4579": "ラクオリア創薬", "4580": "アキュリスファーマ", "4581": "大正製薬ホールディングス", "4582": "シンバイオ製薬", "4583": "カイオム・バイオサイエンス", "4584": "キュービスト ファーマシューティカルズ", "4585": "UMNファーマ", "4586": "メドレックス", "4587": "ペプチドリーム", "4588": "オンコリスバイオファーマ", "4589": "アキュリスファーマ", "4590": "WDBホールディングス", "4591": "リボミック", "4592": "サンバイオ", "4593": "ヘリオス", "4594": "グリーンペプタイド", "4595": "ミズホメディー", "4596": "栄研化学", "4597": "ソレイジア・ファーマ", "4598": "Delta-Fly Pharma", "4599": "ステムリム", "9501": "東京電力ホールディングス", "9502": "中部電力", "9503": "関西電力", "9504": "中国電力", "9505": "北陸電力", "9506": "東北電力", "9507": "四国電力", "9508": "九州電力", "9509": "北海道電力", "9510": "沖縄電力", "9511": "電源開発", "9512": "風力発電", "9513": "電源開発", "9514": "エフオン", "9515": "レノバ", "9516": "ウエスト", "9517": "エネットホールディングス", "9518": "ジェイ・パワー", "9519": "レノバ", "9520": "フォースポジション", "9521": "エネルギア・コミュニケーションズ", "9522": "グリーンパワーインベストメント", "9523": "大阪ガス", "9524": "三菱UFJリース", "9531": "東京ガス", "9532": "大阪ガス", "9533": "東邦ガス", "9534": "北海道ガス", "9535": "広島ガス", "9536": "西部ガスホールディングス", "9537": "北陸ガス", "9538": "大東ガス", "9539": "大阪ガス", "9540": "ENEOSホールディングス", "9541": "ENEOSホールディングス", "9542": "ウエスト", "9543": "大阪ガス", "9544": "東京ガス", "9545": "フロンティア・マネジメント", "9546": "三重ガス", "9547": "山形ガス", "9548": "大分ガス", "9549": "琉球ガス", "9001": "東武鉄道", "9002": "西武ホールディングス", "9003": "相鉄ホールディングス", "9004": "東急ホールディングス", "9005": "東京急行電鉄", "9006": "京浜急行電鉄", "9007": "小田急電鉄", "9008": "京王電鉄", "9009": "京成電鉄", "9010": "富士急行", "9011": "仙台空港鉄道", "9012": "秩父鉄道", "9013": "東日本旅客鉄道（JR東日本）", "9014": "南海電気鉄道", "9015": "東京圏", "9020": "東日本旅客鉄道（JR東日本）", "9021": "西日本旅客鉄道（JR西日本）", "9022": "東海旅客鉄道（JR東海）", "9023": "東急ホールディングス", "9024": "西武ホールディングス", "9025": "コンテナ", "9026": "日本貨物鉄道", "9028": "ゼロ", "9029": "ヒガシトゥエンティワン", "9030": "ウィラーエクスプレス", "9031": "西日本鉄道", "9032": "鳴門交通", "9041": "近鉄グループホールディングス", "9042": "阪急阪神ホールディングス", "9043": "南海電気鉄道", "9044": "南海電気鉄道", "9045": "京阪ホールディングス", "9046": "神戸電鉄", "9047": "名古屋鉄道", "9048": "名古屋鉄道", "9049": "近鉄グループホールディングス", "9050": "東武鉄道", "9051": "東武鉄道", "9052": "名古屋鉄道", "9053": "相鉄ホールディングス", "9054": "近鉄エクスプレス", "9055": "中日本高速道路", "9056": "西濃運輸", "9057": "遠州トラック", "9058": "トナミホールディングス", "9059": "カトーレック", "9060": "日本通運", "9061": "近鉄エクスプレス", "9062": "日本通運", "9063": "ヒガシトゥエンティワン", "9064": "ヤマトホールディングス", "9065": "山九", "9066": "日本トランスシティ", "9067": "丸全昭和運輸", "9068": "カーゴワークス", "9069": "センコーグループホールディングス", "9070": "トナミホールディングス", "9071": "岡山県貨物運送", "9072": "ニッコンホールディングス", "9073": "NX・パンサーソリューションズ", "9074": "日本石油輸送", "9075": "福山通運", "9076": "セイノーホールディングス", "9077": "名鉄運輸", "9078": "エムエルエス", "9079": "シーアイエス", "9080": "日本トランスシティ", "9081": "東武運輸", "9082": "大和自動車交通", "9083": "日本城タクシー", "9084": "川崎近海汽船", "9085": "ハロートラベル", "9086": "日立物流", "9087": "タケビシ", "9088": "ニッポンエクスプレスホールディングス", "9089": "昭和飛行機工業", "9090": "丸和運輸機関", "9091": "東洋フィジカル", "9092": "エコトランスポート", "9093": "大運", "9094": "関西チサン", "9095": "ナルネットコミュニケーションズ", "9096": "SBSホールディングス", "9097": "ファーストロジック", "9098": "コスモ", "9099": "UTOG", "9101": "日本郵船", "9104": "商船三井", "9107": "川崎汽船", "9110": "新和海運", "9111": "乾汽船", "9112": "笹倉船舶", "9113": "大洋日産汽船", "9114": "松本汽船", "9115": "明治海運", "9116": "東海汽船", "9117": "NSユナイテッド海運", "9118": "タクマ", "9119": "飯野海運", "9120": "芳賀運輸", "9121": "ファーストシッピング", "9122": "東海汽船", "9130": "共栄タンカー", "9131": "東海汽船", "9132": "アジア航測", "9133": "ページワングループ", "9134": "太陽日酸", "9135": "東邦航空", "9136": "ソフトバンク", "9137": "ANA HD", "9138": "近鉄エクスプレス", "9139": "マリンシステム", "9140": "九州旅客鉄道（JR九州）", "9141": "九州旅客鉄道（JR九州）", "9142": "九州旅客鉄道（JR九州）", "9143": "SBSホールディングス", "9144": "ワールドフォレスト", "9145": "ヴィーナスブリッジ", "9146": "エーワン", "9147": "NIPPON EXPRESSホールディングス", "9148": "名鉄グループ", "9149": "全日本空輸", "9150": "大王海運", "9151": "東海ドレーン", "9152": "テクノフレックス", "9153": "エヌ・エス・エル", "9154": "丸三", "9155": "アジア航測", "9156": "スカイビル", "9157": "日本トランスシティ", "9158": "大和グラビア", "9159": "日本ロール製造", "9160": "近鉄エクスプレス", "9161": "東洋通商", "9162": "都市交通", "9201": "日本航空（JAL）", "9202": "ANAホールディングス", "9203": "エアアジア・ジャパン", "9204": "スカイマーク", "9205": "スターフライヤー", "9206": "AIRDO", "9207": "ソラシドエア", "9208": "Peach Aviation", "9209": "ジェットスター・ジャパン", "9210": "IBEXエアラインズ", "9601": "松竹", "9602": "東宝", "9603": "エイチ・アイ・エス", "9604": "大映", "9605": "東映", "9606": "松竹", "9607": "東映", "9608": "松竹", "9609": "サイバーエージェント", "9610": "国際情報サービス", "9611": "コンシス", "9612": "ラックホールディングス", "9613": "NTTデータ", "9614": "ネクソン", "9615": "フレックスジャパン", "9616": "共立メンテナンス", "9617": "スタジオ地図", "9618": "日本電子", "9619": "シグマ", "9620": "ジーエルサイエンス", "9621": "ケイブ", "9622": "スペース", "9623": "コベルコシステム", "9624": "東電工業", "9625": "スペース", "9626": "ベネッセホールディングス", "9627": "アインホールディングス", "9628": "エスジーエス", "9629": "ピー・シー・エー", "9630": "バンテック", "9631": "ハウテレビジョン", "9632": "スバル", "9633": "中日本興業", "9634": "中日本興業", "9635": "武蔵野興業", "9636": "ニコン", "9637": "オーエスシー", "9638": "伊藤忠テクノソリューションズ", "9639": "三協フロンテア", "9640": "セガ", "9641": "大名古屋ビルヂング", "9642": "アイティーフォー", "9643": "ピーデー", "9644": "タナベコンサルティンググループ", "9645": "ジェック", "9646": "コンドーテック", "9647": "協和エクシオ", "9648": "アジア航測", "9649": "大東建物管理", "9650": "シンテック", "9651": "日本システム開発", "9652": "日本ユニシス", "9653": "ビジネスブレイン太田昭和", "9654": "アルコニックス", "9655": "パシフィックシステム", "9656": "グリーンランドリゾート", "9657": "エスクリ", "9658": "ビジネスブレイン太田昭和", "9659": "ニチイ学館", "9660": "西武ホールディングス", "9661": "歌舞伎座", "9662": "ヴィレッジヴァンガードコーポレーション", "9663": "ナガワ", "9664": "御園座", "9665": "ベルパーク", "9666": "ハウスコム", "9667": "クラスターテクノロジー", "9668": "エスティック", "9669": "クリエアナブキ", "9670": "ウェルネット", "9671": "常磐興産", "9672": "東京都競馬", "9673": "テクノプロ・ホールディングス", "9674": "東映エージエンシー", "9675": "常磐興産", "9676": "東京都競馬", "9677": "琉球放送", "9678": "クレアホールディングス", "9679": "ホウスイ", "9680": "グリーンランドリゾート", "9681": "東京ドーム", "9682": "DTS", "9683": "ミルボン", "9684": "スクウェア・エニックス・ホールディングス", "9685": "SCSK", "9686": "東京エレクトロン", "9687": "KSK", "9688": "NTTデータジェトロニクス", "9689": "大阪府", "9690": "エスシー", "9691": "タウンニュース社", "9692": "コンピューターマネージメント", "9693": "日経ビジネス", "9694": "アイエスジー", "9695": "スタジオアリス", "9696": "日本コンピュータ", "9697": "カプコン", "9698": "クレオテック", "9699": "西鉄エージェンシー", "9700": "山武", "9701": "東京国際空港ターミナル", "9702": "アイエスジー", "9703": "インタートレード", "9704": "アゴーラ・ホスピタリティー・グループ", "9705": "佐田コスチュームサービス", "9706": "日本空港ビルデング", "9707": "ユニゾホールディングス", "9708": "帝国ホテル", "9709": "NCSアンドA", "9710": "ソレキア", "9711": "共和電業", "9712": "NSS", "9713": "ロイヤルホテル", "9714": "アコーディア・ゴルフ", "9715": "トランスコスモス", "9716": "乃村工藝社", "9717": "ジャステック", "9718": "SCSK", "9719": "SCSK", "9720": "帝国ホテル", "9721": "大東建物管理", "9722": "藤田観光", "9723": "東急エージェンシー", "9724": "トービー工業", "9725": "テクノ菱和", "9726": "KNT-CTホールディングス", "9727": "東急エージェンシー", "9728": "日本管財ホールディングス", "9729": "東京センチュリー", "9730": "ミサワ", "9731": "白洋舎", "9732": "マミーマート", "9733": "ナガセ", "9734": "大成温調", "9735": "セコム", "9736": "日本システム技術", "9737": "CSK", "9738": "ITOCHU Techno-Electronics", "9739": "NSW", "9740": "セントラル警備保障", "9741": "ブロードメディア", "9742": "アイエスジー", "9743": "丹青社", "9744": "マクロミル", "9745": "エイチ・ジェイ・システムズ", "9746": "TKC", "9747": "アイエスジー", "9748": "リコーリース", "9749": "富士ソフト", "9750": "綜合臨床ホールディングス", "9751": "Ubicom HD", "9752": "電通総研", "9753": "NSD", "9754": "ORJ", "9755": "応用地質", "9756": "ザイマックス", "9757": "船井総合研究所", "9758": "日鉄ソリューションズ", "9759": "NSD", "9760": "進学会ホールディングス", "9761": "NECネッツエスアイ", "9762": "東海東京証券", "9763": "丸紅建材リース", "9764": "チノー", "9765": "大成建設", "9766": "コナミグループ", "9767": "日建工学", "9768": "イオンファンタジー", "9769": "学究社", "9770": "松竹", "9771": "日本製鋼所", "9772": "ジャステック", "9773": "日本システム", "9774": "日本タングステン", "9775": "日本エスコン", "9776": "丸善CHIホールディングス", "9777": "ネットエイジ", "9778": "サービスウェア", "9779": "昭文社ホールディングス", "9780": "ハリマビステム", "9781": "日本システム", "9782": "ディーエムソリューションズ", "9783": "ベネッセホールディングス", "9784": "サイエンティフィックシステム研究会", "9785": "ソウルドアウト", "9786": "大庄", "9787": "イオンディライト", "9788": "ナックス", "9789": "松田産業", "9790": "島根電工", "9791": "ビケンテクノ", "9792": "ニチイホールディングス", "9793": "大日本ダイアコンサルタント", "9794": "あい HD", "9795": "スタッフサービス・ホールディングス", "9796": "サン・ライフ", "9797": "東急エージェンシー", "9798": "サイバーエージェント", "9799": "旭情報サービス", "9800": "東洋電装", "9801": "小田急商事", "9802": "三越伊勢丹ホールディングス", "9803": "野崎印刷紙業", "9804": "丸善CHIホールディングス", "9805": "コスモ石油", "9806": "サン電子", "9807": "ビザ・ジャパン", "9808": "日鉄ソリューションズ", "9809": "東京電力エナジーパートナー", "9810": "日鉄物産", "9811": "文化シヤッター", "9812": "関東化学", "9813": "フェニックス電機", "9814": "大賀薬局", "9815": "日野テスコム", "9816": "ストライク", "9817": "エービーシー・マート", "9818": "大丸エナウィン", "9819": "フォーシーズホールディングス", "9820": "エムティーアイ", "9821": "日本電計", "9822": "ルックホールディングス", "9823": "エイチ・ジェイ・システムズ", "9824": "内外電機", "9825": "情報スペース", "9826": "エレコム", "9827": "リリカラ", "9828": "元気寿司", "9829": "大成ロテック", "9830": "トラスコ中山", "9831": "ヤマダホールディングス", "9832": "オートバックスセブン", "9833": "クリエートメディック", "9834": "ソフト99コーポレーション", "9835": "ジュンテンドー", "9836": "ビックカメラ", "9837": "モリト", "9838": "東急ランド", "9839": "ナカムラ", "9840": "東急ストア", "9841": "コジマ", "9842": "アークランズ", "9843": "ニトリホールディングス", "9844": "メイクマン", "9845": "パーカーコーポレーション", "9846": "くぼた", "9847": "岡村製作所", "9848": "藤原物産", "9849": "やまや", "9850": "グルメ杵屋", "9851": "東陽テクニカ", "9852": "メガネの愛眼", "9853": "銀座ルノアール", "9854": "吉野家ホールディングス", "9855": "ライフフーズ", "9856": "ケーヒン", "9857": "英和", "9858": "ポプラ", "9859": "ビー・エム・エル", "9860": "ヤスマ", "9861": "吉野家ホールディングス", "9862": "チムニー", "9863": "クリエイト・レストランツ・ホールディングス", "9864": "元気寿司", "9865": "銀座ルノアール", "9866": "ドトール・日レスホールディングス", "9867": "ロック・フィールド", "9868": "日本モータービジネス", "9869": "加藤産業", "9870": "ハナテン", "9871": "日本ルシッフル", "9872": "北恵", "9873": "日本KFCホールディングス", "9874": "シナガワ", "9875": "テクノラボ", "9876": "コックス", "9877": "エルアイイーエイチ", "9878": "ヤマダホールディングス", "9879": "日本出版販売", "9880": "プロスペクト", "9881": "大成建設", "9882": "イエローハット", "9883": "ユナイテッドアーローズ", "9884": "コムシスHD", "9885": "シャルレ", "9886": "JMSホールディングス", "9887": "松屋フーズホールディングス", "9888": "UACJホールディングス", "9889": "JBCC HD", "9890": "マクニカホールディングス", "9891": "築地市場", "9892": "日本鋳造", "9893": "三菱電機システムサービス", "9894": "コムシス", "9895": "コンセック", "9896": "JA三井リース", "9897": "カネソウ", "9898": "TANAKA HD", "9899": "KCJ GROUP", "9900": "佐藤繊維", "9901": "極東石油工業", "9902": "イヨテツ", "9903": "カンセキ", "9904": "ベリーベリースープ", "9905": "東洋ライス", "9906": "藤井産業", "9907": "AOI TYO Holdings", "9908": "日本テレビホールディングス", "9909": "エムビーエス", "9910": "TBS HD", "9911": "フジ・メディア・ホールディングス", "9912": "テレビ東京ホールディングス", "9913": "テレビ朝日ホールディングス", "9914": "TOKYO BASE", "9915": "都築電気", "9916": "東和薬品", "9917": "センコー", "9918": "エクスプライス", "9919": "関西フードマーケット", "9920": "東海ソフト", "9921": "ジョイフル本田", "9922": "アイナボホールディングス", "9923": "ヤオコー", "9924": "トーエネック", "9925": "西部ガスホールディングス", "9926": "丸三証券", "9927": "ワットマン", "9928": "ミック", "9929": "平和紙業", "9930": "北沢産業", "9931": "グラファイトデザイン", "9932": "中西製作所", "9933": "カネミツ", "9934": "コンドーテック", "9935": "市進ホールディングス", "9936": "王将フードサービス", "9937": "セイノーホールディングス", "9938": "TIS", "9939": "エバラ食品工業", "9940": "ジェーソン", "9941": "旭食品", "9942": "ジョイフル", "9943": "うかい", "9944": "スターバックスコーヒージャパン", "9945": "プレナス", "9946": "ミニストップ", "9947": "サンデー", "9948": "アークス", "9949": "イチヤ", "9950": "大庄", "9951": "ケアネット", "9952": "松坂屋", "9953": "テレビ東京", "9954": "サッポロドラッグストアー", "9955": "ランドネット", "9956": "バロー", "9957": "日本プロセス", "9958": "東日本計算センター", "9959": "アシックス", "9960": "東急エージェンシー", "9961": "ニチレイ", "9962": "ミスミグループ本社", "9963": "エイチワン", "9964": "日本ユニシス", "9965": "大阪ガス", "9966": "藤久", "9967": "松本輸送", "9968": "アサヒホールディングス", "9969": "ソリトンシステムズ", "9970": "芦屋一番", "9971": "岡藤日産証券", "9972": "アルテック", "9973": "小僧寿し", "9974": "ベルク", "9975": "ブレイン", "9976": "セキチュー", "9977": "アオキスーパー", "9978": "文教堂グループホールディングス", "9979": "大庄", "9980": "マルコ", "9981": "丸善CHIホールディングス", "9982": "タキヒヨー", "9983": "ファーストリテイリング", "9984": "ソフトバンクグループ", "9985": "三晃商事", "9986": "蔵王産業", "9987": "スズケン", "9988": "アップル", "9989": "サンドラッグ", "9990": "サックスバー", "9991": "ジョルダン", "9992": "電算システムホールディングス", "9993": "ヤマザワ", "9994": "やまや", "9995": "グローセル", "9996": "ムラキ", "9997": "ベルーナ", "9998": "ビックカメラ", "9999": "カラオケ館"};
+
 const STORE_KEY='mykaview_v1';
 function saveData(){
   try{localStorage.setItem(STORE_KEY,JSON.stringify({METHOD_TAGS,EXIT_TAGS,positions,trades,nextId}));}
@@ -748,6 +759,21 @@ function addManualTrade(){
   manSelM=[];manSelE=[];saveData();renderSettings();alert('追加しました！');
 }
 
+// ===== 銘柄名オートフィル =====
+function onCodeInput(code, targetId){
+  const trimmed = code.trim().replace(/\s/g,'');
+  const name = STOCK_MASTER[trimmed];
+  const el = document.getElementById(targetId);
+  if(!el) return;
+  if(name){
+    el.value = name;
+    el.style.color = 'var(--green)';
+  } else {
+    // マスターにない場合はクリアしない（手入力の邪魔をしない）
+    el.style.color = '';
+  }
+}
+
 // ===== タグボタンビルダー =====
 function buildTagButtons(wrap,tags,selArr){
   wrap.innerHTML='';
@@ -793,5 +819,6 @@ function resetData(){
 loadData();
 renderDash();
 </script>
+
 </body>
 </html>
