@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -7,116 +8,117 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root{
-  --bg:#0e1a2e;
-  --bg2:#152236;
-  --bg3:#1c2f47;
-  --bg4:#223550;
-  --border:#2a4060;
-  --text:#e8f0f8;
-  --text2:#8aa8c8;
-  --text3:#4a6a8a;
-  --green:#00c896;
-  --green2:#00a07a;
-  --red:#ff6b5b;
-  --red2:#cc4433;
-  --amber:#f5a623;
-  --blue:#4a9eff;
+  --bg:transparent;
+  --bg2:rgba(255,255,255,0.10);
+  --bg3:rgba(255,255,255,0.13);
+  --bg4:rgba(255,255,255,0.18);
+  --border:rgba(255,255,255,0.18);
+  --text:#ffffff;
+  --text2:#d0eaff;
+  --text3:#90b8d8;
+  --green:#00e4aa;
+  --green2:#00c090;
+  --red:#ff8070;
+  --red2:#dd5544;
+  --amber:#ffc040;
+  --blue:#6abbff;
   --teal:#1cc8aa;
-  --accent:#00c896;
+  --accent:#00e4aa;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
+html{min-height:100%;background:linear-gradient(160deg,#1a3a5c 0%,#1e4976 30%,#163d6e 60%,#0e2a4a 100%);background-attachment:fixed;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:var(--text);font-size:16px;min-height:100vh;font-weight:500;}
 .app{max-width:980px;margin:0 auto;padding:16px;}
 
 /* ヘッダー */
-.header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.logo{font-size:22px;font-weight:800;color:var(--green);letter-spacing:-0.5px;}
-.logo span{color:var(--text);font-weight:400;}
-.header-sub{font-size:11px;color:var(--text3);margin-left:auto;}
+.header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.15);}
+.logo{font-size:26px;font-weight:800;color:var(–green);letter-spacing:-0.5px;}
+.logo span{color:var(–text);font-weight:400;}
+.header-sub{font-size:12px;color:var(–text2);margin-left:auto;font-weight:500;}
 
 /* タブ */
-.tabs{display:flex;gap:1px;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:18px;flex-wrap:wrap;border:1px solid var(--border);}
-.tab{flex:1;min-width:70px;padding:8px 4px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text3);border-radius:8px;text-align:center;white-space:nowrap;transition:all .15s;}
-.tab:hover{color:var(--text2);}
-.tab.active{background:var(--bg4);color:var(--green);border:1px solid var(--border);}
+.tabs{display:flex;gap:1px;background:rgba(255,255,255,0.08);border-radius:12px;padding:3px;margin-bottom:18px;flex-wrap:wrap;border:1px solid var(–border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.tab{flex:1;min-width:70px;padding:8px 4px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(–text3);border-radius:8px;text-align:center;white-space:nowrap;transition:all .15s;}
+.tab:hover{color:var(–text2);}
+.tab.active{background:rgba(255,255,255,0.22);color:#fff;border:1px solid rgba(255,255,255,0.3);font-weight:700;}
 .section{display:none;}.section.active{display:block;}
 
 /* カード */
-.card{background:var(--bg2);border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border);}
-.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
+.card{background:var(–bg2);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(–border);box-shadow:0 2px 12px rgba(0,0,0,0.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.card-title{font-size:13px;font-weight:700;color:var(–text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
 
 /* メトリクス */
 .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
-.metric{background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border);}
-.metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
-.metric-value{font-size:22px;font-weight:700;}
-.pos{color:var(--green);}.neg{color:var(--red);}
+.metric{background:var(–bg3);border-radius:12px;padding:14px;border:1px solid var(–border);box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.metric-label{font-size:13px;color:var(–text2);margin-bottom:6px;font-weight:600;}
+.metric-value{font-size:24px;font-weight:800;}
+.pos{color:var(–green);}.neg{color:var(–red);}
 
 /* アラート */
-.alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:10px;border:1px solid;}
-.alert-ok{background:rgba(0,200,150,.1);color:var(--green);border-color:rgba(0,200,150,.3);}
-.alert-warn{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.3);}
-.alert-err{background:rgba(255,107,91,.1);color:var(--red);border-color:rgba(255,107,91,.3);}
-.alert-info{background:rgba(74,158,255,.1);color:var(--blue);border-color:rgba(74,158,255,.3);}
+.alert{padding:12px 16px;border-radius:8px;font-size:14px;margin-bottom:10px;border:1px solid;font-weight:600;}
+.alert-ok{background:rgba(0,200,150,.1);color:var(–green);border-color:rgba(0,200,150,.3);}
+.alert-warn{background:rgba(245,166,35,.1);color:var(–amber);border-color:rgba(245,166,35,.3);}
+.alert-err{background:rgba(255,107,91,.1);color:var(–red);border-color:rgba(255,107,91,.3);}
+.alert-info{background:rgba(74,158,255,.1);color:var(–blue);border-color:rgba(74,158,255,.3);}
 
 /* 手法行 */
-.method-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.method-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(–border);}
 .method-row:last-child{border-bottom:none;}
-.method-name{font-size:13px;font-weight:500;min-width:92px;color:var(--text);}
-.bar-wrap{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.method-name{font-size:15px;font-weight:700;min-width:100px;color:var(–text);}
+.bar-wrap{flex:1;height:5px;background:var(–bg4);border-radius:3px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:3px;}
-.bar-pos{background:var(--green);}.bar-neg{background:var(--red);}
+.bar-pos{background:var(–green);}.bar-neg{background:var(–red);}
 .method-stats{display:flex;gap:10px;font-size:11px;min-width:175px;justify-content:flex-end;align-items:center;}
-.mstat{color:var(--text3);}.mstat strong{color:var(--text);}
+.mstat{color:var(–text2);font-weight:600;}.mstat strong{color:#fff;font-weight:700;}
 
 /* バッジ */
-.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
-.badge-go{background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.3);}
-.badge-stop{background:rgba(255,107,91,.15);color:var(--red);border:1px solid rgba(255,107,91,.3);}
-.badge-ok{background:rgba(138,168,200,.1);color:var(--text2);border:1px solid var(--border);}
-.badge-hold{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3);}
+.badge{display:inline-block;font-size:12px;padding:3px 9px;border-radius:20px;font-weight:700;}
+.badge-go{background:rgba(0,200,150,.15);color:var(–green);border:1px solid rgba(0,200,150,.3);}
+.badge-stop{background:rgba(255,107,91,.15);color:var(–red);border:1px solid rgba(255,107,91,.3);}
+.badge-ok{background:rgba(138,168,200,.1);color:var(–text2);border:1px solid var(–border);}
+.badge-hold{background:rgba(74,158,255,.15);color:var(–blue);border:1px solid rgba(74,158,255,.3);}
 
 /* フォーム */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .form-group{display:flex;flex-direction:column;gap:5px;}
 .form-group.full{grid-column:1/-1;}
-.form-label{font-size:11px;color:var(--text3);font-weight:500;}
+.form-label{font-size:14px;color:var(–text2);font-weight:700;}
 input[type=text],input[type=number],input[type=date],input[type=month]{
-  width:100%;padding:8px 10px;font-size:13px;
-  border:1px solid var(--border);border-radius:8px;
-  background:var(--bg3);color:var(--text);outline:none;
-  transition:border-color .15s;
+width:100%;padding:10px 12px;font-size:15px;font-weight:600;
+border:1px solid rgba(255,255,255,0.25);border-radius:10px;
+background:rgba(255,255,255,0.12);color:#fff;outline:none;
+transition:border-color .15s;
 }
-input:focus{border-color:var(--green);}
-input::placeholder{color:var(--text3);}
+input:focus{border-color:var(–green);}
+input::placeholder{color:var(–text3);}
 
 /* タグ */
 .tag-wrap{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
-.tag-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--text3);transition:all .15s;}
-.tag-btn:hover{border-color:var(--text2);color:var(--text);}
-.tag-btn.sel{background:rgba(0,200,150,.15);color:var(--green);border-color:var(--green);}
+.tag-btn{font-size:13px;padding:6px 12px;border:1px solid rgba(255,255,255,0.25);border-radius:20px;cursor:pointer;background:rgba(255,255,255,0.1);color:#fff;transition:all .15s;font-weight:600;}
+.tag-btn:hover{border-color:var(–text2);color:var(–text);}
+.tag-btn.sel{background:rgba(0,200,150,.15);color:var(–green);border-color:var(–green);}
 
 /* ボタン */
-.btn-primary{background:var(--green);color:#0e1a2e;border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
-.btn-primary:hover{background:var(--green2);}
-.btn-sm{font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);white-space:nowrap;transition:all .15s;}
-.btn-sm:hover{border-color:var(--text2);color:var(--text);}
-.btn-sm-ok{border-color:var(--green);color:var(--green);}
+.btn-primary{background:var(–green);color:#0a1a10;border:none;padding:12px 26px;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;transition:background .15s;}
+.btn-primary:hover{background:var(–green2);}
+.btn-sm{font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid var(–border);background:var(–bg3);color:var(–text2);white-space:nowrap;transition:all .15s;}
+.btn-sm:hover{border-color:var(–text2);color:var(–text);}
+.btn-sm-ok{border-color:var(–green);color:var(–green);}
 .btn-sm-ok:hover{background:rgba(0,200,150,.1);}
-.btn-del{background:none;color:var(--red);border:1px solid rgba(255,107,91,.4);padding:3px 8px;border-radius:6px;font-size:11px;cursor:pointer;}
+.btn-del{background:none;color:var(–red);border:1px solid rgba(255,107,91,.4);padding:3px 8px;border-radius:6px;font-size:11px;cursor:pointer;}
 .btn-del:hover{background:rgba(255,107,91,.1);}
 
 /* トレード行 */
-.trade-row,.pos-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.trade-row,.pos-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(–border);flex-wrap:wrap;}
 .trade-row:last-child,.pos-row:last-child{border-bottom:none;}
-.trade-code{font-weight:700;min-width:50px;font-size:13px;color:var(--text);}
-.trade-name{font-size:11px;color:var(--text3);min-width:80px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.trade-date{font-size:11px;color:var(--text3);min-width:54px;}
+.trade-code{font-weight:800;min-width:54px;font-size:15px;color:#fff;}
+.trade-name{font-size:13px;color:var(–text2);min-width:80px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}
+.trade-date{font-size:12px;color:var(–text2);min-width:54px;font-weight:500;}
 .trade-tags{display:flex;gap:3px;flex:1;flex-wrap:wrap;}
-.ttag{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--bg4);color:var(--text2);}
-.ttag-exit{background:rgba(245,166,35,.15);color:var(--amber);}
-.ttag-none{background:rgba(255,107,91,.1);color:var(--red);}
-.trade-pnl{font-weight:700;font-size:13px;min-width:90px;text-align:right;}
+.ttag{font-size:12px;padding:3px 8px;border-radius:4px;background:var(–bg4);color:#fff;font-weight:600;}
+.ttag-exit{background:rgba(245,166,35,.15);color:var(–amber);}
+.ttag-none{background:rgba(255,107,91,.1);color:var(–red);}
+.trade-pnl{font-weight:800;font-size:15px;min-width:90px;text-align:right;}
 
 /* チャート */
 .chart-wrap{position:relative;width:100%;height:220px;}
@@ -124,9 +126,9 @@ input::placeholder{color:var(--text3);}
 
 /* 出口カード */
 .exit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.exit-card{background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border);}
-.exit-name{font-size:11px;color:var(--text3);margin-bottom:4px;}
-.exit-pnl{font-size:16px;font-weight:700;}
+.exit-card{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(8px);}
+.exit-name{font-size:13px;color:var(–text2);margin-bottom:4px;font-weight:600;}
+.exit-pnl{font-size:18px;font-weight:800;}
 
 /* アドバイス */
 .advice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
@@ -134,66 +136,67 @@ input::placeholder{color:var(--text3);}
 .a-go{background:rgba(0,200,150,.07);border-color:rgba(0,200,150,.25);}
 .a-stop{background:rgba(255,107,91,.07);border-color:rgba(255,107,91,.25);}
 .advice-title{font-size:11px;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;}
-.a-go .advice-title{color:var(--green);}.a-stop .advice-title{color:var(--red);}
-.advice-item{font-size:12px;padding:4px 0;display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.04);}
+.a-go .advice-title{color:var(–green);}.a-stop .advice-title{color:var(–red);}
+.advice-item{font-size:14px;padding:5px 0;display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);font-weight:600;}
 .advice-item:last-child{border-bottom:none;}
 .a-go .advice-item{color:rgba(0,200,150,.85);}.a-stop .advice-item{color:rgba(255,107,91,.85);}
 
 /* ドロップゾーン */
-.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);margin-bottom:14px;}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--green);background:rgba(0,200,150,.05);}
+.drop-zone{border:2px dashed rgba(255,255,255,0.3);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.08);margin-bottom:14px;}
+.drop-zone:hover,.drop-zone.drag{border-color:var(–green);background:rgba(0,200,150,.05);}
 .drop-zone input{display:none;}
 
 /* ペンディング */
-.pending-list{max-height:440px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;}
-.pending-row{padding:10px 12px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:70px 1fr 100px;gap:8px;align-items:start;}
+.pending-list{max-height:440px;overflow-y:auto;border:1px solid rgba(255,255,255,0.15);border-radius:10px;background:rgba(0,0,0,0.1);}
+.pending-row{padding:10px 12px;border-bottom:1px solid var(–border);display:grid;grid-template-columns:70px 1fr 100px;gap:8px;align-items:start;}
 .pending-row:last-child{border-bottom:none;}
 .pending-row.matched{background:rgba(0,200,150,.04);}
 .pending-row.unmatched{background:rgba(245,166,35,.04);}
-.p-code{font-weight:700;font-size:13px;color:var(--text);}
-.p-date{font-size:10px;color:var(--text3);margin-top:2px;}
-.p-name{font-size:12px;color:var(--text2);margin-bottom:5px;}
+.p-code{font-weight:800;font-size:15px;color:#fff;}
+.p-date{font-size:12px;color:var(–text2);margin-top:2px;font-weight:500;}
+.p-name{font-size:14px;color:#fff;margin-bottom:5px;font-weight:600;}
 .mini-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
-.mtag{font-size:10px;padding:3px 8px;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--text3);user-select:none;transition:all .1s;}
-.mtag:hover{border-color:var(--text2);}
-.mtag.ms{background:rgba(0,200,150,.15);color:var(--green);border-color:var(--green);}
-.mtag.es{background:rgba(245,166,35,.15);color:var(--amber);border-color:var(--amber);}
-.p-pnl{font-weight:700;font-size:13px;text-align:right;}
+.mtag{font-size:12px;padding:4px 10px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;cursor:pointer;background:rgba(255,255,255,0.1);color:#fff;user-select:none;transition:all .1s;font-weight:600;}
+.mtag:hover{border-color:var(–text2);}
+.mtag.ms{background:rgba(0,200,150,.15);color:var(–green);border-color:var(–green);}
+.mtag.es{background:rgba(245,166,35,.15);color:var(–amber);border-color:var(–amber);}
+.p-pnl{font-weight:800;font-size:15px;text-align:right;}
 .match-badge{font-size:10px;padding:2px 7px;border-radius:4px;margin-top:4px;display:inline-block;border:1px solid;}
-.mb-ok{background:rgba(0,200,150,.1);color:var(--green);border-color:rgba(0,200,150,.3);}
-.mb-no{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.3);}
-.bulk-bar{display:flex;gap:6px;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;margin-bottom:10px;flex-wrap:wrap;border:1px solid var(--border);}
+.mb-ok{background:rgba(0,200,150,.1);color:var(–green);border-color:rgba(0,200,150,.3);}
+.mb-no{background:rgba(245,166,35,.1);color:var(–amber);border-color:rgba(245,166,35,.3);}
+.bulk-bar{display:flex;gap:6px;align-items:center;padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:10px;margin-bottom:10px;flex-wrap:wrap;border:1px solid rgba(255,255,255,0.15);}
 
 /* ステップ */
-.step-bar{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);margin-bottom:14px;}
-.sn{width:22px;height:22px;border-radius:50%;background:var(--bg4);color:var(--text3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);}
-.sn.act{background:rgba(0,200,150,.2);color:var(--green);border-color:var(--green);}
-.sn.don{background:var(--green);color:#0e1a2e;border-color:var(--green);}
-.step-sep{flex:1;height:1px;background:var(--border);}
+.step-bar{display:flex;align-items:center;gap:6px;font-size:14px;color:var(–text2);margin-bottom:14px;font-weight:600;}
+.sn{width:22px;height:22px;border-radius:50%;background:var(–bg4);color:var(–text3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(–border);}
+.sn.act{background:rgba(0,200,150,.2);color:var(–green);border-color:var(–green);}
+.sn.don{background:var(–green);color:#0e1a2e;border-color:var(–green);}
+.step-sep{flex:1;height:1px;background:var(–border);}
 
 /* 設定タグ表示 */
-.stag{display:inline-flex;align-items:center;gap:4px;background:var(--bg4);border-radius:20px;padding:4px 10px;font-size:11px;margin:2px;border:1px solid var(--border);color:var(--text2);}
-.stag button{border:none;background:none;cursor:pointer;color:var(--text3);font-size:12px;padding:0;line-height:1;}
-.stag button:hover{color:var(--red);}
+.stag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.12);border-radius:20px;padding:5px 12px;font-size:13px;margin:3px;border:1px solid rgba(255,255,255,0.25);color:#fff;font-weight:600;}
+.stag button{border:none;background:none;cursor:pointer;color:var(–text3);font-size:12px;padding:0;line-height:1;}
+.stag button:hover{color:var(–red);}
 
-.note{font-size:11px;color:var(--text3);padding:10px;background:var(--bg3);border-radius:8px;margin-top:10px;border:1px solid var(--border);line-height:1.6;}
-.empty{text-align:center;padding:28px;color:var(--text3);font-size:13px;}
+.note{font-size:13px;color:var(–text2);padding:12px;background:rgba(255,255,255,0.08);border-radius:10px;margin-top:10px;border:1px solid rgba(255,255,255,0.15);line-height:1.7;font-weight:500;}
+.empty{text-align:center;padding:28px;color:var(–text2);font-size:15px;font-weight:600;}
 
 /* 総損益ヒーローカード */
-.hero-card{background:var(--bg2);border-radius:14px;padding:20px 20px 16px;margin-bottom:14px;border:1px solid var(--border);text-align:center;}
-.hero-label{font-size:12px;color:var(--text3);margin-bottom:6px;}
-.hero-value{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1;}
-.hero-sub{font-size:12px;color:var(--text3);margin-top:8px;}
+.hero-card{background:rgba(255,255,255,0.08);border-radius:16px;padding:22px 20px 18px;margin-bottom:14px;border:1px solid rgba(255,255,255,0.2);text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.25);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.hero-label{font-size:14px;color:var(–text2);margin-bottom:6px;font-weight:600;}
+.hero-value{font-size:44px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.hero-sub{font-size:14px;color:var(–text2);margin-top:8px;font-weight:500;}
 
 @media(max-width:620px){
-  .metric-grid{grid-template-columns:repeat(2,1fr);}
-  .exit-grid{grid-template-columns:repeat(2,1fr);}
-  .advice-grid,.form-grid{grid-template-columns:1fr;}
-  .form-group.full{grid-column:1;}
-  .pending-row{grid-template-columns:56px 1fr 80px;}
-  .hero-value{font-size:30px;}
+.metric-grid{grid-template-columns:repeat(2,1fr);}
+.exit-grid{grid-template-columns:repeat(2,1fr);}
+.advice-grid,.form-grid{grid-template-columns:1fr;}
+.form-group.full{grid-column:1;}
+.pending-row{grid-template-columns:56px 1fr 80px;}
+.hero-value{font-size:36px;}
 }
 </style>
+
 </head>
 <body>
 <div class="app">
@@ -213,6 +216,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- ダッシュボード -->
+
   <div id="sec-dashboard" class="section active">
     <div class="hero-card" id="hero-card">
       <div class="hero-label">確定損益（累計）</div>
@@ -232,6 +236,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- 手法別 -->
+
   <div id="sec-methods" class="section">
     <div class="card">
       <div class="card-title">手法別 詳細スコアカード</div>
@@ -244,6 +249,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- 出口分析 -->
+
   <div id="sec-exits" class="section">
     <div class="card">
       <div class="card-title">出口タグ別 サマリー</div>
@@ -253,11 +259,13 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- アドバイス -->
+
   <div id="sec-advice" class="section">
     <div id="advice-content"></div>
   </div>
 
   <!-- 買い登録 -->
+
   <div id="sec-positions" class="section">
     <div class="card">
       <div class="card-title">買いポジションを登録する</div>
@@ -272,7 +280,7 @@ input::placeholder{color:var(--text3);}
         </div>
         <div class="form-group full">
           <div class="form-label">銘柄名・メモ（任意）</div>
-          <input type="text" id="p-name" placeholder="銘柄コードを入力すると自動入力" id="p-name">
+          <input type="text" id="p-name" placeholder="銘柄コードを入力すると自動入力">
         </div>
         <div class="form-group full">
           <div class="form-label">手法タグ *（複数選択可）</div>
@@ -292,6 +300,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- SBI取込 -->
+
   <div id="sec-import" class="section">
     <div class="card">
       <div class="card-title">SBI証券 取引履歴CSVを取り込む</div>
@@ -333,6 +342,7 @@ input::placeholder{color:var(--text3);}
   </div>
 
   <!-- 設定 -->
+
   <div id="sec-settings" class="section">
     <div class="card">
       <div class="card-title">手法タグを管理する</div>
@@ -568,7 +578,13 @@ function renderAdvice(){
 // ===== 買い登録 =====
 function renderPositions(){
   const mW=document.getElementById('pos-method-tags');
-  if(!mW.children.length)buildTagButtons(mW,METHOD_TAGS,posSelM);
+  if(!mW.children.length){
+    METHOD_TAGS.forEach(t=>{
+      const b=document.createElement('button');b.className='tag-btn';b.textContent=t;
+      b.onclick=()=>{b.classList.toggle('sel');posSelM=[];mW.querySelectorAll('.tag-btn.sel').forEach(x=>posSelM.push(x.textContent));};
+      mW.appendChild(b);
+    });
+  }
   document.getElementById('pos-count').textContent=positions.length;
   document.getElementById('pos-list').innerHTML=positions.length?positions.map(p=>`
     <div class="pos-row">
@@ -577,8 +593,8 @@ function renderPositions(){
       <div class="trade-date">${p.buyDate}</div>
       <div class="trade-tags">${p.methods.length?p.methods.map(m=>`<span class="ttag">${m}</span>`).join(''):'<span class="ttag ttag-none">未タグ</span>'}</div>
       <div style="display:flex;gap:6px;">
-        <button onclick="closePosition(${p.id})" style="background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.4);padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;">売り切り ✓</button>
-        <button class="btn-del" onclick="delPosition(${p.id})">削除</button>
+        <button onclick="closePosition(${p.id})" style="background:rgba(0,200,150,.15);color:#00c896;border:1px solid rgba(0,200,150,.4);padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;">売り切り ✓</button>
+        <button onclick="delPosition(${p.id})" style="background:none;color:#ff6b5b;border:1px solid rgba(255,107,91,.4);padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;">削除</button>
       </div>
     </div>`).join(''):'<div class="empty">保有中のポジションはありません</div>';
   document.getElementById('trade-count').textContent=trades.length;
@@ -671,7 +687,7 @@ function readFile(file){
 }
 function buildBulkTags(){
   const w=document.getElementById('bulk-tags');w.innerHTML='';
-  METHOD_TAGS.forEach(t=>{const b=document.createElement('button');b.className='tag-btn';b.textContent=t;b.dataset.t=t;b.onclick=()=>b.classList.toggle('sel');w.appendChild(b);});
+  const w2=w;METHOD_TAGS.forEach(t=>{const b=document.createElement('button');b.className='tag-btn';b.textContent=t;b.dataset.t=t;b.onclick=()=>b.classList.toggle('sel');w2.appendChild(b);});
 }
 function renderPending(){
   document.getElementById('pending-list').innerHTML=pending.map(row=>{
@@ -724,7 +740,8 @@ function renderSettings(){
   renderTagSettings();
   const mW=document.getElementById('manual-method-tags');const eW=document.getElementById('manual-exit-tags');
   mW.innerHTML='';eW.innerHTML='';
-  buildTagButtons(mW,METHOD_TAGS,manSelM);buildTagButtons(eW,EXIT_TAGS,manSelE);
+  METHOD_TAGS.forEach(t=>{const b=document.createElement('button');b.className='tag-btn';b.textContent=t;b.onclick=()=>{b.classList.toggle('sel');manSelM=[];mW.querySelectorAll('.tag-btn.sel').forEach(x=>manSelM.push(x.textContent));};mW.appendChild(b);});
+  EXIT_TAGS.forEach(t=>{const b=document.createElement('button');b.className='tag-btn';b.textContent=t;b.onclick=()=>{b.classList.toggle('sel');manSelE=[];eW.querySelectorAll('.tag-btn.sel').forEach(x=>manSelE.push(x.textContent));};eW.appendChild(b);});
   const d=new Date();
   if(!document.getElementById('m-date').value)
     document.getElementById('m-date').value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
@@ -810,5 +827,6 @@ function resetData(){
 loadData();
 renderDash();
 </script>
+
 </body>
 </html>
