@@ -257,7 +257,7 @@ function fmt(v,forceSign=true){
   const s = Math.abs(v).toLocaleString();
   if(v>0) return (forceSign?'+':'')+s+'円';
   if(v<0) return '-'+s+'円';
-  return '±0円';
+  return '0円';
 }
 function cls(v){ return v>0?'pos':v<0?'neg':'neu'; }
 function decodeSJIS(buf){
@@ -471,7 +471,8 @@ function renderDash(){
   const total=confirmed+unreal.total;
 
   // ヒーロー
-  document.getElementById('hero-val').textContent=pnlRecords.length||spotHoldings.length||marginHoldings.length ? Math.abs(total).toLocaleString()+'円' : '--';
+  const totalDisp = total>0?'+'+total.toLocaleString():total<0?'-'+Math.abs(total).toLocaleString():'0';
+  document.getElementById('hero-val').textContent=pnlRecords.length||spotHoldings.length||marginHoldings.length ? totalDisp+'円' : '--';
   document.getElementById('hero-val').className='hero-value '+(total>0?'pos':total<0?'neg':'neu');
   document.getElementById('hero-sub').textContent=pnlRecords.length ? `確定 ${fmt(confirmed)} ／ 含み ${fmt(unreal.total)}` : 'CSVを取り込んでください';
 
