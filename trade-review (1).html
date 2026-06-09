@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My kaView</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{min-height:100%;background:linear-gradient(160deg,#1a3a5c 0%,#1e4976 35%,#163d6e 65%,#0e2a4a 100%);background-attachment:fixed;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:#fff;font-size:15px;min-height:100vh;font-weight:500;}
+.app{max-width:960px;margin:0 auto;padding:14px;}
+
+/* ヘッダー */
+.header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.15);}
+.logo{font-size:26px;font-weight:800;color:#00e4aa;letter-spacing:-.5px;}
+.logo span{color:#fff;font-weight:400;}
+.header-sub{font-size:12px;color:#a0c8e8;margin-left:auto;}
+
+/* タブ */
+.tabs{display:flex;gap:2px;background:rgba(255,255,255,.08);border-radius:12px;padding:3px;margin-bottom:16px;backdrop-filter:blur(10px);}
+.tab{flex:1;padding:9px 4px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:rgba(255,255,255,.5);border-radius:9px;text-align:center;transition:all .15s;}
+.tab.active{background:rgba(255,255,255,.2);color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+.section{display:none;}.section.active{display:block;}
+
+/* カード */
+.card{background:rgba(255,255,255,.1);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(12px);box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.card-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
+
+/* サマリーカード */
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px;}
+.sum-card{background:rgba(255,255,255,.1);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(12px);}
+.sum-label{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:6px;font-weight:600;}
+.sum-value{font-size:26px;font-weight:800;line-height:1.1;}
+.sum-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;}
+.pos{color:#00e4aa;}.neg{color:#ff8070;}.neu{color:#fff;}
+
+/* ヒーロー */
+.hero{background:rgba(255,255,255,.08);border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid rgba(255,255,255,.2);text-align:center;backdrop-filter:blur(12px);}
+.hero-label{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:8px;font-weight:600;}
+.hero-value{font-size:42px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:8px;}
+
+/* 期間セレクタ */
+.period-bar{display:flex;gap:6px;margin-bottom:14px;}
+.period-btn{padding:6px 16px;font-size:13px;font-weight:700;border-radius:20px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;}
+.period-btn.active{background:rgba(0,228,170,.2);border-color:#00e4aa;color:#00e4aa;}
+
+/* 月セレクタ */
+.month-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.month-btn{padding:5px 12px;font-size:12px;font-weight:600;border-radius:16px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;}
+.month-btn.active{background:rgba(0,228,170,.18);border-color:#00e4aa;color:#00e4aa;}
+
+/* テーブル */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.15);text-align:right;}
+.tbl th:first-child{text-align:left;}
+.tbl td{font-size:14px;padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.08);text-align:right;font-weight:600;}
+.tbl td:first-child{text-align:left;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.05);}
+.code-cell{font-weight:800;font-size:15px;color:#fff;}
+.name-cell{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px;}
+
+/* ドロップゾーン */
+.drop-zone{border:2px dashed rgba(255,255,255,.3);border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.06);margin-bottom:10px;}
+.drop-zone:hover,.drop-zone.drag{border-color:#00e4aa;background:rgba(0,228,170,.06);}
+.drop-zone input{display:none;}
+.drop-icon{font-size:28px;margin-bottom:8px;}
+.drop-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.drop-sub{font-size:12px;color:rgba(255,255,255,.5);}
+
+/* アラート */
+.alert{padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:10px;font-weight:600;border:1px solid;}
+.alert-ok{background:rgba(0,228,170,.12);color:#00e4aa;border-color:rgba(0,228,170,.3);}
+.alert-warn{background:rgba(255,192,64,.12);color:#ffc040;border-color:rgba(255,192,64,.3);}
+.alert-err{background:rgba(255,128,112,.12);color:#ff8070;border-color:rgba(255,128,112,.3);}
+
+/* チャート */
+.chart-wrap{position:relative;width:100%;height:200px;}
+
+/* バー */
+.pnl-bar-wrap{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+.pnl-bar-wrap:last-child{border-bottom:none;}
+.pnl-bar-label{min-width:100px;font-size:14px;font-weight:700;}
+.pnl-bar-label small{display:block;font-size:11px;font-weight:400;color:rgba(255,255,255,.5);}
+.pnl-bar-track{flex:1;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:visible;position:relative;}
+.pnl-bar-fill{height:100%;border-radius:4px;min-width:2px;}
+.pnl-bar-val{min-width:90px;text-align:right;font-size:14px;font-weight:800;}
+
+/* 空 */
+.empty{text-align:center;padding:32px;color:rgba(255,255,255,.4);font-size:14px;font-weight:600;}
+
+/* データ管理 */
+.mgmt-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.btn-sm{font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-weight:600;transition:all .15s;}
+.btn-sm:hover{background:rgba(255,255,255,.15);}
+.btn-danger{border-color:rgba(255,128,112,.4);color:#ff8070;}
+.btn-danger:hover{background:rgba(255,128,112,.12);}
+.note{font-size:12px;color:rgba(255,255,255,.5);padding:10px 12px;background:rgba(255,255,255,.06);border-radius:8px;line-height:1.7;border:1px solid rgba(255,255,255,.12);}
+
+@media(max-width:600px){
+  .summary-grid{grid-template-columns:repeat(2,1fr);}
+  .hero-value{font-size:34px;}
+  .sum-value{font-size:20px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">my ka<span>View</span></div>
+    <div class="header-sub">銘柄別損益トラッカー</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard')">損益</button>
+    <button class="tab" onclick="showTab('stocks')">銘柄別</button>
+    <button class="tab" onclick="showTab('monthly')">月次</button>
+    <button class="tab" onclick="showTab('import')">取込</button>
+    <button class="tab" onclick="showTab('settings')">設定</button>
+  </div>
+
+  <!-- 損益ダッシュボード -->
+  <div id="sec-dashboard" class="section active">
+    <div class="hero" id="hero-area">
+      <div class="hero-label">総合損益（確定＋含み）</div>
+      <div class="hero-value neu" id="hero-val">--</div>
+      <div class="hero-sub" id="hero-sub">CSVを取り込んでください</div>
+    </div>
+    <div class="summary-grid" id="summary-grid"></div>
+    <div class="card">
+      <div class="card-title">月次 損益推移</div>
+      <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 銘柄別 -->
+  <div id="sec-stocks" class="section">
+    <div class="period-bar">
+      <button class="period-btn active" onclick="setPeriod('all')">全期間</button>
+      <button class="period-btn" onclick="setPeriod('year')">今年</button>
+      <button class="period-btn" onclick="setPeriod('month')">今月</button>
+    </div>
+    <div class="card">
+      <div class="card-title">銘柄別 損益一覧</div>
+      <div id="stock-table"></div>
+    </div>
+  </div>
+
+  <!-- 月次 -->
+  <div id="sec-monthly" class="section">
+    <div class="card">
+      <div class="card-title">月次サマリー</div>
+      <div id="monthly-table"></div>
+    </div>
+  </div>
+
+  <!-- 取込 -->
+  <div id="sec-import" class="section">
+    <!-- 損益明細 -->
+    <div class="card">
+      <div class="card-title">① 損益明細CSV（売却済み・確定損益）</div>
+      <div class="drop-zone" id="dz-pnl"
+        onclick="document.getElementById('fi-pnl').click()"
+        ondragover="onDragOver(event,'dz-pnl')" ondragleave="onDragLeave('dz-pnl')" ondrop="onDrop(event,'pnl')">
+        <input type="file" id="fi-pnl" accept=".csv" onchange="onFileSelect(event,'pnl')">
+        <div class="drop-icon">📊</div>
+        <div class="drop-title">特定口座損益明細 CSV</div>
+        <div class="drop-sub">SBI証券 › 口座管理 › 取引履歴 › 損益明細</div>
+      </div>
+      <div id="msg-pnl"></div>
+    </div>
+    <!-- 現物保有 -->
+    <div class="card">
+      <div class="card-title">② 現物保有株CSV（含み損益）</div>
+      <div class="drop-zone" id="dz-spot"
+        onclick="document.getElementById('fi-spot').click()"
+        ondragover="onDragOver(event,'dz-spot')" ondragleave="onDragLeave('dz-spot')" ondrop="onDrop(event,'spot')">
+        <input type="file" id="fi-spot" accept=".csv" onchange="onFileSelect(event,'spot')">
+        <div class="drop-icon">📁</div>
+        <div class="drop-title">保有証券一覧 CSV</div>
+        <div class="drop-sub">SBI証券 › ポートフォリオ › 保有証券一覧 › CSV</div>
+      </div>
+      <div id="msg-spot"></div>
+    </div>
+    <!-- 信用建玉 -->
+    <div class="card">
+      <div class="card-title">③ 信用建玉CSV（含み損益）</div>
+      <div class="drop-zone" id="dz-margin"
+        onclick="document.getElementById('fi-margin').click()"
+        ondragover="onDragOver(event,'dz-margin')" ondragleave="onDragLeave('dz-margin')" ondrop="onDrop(event,'margin')">
+        <input type="file" id="fi-margin" accept=".csv" onchange="onFileSelect(event,'margin')">
+        <div class="drop-icon">📋</div>
+        <div class="drop-title">信用建玉一覧 CSV</div>
+        <div class="drop-sub">SBI証券 › 信用取引 › 建玉一覧 › CSV</div>
+      </div>
+      <div id="msg-margin"></div>
+    </div>
+    <!-- 取込状況 -->
+    <div class="card">
+      <div class="card-title">取込状況</div>
+      <div id="import-status"></div>
+    </div>
+  </div>
+
+  <!-- 設定 -->
+  <div id="sec-settings" class="section">
+    <div class="card">
+      <div class="card-title">データ管理</div>
+      <div id="data-summary"></div>
+      <div class="mgmt-row">
+        <button class="btn-sm" onclick="exportData()">📤 エクスポート</button>
+        <label class="btn-sm">📥 インポート<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+        <button class="btn-sm btn-danger" onclick="resetAll()">🗑 全データ削除</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">使い方</div>
+      <div class="note">
+        <b>① 損益明細CSV</b>（売却済みトレードの確定損益）<br>
+        SBI › 口座管理 › 取引履歴 › 期間指定してCSVダウンロード<br><br>
+        <b>② 現物保有株CSV</b>（現在の含み損益）<br>
+        SBI › ポートフォリオ › 保有証券一覧 › CSVダウンロード<br><br>
+        <b>③ 信用建玉CSV</b>（信用取引の含み損益）<br>
+        SBI › 信用取引 › 建玉一覧 › CSVダウンロード<br><br>
+        ※ ②③は最新データで上書きされます。定期的に取り込み直してください。
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== データストア =====
+const STORE_KEY = 'mykaview2_v1';
+let pnlRecords  = [];   // 確定損益レコード {code,name,date,pnl}
+let spotHoldings   = [];   // 現物保有 {code,name,qty,cost,price,unrealized}
+let marginHoldings = [];   // 信用建玉 {code,name,dir,qty,cost,price,unrealized}
+let currentPeriod = 'all';
+
+// ===== localStorage =====
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({pnlRecords,spotHoldings,marginHoldings})); }catch(e){}
+}
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+    if(d.pnlRecords)  pnlRecords  = d.pnlRecords;
+    if(d.spotHoldings)   spotHoldings   = d.spotHoldings;
+    if(d.marginHoldings) marginHoldings = d.marginHoldings;
+  }catch(e){}
+}
+
+// ===== ユーティリティ =====
+function fmt(v,forceSign=true){
+  if(v===null||v===undefined||isNaN(v)) return '--';
+  const s = Math.abs(v).toLocaleString();
+  if(v>0) return (forceSign?'+':'')+s+'円';
+  if(v<0) return '-'+s+'円';
+  return '±0円';
+}
+function cls(v){ return v>0?'pos':v<0?'neg':'neu'; }
+function decodeSJIS(buf){
+  try{ return new TextDecoder('shift-jis').decode(buf); }
+  catch(e){ return new TextDecoder('utf-8').decode(buf); }
+}
+function splitCSV(line){
+  const cols=[];let cur='',inQ=false;
+  for(const c of line){
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){cols.push(cur.trim());cur='';}
+    else cur+=c;
+  }
+  cols.push(cur.trim()); return cols;
+}
+function nowYM(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function nowY(){ return String(new Date().getFullYear()); }
+
+// ===== タブ =====
+function showTab(name){
+  const names=['dashboard','stocks','monthly','import','settings'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  const fn={dashboard:renderDash,stocks:renderStocks,monthly:renderMonthly,settings:renderSettings,import:renderImportStatus};
+  if(fn[name]) fn[name]();
+}
+
+// ===== 期間フィルタ =====
+function setPeriod(p){
+  currentPeriod=p;
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.toggle('active',b.textContent===({all:'全期間',year:'今年',month:'今月'}[p])));
+  renderStocks();
+}
+function filterByPeriod(records){
+  if(currentPeriod==='all') return records;
+  const ym=nowYM(), y=nowY();
+  return records.filter(r=>{
+    if(currentPeriod==='month') return (r.date||'').startsWith(ym);
+    if(currentPeriod==='year')  return (r.date||'').startsWith(y);
+    return true;
+  });
+}
+
+// ===== CSVパーサー =====
+// 損益明細: 銘柄コード,銘柄名,_,約定日,数量,取引,受渡日,売却額,費用,取得日,取得額,損益,地方税
+function parsePNL(text){
+  const out=[];
+  for(const raw of text.split(/\r?\n/)){
+    const line=raw.trim();
+    if(!line||!line.startsWith('"')) continue;
+    const cols=splitCSV(line);
+    if(cols.length<12) continue;
+    const dateRaw=cols[3];
+    if(!dateRaw.match(/\d{4}\/\d{2}\/\d{2}/)) continue;
+    const pnlStr=cols[11].replace(/[^\d\-\+]/g,'');
+    if(!pnlStr||pnlStr==='-'||pnlStr==='+') continue;
+    const pnl=parseInt(pnlStr,10);
+    if(isNaN(pnl)) continue;
+    out.push({code:cols[0].replace(/\s/g,''), name:cols[1], date:dateRaw.replace(/\//g,'-').substring(0,7), pnl});
+  }
+  return out;
+}
+
+// 現物保有: 銘柄コード,銘柄名称,保有株数,売却注文中,取得単価,現在値,取得金額,評価額,評価損益
+function parseSpot(text){
+  const out=[];
+  let inData=false;
+  for(const raw of text.split(/\r?\n/)){
+    const line=raw.trim();
+    if(!line) continue;
+    if(line.includes('銘柄コード')) { inData=true; continue; }
+    if(!inData) continue;
+    if(!line.startsWith('"')) continue;
+    const cols=splitCSV(line);
+    if(cols.length<9) continue;
+    const code=cols[0].replace(/\s/g,'');
+    if(!code) continue;
+    const unrealStr=cols[8].replace(/[^\d\-\+]/g,'');
+    if(!unrealStr) continue;
+    const unrealized=parseInt(unrealStr,10);
+    if(isNaN(unrealized)) continue;
+    out.push({
+      code, name:cols[1],
+      qty:parseInt(cols[2])||0,
+      cost:parseFloat(cols[4])||0,
+      price:parseFloat(cols[5])||0,
+      unrealized
+    });
+  }
+  return out;
+}
+
+// 信用建玉: 銘柄コード,銘柄名称,売/買建,市場,期限,建日,返済期限,預り,建株数,注文中,建単価,現在値,建代金,諸経費等,評価損益,担保
+// 同一銘柄の2行目以降はコード・名前が空
+function parseMargin(text){
+  const out=[];
+  let inData=false, lastCode='', lastName='';
+  for(const raw of text.split(/\r?\n/)){
+    const line=raw.trim();
+    if(!line) continue;
+    if(line.includes('銘柄コード')) { inData=true; continue; }
+    if(!inData) continue;
+    // データ行: カンマ区切りで15列以上
+    const cols=splitCSV(line);
+    if(cols.length<15) continue;
+    // コードがあれば更新、なければ前の銘柄の追加建玉
+    const code=cols[0].replace(/\s/g,'');
+    const name=cols[1];
+    if(code) { lastCode=code; lastName=name; }
+    if(!lastCode) continue;
+    const dir=cols[2]; // 売建 or 買建
+    const unrealStr=cols[14].replace(/[^\d\-\+]/g,'');
+    if(!unrealStr) continue;
+    const unrealized=parseInt(unrealStr,10);
+    if(isNaN(unrealized)) continue;
+    const qty=parseInt(cols[8])||0;
+    const cost=parseFloat(cols[10])||0;
+    const price=parseFloat(cols[11])||0;
+    out.push({code:lastCode, name:lastName, dir, qty, cost, price, unrealized});
+  }
+  return out;
+}
+
+// ===== ファイル読み込み =====
+function onDragOver(e,id){e.preventDefault();document.getElementById(id).classList.add('drag');}
+function onDragLeave(id){document.getElementById(id).classList.remove('drag');}
+function onDrop(e,type){
+  e.preventDefault();
+  const id='dz-'+{pnl:'pnl',spot:'spot',margin:'margin'}[type];
+  document.getElementById(id).classList.remove('drag');
+  const f=e.dataTransfer.files[0];
+  if(f) readFile(f,type);
+}
+function onFileSelect(e,type){ const f=e.target.files[0]; if(f) readFile(f,type); }
+
+function readFile(file,type){
+  const r=new FileReader();
+  r.onload=e=>{
+    const text=decodeSJIS(e.target.result);
+    const msgEl=document.getElementById('msg-'+type);
+    if(type==='pnl'){
+      const parsed=parsePNL(text);
+      if(!parsed.length){ msgEl.innerHTML='<div class="alert alert-err">⚠ 損益明細の行が見つかりませんでした</div>'; return; }
+      // 既存データに追記（重複は日付+コード+損益で判定）
+      const existing=new Set(pnlRecords.map(r=>r.code+'|'+r.date+'|'+r.pnl));
+      const added=parsed.filter(r=>!existing.has(r.code+'|'+r.date+'|'+r.pnl));
+      pnlRecords=[...pnlRecords,...added];
+      save();
+      msgEl.innerHTML=`<div class="alert alert-ok">✓ ${parsed.length}件中 ${added.length}件を追加（重複 ${parsed.length-added.length}件スキップ）</div>`;
+    } else if(type==='spot'){
+      const parsed=parseSpot(text);
+      if(!parsed.length){ msgEl.innerHTML='<div class="alert alert-err">⚠ 保有株データが見つかりませんでした</div>'; return; }
+      spotHoldings=parsed; // 上書き
+      save();
+      msgEl.innerHTML=`<div class="alert alert-ok">✓ 現物保有株 ${parsed.length}銘柄を更新しました</div>`;
+    } else if(type==='margin'){
+      const parsed=parseMargin(text);
+      if(!parsed.length){ msgEl.innerHTML='<div class="alert alert-err">⚠ 建玉データが見つかりませんでした</div>'; return; }
+      marginHoldings=parsed; // 上書き
+      save();
+      msgEl.innerHTML=`<div class="alert alert-ok">✓ 信用建玉 ${parsed.length}件を更新しました</div>`;
+    }
+    renderImportStatus();
+  };
+  r.readAsArrayBuffer(file);
+}
+
+// ===== 集計 =====
+function calcTotals(records){
+  return records.reduce((a,r)=>a+r.pnl, 0);
+}
+function calcUnrealized(){
+  const spot=spotHoldings.reduce((a,h)=>a+h.unrealized, 0);
+  const margin=marginHoldings.reduce((a,h)=>a+h.unrealized, 0);
+  return {spot, margin, total:spot+margin};
+}
+// 銘柄別集計（確定損益）
+function calcByStock(records){
+  const map={};
+  records.forEach(r=>{
+    if(!map[r.code]) map[r.code]={code:r.code, name:r.name, pnl:0, count:0};
+    map[r.code].pnl+=r.pnl;
+    map[r.code].count++;
+  });
+  return Object.values(map).sort((a,b)=>b.pnl-a.pnl);
+}
+// 月別集計
+function calcByMonth(){
+  const map={};
+  pnlRecords.forEach(r=>{
+    const ym=r.date||'不明';
+    if(!map[ym]) map[ym]={ym, pnl:0, count:0};
+    map[ym].pnl+=r.pnl; map[ym].count++;
+  });
+  return Object.values(map).sort((a,b)=>a.ym.localeCompare(b.ym));
+}
+
+// ===== ダッシュボード =====
+let monthlyChart=null;
+function renderDash(){
+  const unreal=calcUnrealized();
+  const confirmed=calcTotals(pnlRecords);
+  const total=confirmed+unreal.total;
+
+  // ヒーロー
+  document.getElementById('hero-val').textContent=pnlRecords.length||spotHoldings.length||marginHoldings.length ? Math.abs(total).toLocaleString()+'円' : '--';
+  document.getElementById('hero-val').className='hero-value '+(total>0?'pos':total<0?'neg':'neu');
+  document.getElementById('hero-sub').textContent=pnlRecords.length ? `確定 ${fmt(confirmed)} ／ 含み ${fmt(unreal.total)}` : 'CSVを取り込んでください';
+
+  // サマリー
+  const items=[
+    {label:'確定損益（累計）', val:confirmed, sub:`${pnlRecords.length}トレード`},
+    {label:'含み損益（現在）', val:unreal.total, sub:`現物${spotHoldings.length}・信用${marginHoldings.length}銘柄`},
+    {label:'現物 含み', val:unreal.spot, sub:`${spotHoldings.length}銘柄`},
+    {label:'信用 含み', val:unreal.margin, sub:`${marginHoldings.length}件`},
+  ];
+  document.getElementById('summary-grid').innerHTML=items.map(it=>`
+    <div class="sum-card">
+      <div class="sum-label">${it.label}</div>
+      <div class="sum-value ${cls(it.val)}">${fmt(it.val)}</div>
+      <div class="sum-sub">${it.sub}</div>
+    </div>`).join('');
+
+  // 月次チャート
+  const monthly=calcByMonth();
+  if(monthlyChart){monthlyChart.destroy();monthlyChart=null;}
+  if(!monthly.length) return;
+  const mpnl=monthly.map(m=>m.pnl);
+  monthlyChart=new Chart(document.getElementById('monthlyChart'),{
+    type:'bar',
+    data:{labels:monthly.map(m=>m.ym),datasets:[{
+      data:mpnl,
+      backgroundColor:mpnl.map(v=>v>=0?'rgba(0,228,170,.65)':'rgba(255,128,112,.65)'),
+      borderColor:mpnl.map(v=>v>=0?'#00e4aa':'#ff8070'),
+      borderWidth:1,borderRadius:4
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'rgba(255,255,255,.5)',font:{size:10}},grid:{display:false},border:{color:'rgba(255,255,255,.1)'}},
+        y:{ticks:{callback:v=>(v>=0?'+':'')+Math.round(v/10000)+'万',color:'rgba(255,255,255,.5)',font:{size:10}},grid:{color:'rgba(255,255,255,.08)'},border:{color:'rgba(255,255,255,.1)'}}
+      }
+    }
+  });
+}
+
+// ===== 銘柄別 =====
+function renderStocks(){
+  const filtered=filterByPeriod(pnlRecords);
+  const byStock=calcByStock(filtered);
+
+  // 含み損益も含めた銘柄リスト
+  const unrMap={};
+  spotHoldings.forEach(h=>{unrMap[h.code]=(unrMap[h.code]||0)+h.unrealized;});
+  // 信用は銘柄ごとに合算
+  const marginMap={};
+  marginHoldings.forEach(h=>{marginMap[h.code]=(marginMap[h.code]||0)+h.unrealized;});
+
+  if(!byStock.length && !spotHoldings.length && !marginHoldings.length){
+    document.getElementById('stock-table').innerHTML='<div class="empty">まだデータがありません</div>';
+    return;
+  }
+
+  // 全銘柄コードをマージ
+  const allCodes=new Set([...byStock.map(s=>s.code),...Object.keys(unrMap),...Object.keys(marginMap)]);
+  const codeToName={};
+  byStock.forEach(s=>codeToName[s.code]=s.name);
+  spotHoldings.forEach(h=>codeToName[h.code]=h.name);
+  marginHoldings.forEach(h=>codeToName[h.code]=h.name);
+
+  const rows=[...allCodes].map(code=>{
+    const confirmed=(byStock.find(s=>s.code===code)||{pnl:0}).pnl;
+    const spot=unrMap[code]||0;
+    const margin=marginMap[code]||0;
+    const total=confirmed+spot+margin;
+    return {code, name:codeToName[code]||'', confirmed, spot, margin, total};
+  }).sort((a,b)=>b.total-a.total);
+
+  const maxAbs=Math.max(...rows.map(r=>Math.abs(r.total)),1);
+
+  document.getElementById('stock-table').innerHTML=`
+    <table class="tbl">
+      <thead><tr>
+        <th style="text-align:left;">銘柄</th>
+        <th>確定損益</th>
+        <th>含み損益</th>
+        <th>合計</th>
+      </tr></thead>
+      <tbody>${rows.map(r=>`
+        <tr>
+          <td><div class="code-cell">${r.code}</div><div class="name-cell">${r.name}</div></td>
+          <td class="${cls(r.confirmed)}">${r.confirmed?fmt(r.confirmed):'--'}</td>
+          <td class="${cls(r.spot+r.margin)}">${(r.spot||r.margin)?fmt(r.spot+r.margin):'--'}</td>
+          <td class="${cls(r.total)}" style="font-size:15px;font-weight:800;">${fmt(r.total)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ===== 月次 =====
+function renderMonthly(){
+  const monthly=calcByMonth();
+  if(!monthly.length){
+    document.getElementById('monthly-table').innerHTML='<div class="empty">まだデータがありません</div>';
+    return;
+  }
+  const maxAbs=Math.max(...monthly.map(m=>Math.abs(m.pnl)),1);
+  document.getElementById('monthly-table').innerHTML=monthly.slice().reverse().map(m=>{
+    const pct=Math.round(Math.abs(m.pnl)/maxAbs*100);
+    return `<div class="pnl-bar-wrap">
+      <div class="pnl-bar-label">${m.ym}<small>${m.count}トレード</small></div>
+      <div class="pnl-bar-track">
+        <div class="pnl-bar-fill ${m.pnl>=0?'pos':'neg'}" style="width:${pct}%;background:${m.pnl>=0?'#00e4aa':'#ff8070'};"></div>
+      </div>
+      <div class="pnl-bar-val ${cls(m.pnl)}">${fmt(m.pnl)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== 取込状況 =====
+function renderImportStatus(){
+  const unreal=calcUnrealized();
+  document.getElementById('import-status').innerHTML=`
+    <div style="display:grid;gap:8px;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);">
+        <span style="color:rgba(255,255,255,.6);font-size:13px;">損益明細（確定）</span>
+        <span style="font-weight:700;">${pnlRecords.length}件 / ${fmt(calcTotals(pnlRecords))}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);">
+        <span style="color:rgba(255,255,255,.6);font-size:13px;">現物保有株</span>
+        <span style="font-weight:700;">${spotHoldings.length}銘柄 / <span class="${cls(unreal.spot)}">${fmt(unreal.spot)}</span></span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;">
+        <span style="color:rgba(255,255,255,.6);font-size:13px;">信用建玉</span>
+        <span style="font-weight:700;">${marginHoldings.length}件 / <span class="${cls(unreal.margin)}">${fmt(unreal.margin)}</span></span>
+      </div>
+    </div>`;
+}
+
+// ===== 設定 =====
+function renderSettings(){
+  const unreal=calcUnrealized();
+  document.getElementById('data-summary').innerHTML=`
+    <div class="note" style="margin-bottom:12px;">
+      損益明細: ${pnlRecords.length}件 ／ 現物: ${spotHoldings.length}銘柄 ／ 信用: ${marginHoldings.length}件<br>
+      確定損益合計: ${fmt(calcTotals(pnlRecords))} ／ 含み合計: ${fmt(unreal.total)}
+    </div>`;
+}
+
+function exportData(){
+  const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings},null,2);
+  const a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);
+  a.download='mykaview_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+}
+function importData(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(!confirm('現在のデータを上書きしますか？')) return;
+      if(d.pnlRecords)  pnlRecords=d.pnlRecords;
+      if(d.spotHoldings)   spotHoldings=d.spotHoldings;
+      if(d.marginHoldings) marginHoldings=d.marginHoldings;
+      save(); renderDash(); alert('インポートしました');
+    }catch(err){ alert('読み込み失敗'); }
+  };
+  r.readAsText(f); e.target.value='';
+}
+function resetAll(){
+  if(!confirm('全データを削除します。この操作は取り消せません。')) return;
+  pnlRecords=[]; spotHoldings=[]; marginHoldings=[];
+  save(); renderDash(); alert('リセットしました');
+}
+
+// ===== 起動 =====
+load();
+renderDash();
+</script>
+</body>
+</html>
