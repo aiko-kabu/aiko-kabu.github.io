@@ -150,8 +150,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
 
   <!-- 月次 -->
   <div id="sec-monthly" class="section">
+    <div class="period-bar">
+      <button class="period-btn active" id="btn-monthly" onclick="setMonthlyView('monthly')">月次</button>
+      <button class="period-btn" id="btn-yearly" onclick="setMonthlyView('yearly')">年次</button>
+    </div>
     <div class="card">
-      <div class="card-title">月次サマリー</div>
+      <div class="card-title" id="monthly-card-title">月次サマリー</div>
       <div id="monthly-table"></div>
     </div>
   </div>
@@ -457,10 +461,22 @@ function calcByMonth(){
   const map={};
   pnlRecords.forEach(r=>{
     const ym=r.date||'不明';
-    if(!map[ym]) map[ym]={ym, pnl:0, count:0};
+    if(!map[ym]) map[ym]={ym, pnl:0, count:0, wins:0};
     map[ym].pnl+=r.pnl; map[ym].count++;
+    if(r.pnl>0) map[ym].wins++;
   });
   return Object.values(map).sort((a,b)=>a.ym.localeCompare(b.ym));
+}
+// 年別集計
+function calcByYear(){
+  const map={};
+  pnlRecords.forEach(r=>{
+    const y=(r.date||'不明').substring(0,4);
+    if(!map[y]) map[y]={y, pnl:0, count:0, wins:0};
+    map[y].pnl+=r.pnl; map[y].count++;
+    if(r.pnl>0) map[y].wins++;
+  });
+  return Object.values(map).sort((a,b)=>a.y.localeCompare(b.y));
 }
 
 // ===== ダッシュボード =====
@@ -565,24 +581,62 @@ function renderStocks(){
     </table>`;
 }
 
-// ===== 月次 =====
-function renderMonthly(){
-  const monthly=calcByMonth();
-  if(!monthly.length){
+// ===== 月次/年次 =====
+let monthlyView='monthly';
+function setMonthlyView(v){
+  monthlyView=v;
+  document.getElementById('btn-monthly').classList.toggle('active',v==='monthly');
+  document.getElementById('btn-yearly').classList.toggle('active',v==='yearly');
+  renderMonthly();
+}
+function renderPeriodRows(rows, keyField){
+  if(!rows.length){
     document.getElementById('monthly-table').innerHTML='<div class="empty">まだデータがありません</div>';
     return;
   }
-  const maxAbs=Math.max(...monthly.map(m=>Math.abs(m.pnl)),1);
-  document.getElementById('monthly-table').innerHTML=monthly.slice().reverse().map(m=>{
-    const pct=Math.round(Math.abs(m.pnl)/maxAbs*100);
-    return `<div class="pnl-bar-wrap">
-      <div class="pnl-bar-label">${m.ym}<small>${m.count}トレード</small></div>
-      <div class="pnl-bar-track">
-        <div class="pnl-bar-fill ${m.pnl>=0?'pos':'neg'}" style="width:${pct}%;background:${m.pnl>=0?'#00e4aa':'#ff8070'};"></div>
-      </div>
-      <div class="pnl-bar-val ${cls(m.pnl)}">${fmt(m.pnl)}</div>
-    </div>`;
-  }).join('');
+  const maxAbs=Math.max(...rows.map(r=>Math.abs(r.pnl)),1);
+  document.getElementById('monthly-table').innerHTML=`
+    <table class="tbl" style="margin-bottom:16px;">
+      <thead><tr>
+        <th style="text-align:left;">期間</th>
+        <th>取引数</th>
+        <th>勝率</th>
+        <th>平均損益</th>
+        <th>合計損益</th>
+      </tr></thead>
+      <tbody>${rows.slice().reverse().map(r=>{
+        const wr2=r.count?Math.round(r.wins/r.count*100):0;
+        const avg=r.count?Math.round(r.pnl/r.count):0;
+        const pct=Math.round(Math.abs(r.pnl)/maxAbs*100);
+        return `<tr>
+          <td style="font-weight:800;font-size:15px;">${r[keyField]}</td>
+          <td style="color:rgba(255,255,255,.7);">${r.count}回</td>
+          <td class="${wr2>=50?'pos':'neg'}" style="font-weight:700;">${wr2}%</td>
+          <td class="${cls(avg)}">${fmt(avg)}</td>
+          <td class="${cls(r.pnl)}" style="font-size:15px;font-weight:800;">${fmt(r.pnl)}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+    ${rows.slice().reverse().map(r=>{
+      const pct=Math.round(Math.abs(r.pnl)/maxAbs*100);
+      return `<div class="pnl-bar-wrap">
+        <div class="pnl-bar-label">${r[keyField]}<small>${r.count}回 / 勝率${r.count?Math.round(r.wins/r.count*100):0}%</small></div>
+        <div class="pnl-bar-track">
+          <div class="pnl-bar-fill" style="width:${pct}%;background:${r.pnl>=0?'#00e4aa':'#ff8070'};"></div>
+        </div>
+        <div class="pnl-bar-val ${cls(r.pnl)}">${fmt(r.pnl)}</div>
+      </div>`;
+    }).join('')}`;
+}
+function renderMonthly(){
+  const titleEl=document.getElementById('monthly-card-title');
+  if(monthlyView==='yearly'){
+    titleEl.textContent='年次サマリー';
+    renderPeriodRows(calcByYear(),'y');
+  } else {
+    titleEl.textContent='月次サマリー';
+    renderPeriodRows(calcByMonth(),'ym');
+  }
 }
 
 // ===== 取込状況 =====
