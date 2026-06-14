@@ -79,6 +79,19 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
 /* チャート */
 .chart-wrap{position:relative;width:100%;height:200px;}
 
+/* モーダル */
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
+.modal{background:linear-gradient(160deg,#1e3a5c,#1a2e4a);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:600px;border:1px solid rgba(255,255,255,.2);max-height:80vh;overflow-y:auto;}
+.modal-title{font-size:16px;font-weight:800;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px;}
+.modal-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.modal-tag{padding:8px 16px;font-size:13px;font-weight:700;border-radius:20px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);cursor:pointer;transition:all .15s;}
+.modal-tag.sel{background:rgba(0,228,170,.2);border-color:#00e4aa;color:#00e4aa;}
+.modal-tag.none-tag{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.4);}
+.modal-close{width:100%;padding:12px;background:rgba(255,255,255,.1);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;}
+.modal-close:hover{background:rgba(255,255,255,.18);}
+.cat-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
+
 /* バー */
 .pnl-bar-wrap{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);}
 .pnl-bar-wrap:last-child{border-bottom:none;}
@@ -116,6 +129,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
   <div class="tabs">
     <button class="tab active" onclick="showTab('dashboard')">損益</button>
     <button class="tab" onclick="showTab('stocks')">銘柄別</button>
+    <button class="tab" onclick="showTab('category')">手法別</button>
     <button class="tab" onclick="showTab('monthly')">月次</button>
     <button class="tab" onclick="showTab('import')">取込</button>
     <button class="tab" onclick="showTab('settings')">設定</button>
@@ -145,6 +159,14 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
     <div class="card">
       <div class="card-title">銘柄別 損益一覧</div>
       <div id="stock-table"></div>
+    </div>
+  </div>
+
+  <!-- 手法別 -->
+  <div id="sec-category" class="section">
+    <div class="card">
+      <div class="card-title">手法別 損益一覧</div>
+      <div id="category-table"></div>
     </div>
   </div>
 
@@ -211,6 +233,14 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
   <!-- 設定 -->
   <div id="sec-settings" class="section">
     <div class="card">
+      <div class="card-title">手法カテゴリを管理する</div>
+      <div id="cat-tag-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="new-cat-input" placeholder="新しいカテゴリ名（例：TOB狙い）" style="flex:1;padding:8px 12px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
+        <button class="btn-sm" onclick="addCategory()" style="border-color:#00e4aa;color:#00e4aa;">追加</button>
+      </div>
+    </div>
+    <div class="card">
       <div class="card-title">データ管理</div>
       <div id="data-summary"></div>
       <div class="mgmt-row">
@@ -240,11 +270,13 @@ const STORE_KEY = 'mykaview2_v1';
 let pnlRecords  = [];   // 確定損益レコード {code,name,date,pnl}
 let spotHoldings   = [];   // 現物保有 {code,name,qty,cost,price,unrealized}
 let marginHoldings = [];   // 信用建玉 {code,name,dir,qty,cost,price,unrealized}
+let stockCategories = {}; // {code: 'カテゴリ名'}
+let categories = ['決算跨ぎ','決算初動','押し目買い','ブレイクアウト','リバウンド','材料株','テーマ株','需給','大口追随','スイング','デイトレ','感情トレード'];
 let currentPeriod = 'all';
 
 // ===== localStorage =====
 function save(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify({pnlRecords,spotHoldings,marginHoldings})); }catch(e){}
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories})); }catch(e){}
 }
 function load(){
   try{
@@ -252,6 +284,8 @@ function load(){
     if(d.pnlRecords)  pnlRecords  = d.pnlRecords;
     if(d.spotHoldings)   spotHoldings   = d.spotHoldings;
     if(d.marginHoldings) marginHoldings = d.marginHoldings;
+    if(d.stockCategories) stockCategories = d.stockCategories;
+    if(d.categories) categories = d.categories;
   }catch(e){}
 }
 
@@ -289,11 +323,11 @@ function nowY(){ return String(new Date().getFullYear()); }
 
 // ===== タブ =====
 function showTab(name){
-  const names=['dashboard','stocks','monthly','import','settings'];
+  const names=['dashboard','stocks','category','monthly','import','settings'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+name).classList.add('active');
-  const fn={dashboard:renderDash,stocks:renderStocks,monthly:renderMonthly,settings:renderSettings,import:renderImportStatus};
+  const fn={dashboard:renderDash,stocks:renderStocks,category:renderCategory,monthly:renderMonthly,settings:renderSettings,import:renderImportStatus};
   if(fn[name]) fn[name]();
 }
 
@@ -571,14 +605,104 @@ function renderStocks(){
         <th>合計</th>
       </tr></thead>
       <tbody>${rows.map(r=>`
-        <tr>
-          <td><div class="code-cell">${r.code}</div><div class="name-cell">${r.name}</div></td>
+        <tr onclick="openCategoryModal('${r.code}','${r.name.replace(/'/g,'\'')}')" style="cursor:pointer;">
+          <td><div class="code-cell">${r.code}</div><div class="name-cell">${r.name} ${stockCategories[r.code]?'<span style="font-size:10px;padding:2px 6px;border-radius:10px;background:rgba(0,228,170,.2);color:#00e4aa;margin-left:4px;">'+stockCategories[r.code]+'</span>':''}</div></td>
           <td class="${cls(r.confirmed)}">${r.confirmed?fmt(r.confirmed):'--'}</td>
           <td class="${cls(r.spot+r.margin)}">${(r.spot||r.margin)?fmt(r.spot+r.margin):'--'}</td>
           <td class="${cls(r.total)}" style="font-size:15px;font-weight:800;">${fmt(r.total)}</td>
         </tr>`).join('')}
       </tbody>
     </table>`;
+}
+
+// ===== 手法別 =====
+function renderCategory(){
+  // カテゴリ別に確定損益を集計
+  const catMap={};
+  const uncategorized={name:'未分類', pnl:0, count:0, wins:0, codes:[]};
+  pnlRecords.forEach(r=>{
+    const cat=stockCategories[r.code];
+    if(cat){
+      if(!catMap[cat]) catMap[cat]={name:cat, pnl:0, count:0, wins:0, codes:[]};
+      catMap[cat].pnl+=r.pnl; catMap[cat].count++;
+      if(r.pnl>0) catMap[cat].wins++;
+      if(!catMap[cat].codes.includes(r.code)) catMap[cat].codes.push(r.code);
+    } else {
+      uncategorized.pnl+=r.pnl; uncategorized.count++;
+      if(r.pnl>0) uncategorized.wins++;
+      if(!uncategorized.codes.includes(r.code)) uncategorized.codes.push(r.code);
+    }
+  });
+  const rows=Object.values(catMap).sort((a,b)=>b.pnl-a.pnl);
+  if(uncategorized.count>0) rows.push(uncategorized);
+
+  if(!rows.length){
+    document.getElementById('category-table').innerHTML='<div class="empty">銘柄別タブで銘柄をタップして手法を設定してください</div>';
+    return;
+  }
+  const maxAbs=Math.max(...rows.map(r=>Math.abs(r.pnl)),1);
+  document.getElementById('category-table').innerHTML=`
+    <table class="tbl" style="margin-bottom:16px;">
+      <thead><tr>
+        <th style="text-align:left;">手法</th>
+        <th>銘柄数</th>
+        <th>取引数</th>
+        <th>勝率</th>
+        <th>平均損益</th>
+        <th>合計損益</th>
+      </tr></thead>
+      <tbody>${rows.map(r=>{
+        const wr2=r.count?Math.round(r.wins/r.count*100):0;
+        const avg=r.count?Math.round(r.pnl/r.count):0;
+        return `<tr>
+          <td style="font-weight:800;font-size:15px;">${r.name}</td>
+          <td style="color:rgba(255,255,255,.7);">${r.codes.length}</td>
+          <td style="color:rgba(255,255,255,.7);">${r.count}回</td>
+          <td class="${wr2>=50?'pos':'neg'}" style="font-weight:700;">${wr2}%</td>
+          <td class="${cls(avg)}">${fmt(avg)}</td>
+          <td class="${cls(r.pnl)}" style="font-size:15px;font-weight:800;">${fmt(r.pnl)}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+    ${rows.map(r=>{
+      const pct=Math.round(Math.abs(r.pnl)/maxAbs*100);
+      const wr2=r.count?Math.round(r.wins/r.count*100):0;
+      return `<div class="pnl-bar-wrap">
+        <div class="pnl-bar-label">${r.name}<small>${r.codes.length}銘柄・${r.count}回 / 勝率${wr2}%</small></div>
+        <div class="pnl-bar-track">
+          <div class="pnl-bar-fill" style="width:${pct}%;background:${r.pnl>=0?'#00e4aa':'#ff8070'};"></div>
+        </div>
+        <div class="pnl-bar-val ${cls(r.pnl)}">${fmt(r.pnl)}</div>
+      </div>`;
+    }).join('')}`;
+}
+
+// ===== カテゴリモーダル =====
+function openCategoryModal(code, name){
+  const current = stockCategories[code]||'';
+  const html=`<div class="modal-bg" id="cat-modal" onclick="if(event.target.id==='cat-modal')closeCategoryModal()">
+    <div class="modal">
+      <div class="modal-title">${code} ${name}</div>
+      <div class="modal-sub">手法カテゴリを選択してください</div>
+      <div class="modal-tags">
+        <div class="modal-tag none-tag${!current?' sel':''}" onclick="selectCategory('${code}','')">なし</div>
+        ${categories.map(c=>`<div class="modal-tag${current===c?' sel':''}" onclick="selectCategory('${code}','${c}')">${c}</div>`).join('')}
+      </div>
+      <button class="modal-close" onclick="closeCategoryModal()">閉じる</button>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function selectCategory(code, cat){
+  if(cat) stockCategories[code]=cat;
+  else delete stockCategories[code];
+  save();
+  closeCategoryModal();
+  renderStocks();
+}
+function closeCategoryModal(){
+  const m=document.getElementById('cat-modal');
+  if(m) m.remove();
 }
 
 // ===== 月次/年次 =====
@@ -661,6 +785,13 @@ function renderImportStatus(){
 
 // ===== 設定 =====
 function renderSettings(){
+  // カテゴリタグ一覧
+  const catList=document.getElementById('cat-tag-list');
+  if(catList) catList.innerHTML=categories.map((c,i)=>`
+    <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;font-size:13px;font-weight:600;">
+      ${c}<button onclick="removeCategory(${i})" style="border:none;background:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:14px;padding:0;line-height:1;">✕</button>
+    </span>`).join('');
+
   const unreal=calcUnrealized();
   document.getElementById('data-summary').innerHTML=`
     <div class="note" style="margin-bottom:12px;">
@@ -669,6 +800,19 @@ function renderSettings(){
     </div>`;
 }
 
+function addCategory(){
+  const v=document.getElementById('new-cat-input').value.trim();
+  if(!v) return;
+  if(categories.includes(v)){alert('同じカテゴリがすでにあります');return;}
+  categories.push(v);
+  document.getElementById('new-cat-input').value='';
+  save(); renderSettings();
+}
+function removeCategory(i){
+  if(!confirm(`「${categories[i]}」を削除しますか？`)) return;
+  categories.splice(i,1);
+  save(); renderSettings();
+}
 function exportData(){
   const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings},null,2);
   const a=document.createElement('a');
