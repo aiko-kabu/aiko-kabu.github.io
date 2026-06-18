@@ -655,8 +655,8 @@ function renderCategory(){
       <tbody>${rows.map(r=>{
         const wr2=r.count?Math.round(r.wins/r.count*100):0;
         const avg=r.count?Math.round(r.pnl/r.count):0;
-        return `<tr>
-          <td style="font-weight:800;font-size:15px;">${r.name}</td>
+        return `<tr onclick="openCategoryDetail('${r.name}')" style="cursor:pointer;">
+          <td style="font-weight:800;font-size:15px;">${r.name} <span style="font-size:11px;color:rgba(255,255,255,.4);">▶</span></td>
           <td style="color:rgba(255,255,255,.7);">${r.codes.length}</td>
           <td style="color:rgba(255,255,255,.7);">${r.count}回</td>
           <td class="${wr2>=50?'pos':'neg'}" style="font-weight:700;">${wr2}%</td>
@@ -703,6 +703,57 @@ function selectCategory(code, cat){
 }
 function closeCategoryModal(){
   const m=document.getElementById('cat-modal');
+  if(m) m.remove();
+}
+
+function openCategoryDetail(catName){
+  // その手法の銘柄ごとに損益を集計
+  const stockMap={};
+  pnlRecords.forEach(r=>{
+    const cat=catName==='未分類'?(stockCategories[r.code]?null:'未分類'):stockCategories[r.code];
+    if(cat!==catName) return;
+    if(!stockMap[r.code]) stockMap[r.code]={code:r.code,name:r.name,pnl:0,count:0,wins:0};
+    stockMap[r.code].pnl+=r.pnl;
+    stockMap[r.code].count++;
+    if(r.pnl>0) stockMap[r.code].wins++;
+  });
+  const stocks=Object.values(stockMap).sort((a,b)=>b.pnl-a.pnl);
+  const total=stocks.reduce((a,s)=>a+s.pnl,0);
+  const wins=stocks.reduce((a,s)=>a+s.wins,0);
+  const count=stocks.reduce((a,s)=>a+s.count,0);
+  const wr2=count?Math.round(wins/count*100):0;
+
+  const html=`<div class="modal-bg" id="cat-detail-modal" onclick="if(event.target.id==='cat-detail-modal')closeCatDetailModal()">
+    <div class="modal" style="max-height:85vh;">
+      <div class="modal-title">${catName}</div>
+      <div class="modal-sub">${stocks.length}銘柄 / ${count}トレード / 勝率${wr2}% / 合計 <span class="${cls(total)}">${fmt(total)}</span></div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+        <thead><tr>
+          <th style="text-align:left;font-size:11px;color:rgba(255,255,255,.5);padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.15);">銘柄</th>
+          <th style="text-align:right;font-size:11px;color:rgba(255,255,255,.5);padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.15);">回数</th>
+          <th style="text-align:right;font-size:11px;color:rgba(255,255,255,.5);padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.15);">勝率</th>
+          <th style="text-align:right;font-size:11px;color:rgba(255,255,255,.5);padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.15);">損益</th>
+        </tr></thead>
+        <tbody>${stocks.map(s=>{
+          const swr=s.count?Math.round(s.wins/s.count*100):0;
+          return `<tr>
+            <td style="padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.06);">
+              <div style="font-weight:800;font-size:14px;">${s.code}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.5);">${s.name}</div>
+            </td>
+            <td style="text-align:right;padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.7);font-size:13px;">${s.count}回</td>
+            <td style="text-align:right;padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.06);font-weight:700;font-size:13px;" class="${swr>=50?'pos':'neg'}">${swr}%</td>
+            <td style="text-align:right;padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.06);font-weight:800;font-size:14px;" class="${cls(s.pnl)}">${fmt(s.pnl)}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+      <button class="modal-close" onclick="closeCatDetailModal()">閉じる</button>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function closeCatDetailModal(){
+  const m=document.getElementById('cat-detail-modal');
   if(m) m.remove();
 }
 
