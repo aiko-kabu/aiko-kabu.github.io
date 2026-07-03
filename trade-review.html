@@ -866,7 +866,7 @@ function removeCategory(i){
   save(); renderSettings();
 }
 function exportData(){
-  const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings},null,2);
+  const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories},null,2);
   const a=document.createElement('a');
   a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);
   a.download='mykaview_'+new Date().toISOString().slice(0,10)+'.json';
