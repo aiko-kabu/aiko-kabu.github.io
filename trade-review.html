@@ -285,13 +285,14 @@ const STORE_KEY = 'mykaview2_v1';
 let pnlRecords  = [];   // 確定損益レコード {code,name,date,pnl}
 let spotHoldings   = [];   // 現物保有（最新）{code,name,qty,cost,price,unrealized}
 let marginHoldings = [];   // 信用建玉（最新）{code,name,dir,qty,cost,price,unrealized}
-let stockCategories = {}; // {code: 'カテゴリ名'}
+let stockCategories = {}; // {code: 'カテゴリ名'} 銘柄単位のデフォルト手法
+let tradeCategories = {}; // {'code|date': 'カテゴリ名'} トレード個別の上書き
 let categories = ['決算跨ぎ','決算初動','押し目買い','ブレイクアウト','リバウンド','材料株','テーマ株','需給','大口追随','スイング','デイトレ','感情トレード'];
 let currentPeriod = 'all';
 
 // ===== localStorage =====
 function save(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories})); }catch(e){}
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,tradeCategories,categories})); }catch(e){}
 }
 function load(){
   try{
@@ -300,6 +301,7 @@ function load(){
     if(d.spotHoldings)   spotHoldings   = d.spotHoldings;
     if(d.marginHoldings) marginHoldings = d.marginHoldings;
     if(d.stockCategories) stockCategories = d.stockCategories;
+    if(d.tradeCategories) tradeCategories = d.tradeCategories;
     if(d.categories) categories = d.categories;
   }catch(e){}
 }
@@ -509,6 +511,13 @@ function calcUnrealized(){
   const margin=marginHoldings.reduce((a,h)=>a+h.unrealized, 0);
   return {spot, margin, total:spot+margin};
 }
+// トレードの手法を取得（個別設定 > 銘柄デフォルト）
+function getTradeCategory(r){
+  const key=r.code+'|'+r.date;
+  if(tradeCategories[key]) return tradeCategories[key];
+  return stockCategories[r.code]||null;
+}
+
 // 銘柄別集計（確定損益）
 function calcByStock(records){
   const map={};
@@ -663,7 +672,7 @@ function renderCategory(){
   const catMap={};
   const uncategorized={name:'未分類', pnl:0, count:0, wins:0, codes:[]};
   pnlRecords.forEach(r=>{
-    const cat=stockCategories[r.code];
+    const cat=getTradeCategory(r);
     if(cat){
       if(!catMap[cat]) catMap[cat]={name:cat, pnl:0, count:0, wins:0, codes:[]};
       catMap[cat].pnl+=r.pnl; catMap[cat].count++;
@@ -722,15 +731,48 @@ function renderCategory(){
 // ===== カテゴリモーダル =====
 function openCategoryModal(code, name){
   const current = stockCategories[code]||'';
+  // その銘柄の約定日ごとのトレード一覧
+  const trades=pnlRecords.filter(r=>r.code===code).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  // 日付ごとにまとめる
+  const byDate={};
+  trades.forEach(r=>{
+    const d=r.date||'不明';
+    if(!byDate[d]) byDate[d]={date:d, pnl:0, count:0};
+    byDate[d].pnl+=r.pnl; byDate[d].count++;
+  });
+  const dates=Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date));
+  const hasOverride=dates.some(d=>tradeCategories[code+'|'+d.date]);
+
   const html=`<div class="modal-bg" id="cat-modal" onclick="if(event.target.id==='cat-modal')closeCategoryModal()">
-    <div class="modal">
+    <div class="modal" style="max-height:88vh;">
       <div class="modal-title">${code} ${name}</div>
-      <div class="modal-sub">手法カテゴリを選択してください</div>
+      <div class="modal-sub">この銘柄の基本の手法を選択</div>
       <div class="modal-tags">
         <div class="modal-tag none-tag${!current?' sel':''}" onclick="selectCategory('${code}','')">なし</div>
         ${categories.map(c=>`<div class="modal-tag${current===c?' sel':''}" onclick="selectCategory('${code}','${c}')">${c}</div>`).join('')}
       </div>
-      <button class="modal-close" onclick="closeCategoryModal()">閉じる</button>
+      ${dates.length>1?`
+        <div style="border-top:1px solid rgba(255,255,255,.15);margin:8px 0 12px;padding-top:14px;">
+          <div style="font-size:13px;font-weight:700;color:#00e4aa;margin-bottom:4px;">📅 トレード別に個別設定</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:12px;">別の手法で入ったトレードだけ、約定日ごとに上書きできます</div>
+          <div id="trade-override-list">
+            ${dates.map(d=>{
+              const key=code+'|'+d.date;
+              const ov=tradeCategories[key]||'';
+              return `<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                  <span style="font-weight:700;font-size:13px;">${d.date} <span style="color:rgba(255,255,255,.5);font-weight:400;">（${d.count}件）</span></span>
+                  <span class="${cls(d.pnl)}" style="font-weight:800;font-size:14px;">${fmt(d.pnl)}</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                  <div class="modal-tag none-tag${!ov?' sel':''}" style="font-size:11px;padding:4px 10px;" onclick="selectTradeCategory('${code}','${d.date}','')">基本に従う</div>
+                  ${categories.map(c=>`<div class="modal-tag${ov===c?' sel':''}" style="font-size:11px;padding:4px 10px;" onclick="selectTradeCategory('${code}','${d.date}','${c}')">${c}</div>`).join('')}
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`:''}
+      <button class="modal-close" onclick="closeCategoryModal()" style="margin-top:8px;">閉じる</button>
     </div>
   </div>`;
   document.body.insertAdjacentHTML('beforeend', html);
@@ -739,7 +781,22 @@ function selectCategory(code, cat){
   if(cat) stockCategories[code]=cat;
   else delete stockCategories[code];
   save();
-  closeCategoryModal();
+  // モーダル内の基本手法の選択状態だけ更新（閉じない）
+  document.querySelectorAll('#cat-modal .modal-tags .modal-tag').forEach(el=>{
+    el.classList.remove('sel');
+  });
+  event.target.classList.add('sel');
+  renderStocks();
+}
+function selectTradeCategory(code, date, cat){
+  const key=code+'|'+date;
+  if(cat) tradeCategories[key]=cat;
+  else delete tradeCategories[key];
+  save();
+  // 同じ行のタグの選択状態を更新
+  const parent=event.target.parentElement;
+  parent.querySelectorAll('.modal-tag').forEach(el=>el.classList.remove('sel'));
+  event.target.classList.add('sel');
   renderStocks();
 }
 function closeCategoryModal(){
@@ -752,7 +809,8 @@ function openCategoryDetail(catName){
   const stockMap={};
   const monthMap={};
   pnlRecords.forEach(r=>{
-    const cat=catName==='未分類'?(stockCategories[r.code]?null:'未分類'):stockCategories[r.code];
+    const tc=getTradeCategory(r);
+    const cat=catName==='未分類'?(tc?null:'未分類'):tc;
     if(cat!==catName) return;
     if(!stockMap[r.code]) stockMap[r.code]={code:r.code,name:r.name,pnl:0,count:0,wins:0};
     stockMap[r.code].pnl+=r.pnl;
@@ -941,7 +999,7 @@ function removeCategory(i){
   save(); renderSettings();
 }
 function exportData(){
-  const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories},null,2);
+  const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,tradeCategories,categories},null,2);
   const a=document.createElement('a');
   a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);
   a.download='mykaview_'+new Date().toISOString().slice(0,10)+'.json';
