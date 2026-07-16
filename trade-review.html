@@ -161,9 +161,9 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
     <div id="custom-range" style="display:none;margin-bottom:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px;">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <span style="font-size:12px;color:rgba(255,255,255,.6);">開始</span>
-        <input type="month" id="range-from" onchange="renderStocks()" style="padding:6px 10px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
+        <input type="month" id="range-from" onchange="onRangeChange()" style="padding:6px 10px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
         <span style="font-size:12px;color:rgba(255,255,255,.6);">〜 終了</span>
-        <input type="month" id="range-to" onchange="renderStocks()" style="padding:6px 10px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
+        <input type="month" id="range-to" onchange="onRangeChange()" style="padding:6px 10px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
       </div>
     </div>
     <div class="hero" id="stocks-total" style="padding:16px;margin-bottom:12px;">
@@ -362,6 +362,19 @@ function setPeriod(p){
   }
   renderStocks();
 }
+function onRangeChange(){
+  const from=document.getElementById('range-from');
+  const to=document.getElementById('range-to');
+  // 開始 > 終了 になったら自動補正
+  if(from.value && to.value && from.value > to.value){
+    // どちらを直近で触ったか分からないので、終了を開始に合わせる
+    to.value=from.value;
+  }
+  // input側のmin/max属性で選択制限
+  if(from.value) to.min=from.value;
+  if(to.value) from.max=to.value;
+  renderStocks();
+}
 function filterByPeriod(records){
   if(currentPeriod==='all') return records;
   const ym=nowYM(), y=nowY();
@@ -539,6 +552,23 @@ function calcByMonth(){
   });
   return Object.values(map).sort((a,b)=>a.ym.localeCompare(b.ym));
 }
+// 連続した月で埋める（データがない月はpnl:0）
+function fillMonths(monthRows){
+  const valid=monthRows.filter(m=>m.ym!=='不明');
+  if(!valid.length) return monthRows;
+  const sorted=valid.slice().sort((a,b)=>a.ym.localeCompare(b.ym));
+  const map={}; sorted.forEach(m=>map[m.ym]=m);
+  const [sy,sm]=sorted[0].ym.split('-').map(Number);
+  const [ey,em]=sorted[sorted.length-1].ym.split('-').map(Number);
+  let cur=new Date(sy,sm-1,1); const end=new Date(ey,em-1,1);
+  const out=[];
+  while(cur<=end){
+    const ym=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0');
+    out.push(map[ym]||{ym,pnl:0,count:0,wins:0});
+    cur.setMonth(cur.getMonth()+1);
+  }
+  return out;
+}
 // 年別集計
 function calcByYear(){
   const map={};
@@ -579,7 +609,7 @@ function renderDash(){
     </div>`).join('');
 
   // 月次チャート
-  const monthly=calcByMonth();
+  const monthly=fillMonths(calcByMonth());
   if(monthlyChart){monthlyChart.destroy();monthlyChart=null;}
   if(!monthly.length) return;
   const mpnl=monthly.map(m=>m.pnl);
@@ -822,7 +852,20 @@ function openCategoryDetail(catName){
     monthMap[ym].pnl+=r.pnl; monthMap[ym].count++;
   });
   const stocks=Object.values(stockMap).sort((a,b)=>b.pnl-a.pnl);
-  const months=Object.values(monthMap).sort((a,b)=>a.ym.localeCompare(b.ym));
+  // 連続した月を生成（データのある最初〜最後の月まで、間の月も0で埋める）
+  const rawMonths=Object.keys(monthMap).filter(m=>m!=='不明').sort();
+  let months=[];
+  if(rawMonths.length){
+    const [sy,sm]=rawMonths[0].split('-').map(Number);
+    const [ey,em]=rawMonths[rawMonths.length-1].split('-').map(Number);
+    let cur=new Date(sy,sm-1,1);
+    const end=new Date(ey,em-1,1);
+    while(cur<=end){
+      const ym=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0');
+      months.push(monthMap[ym]||{ym,pnl:0,count:0});
+      cur.setMonth(cur.getMonth()+1);
+    }
+  }
   const total=stocks.reduce((a,s)=>a+s.pnl,0);
   const wins=stocks.reduce((a,s)=>a+s.wins,0);
   const count=stocks.reduce((a,s)=>a+s.count,0);
