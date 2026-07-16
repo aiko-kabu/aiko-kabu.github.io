@@ -166,6 +166,11 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
         <input type="month" id="range-to" onchange="renderStocks()" style="padding:6px 10px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
       </div>
     </div>
+    <div class="hero" id="stocks-total" style="padding:16px;margin-bottom:12px;">
+      <div class="hero-label" id="stocks-total-label">全期間 合計損益</div>
+      <div class="hero-value" id="stocks-total-val" style="font-size:32px;">--</div>
+      <div class="hero-sub" id="stocks-total-sub"></div>
+    </div>
     <div class="card">
       <div class="card-title">銘柄別 損益一覧</div>
       <div id="stock-table"></div>
@@ -233,21 +238,6 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
       </div>
       <div id="msg-margin"></div>
     </div>
-    <!-- 月末スナップショット -->
-    <div class="card" style="border-color:rgba(0,228,170,.3);">
-      <div class="card-title" style="color:#00e4aa;">📸 月末スナップショットを記録</div>
-      <div class="note" style="margin-bottom:12px;">
-        毎月末に②③のCSVを取り込んだあと、その月末時点の含み損益を記録します。<br>
-        記録すると月次タブで「前月末→当月末の変化」で正確な期間損益が出せます（カビュウと同じ方式）。
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <span style="font-size:13px;color:rgba(255,255,255,.7);font-weight:600;">対象月末：</span>
-        <input type="month" id="snapshot-month" style="padding:8px 12px;font-size:14px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
-        <button class="btn-sm" onclick="recordSnapshot()" style="border-color:#00e4aa;color:#00e4aa;font-weight:700;">この月末として記録</button>
-      </div>
-      <div id="msg-snapshot"></div>
-      <div id="snapshot-list" style="margin-top:12px;"></div>
-    </div>
     <!-- 取込状況 -->
     <div class="card">
       <div class="card-title">取込状況</div>
@@ -297,14 +287,11 @@ let spotHoldings   = [];   // 現物保有（最新）{code,name,qty,cost,price,
 let marginHoldings = [];   // 信用建玉（最新）{code,name,dir,qty,cost,price,unrealized}
 let stockCategories = {}; // {code: 'カテゴリ名'}
 let categories = ['決算跨ぎ','決算初動','押し目買い','ブレイクアウト','リバウンド','材料株','テーマ株','需給','大口追随','スイング','デイトレ','感情トレード'];
-let snapshots = {};  // {'2026-06': {spot:{code:evalPnl}, margin:{code:evalPnl}, total:xxx}} 月末評価損益スナップショット
 let currentPeriod = 'all';
-let pendingSpot = null;    // スナップショット確定待ちの現物
-let pendingMargin = null;  // スナップショット確定待ちの信用
 
 // ===== localStorage =====
 function save(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories,snapshots})); }catch(e){}
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories})); }catch(e){}
 }
 function load(){
   try{
@@ -314,7 +301,6 @@ function load(){
     if(d.marginHoldings) marginHoldings = d.marginHoldings;
     if(d.stockCategories) stockCategories = d.stockCategories;
     if(d.categories) categories = d.categories;
-    if(d.snapshots) snapshots = d.snapshots;
   }catch(e){}
 }
 
@@ -356,15 +342,7 @@ function showTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+name).classList.add('active');
-  const fn={dashboard:renderDash,stocks:renderStocks,category:renderCategory,monthly:renderMonthly,settings:renderSettings,import:()=>{
-    renderImportStatus();
-    const sm=document.getElementById('snapshot-month');
-    if(sm&&!sm.value){
-      // 前月末をデフォルトに（月初に取り込むことが多いため）
-      const d=new Date(); d.setMonth(d.getMonth()-1);
-      sm.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    }
-  }};
+  const fn={dashboard:renderDash,stocks:renderStocks,category:renderCategory,monthly:renderMonthly,settings:renderSettings,import:renderImportStatus};
   if(fn[name]) fn[name]();
 }
 
@@ -546,25 +524,9 @@ function calcByMonth(){
   const map={};
   pnlRecords.forEach(r=>{
     const ym=r.date||'不明';
-    if(!map[ym]) map[ym]={ym, pnl:0, count:0, wins:0, evalChange:null, totalPnl:null};
+    if(!map[ym]) map[ym]={ym, pnl:0, count:0, wins:0};
     map[ym].pnl+=r.pnl; map[ym].count++;
     if(r.pnl>0) map[ym].wins++;
-  });
-  // スナップショットがある月は時価ベースの損益変化を計算
-  // 時価損益 = (当月末含み - 前月末含み) + その月の確定損益
-  const snapMonths=Object.keys(snapshots).sort();
-  snapMonths.forEach(ym=>{
-    if(!map[ym]) map[ym]={ym, pnl:0, count:0, wins:0, evalChange:null, totalPnl:null};
-    // 前月を計算
-    const [y,m]=ym.split('-').map(Number);
-    const prevDate=new Date(y, m-2, 1); // m-2 = 前月
-    const prevYm=prevDate.getFullYear()+'-'+String(prevDate.getMonth()+1).padStart(2,'0');
-    const curTotal=snapshots[ym].total;
-    const prevTotal=snapshots[prevYm]?snapshots[prevYm].total:null;
-    if(prevTotal!==null){
-      map[ym].evalChange=curTotal-prevTotal;
-      map[ym].totalPnl=map[ym].evalChange + map[ym].pnl; // 時価変化 + 確定損益
-    }
   });
   return Object.values(map).sort((a,b)=>a.ym.localeCompare(b.ym));
 }
@@ -643,6 +605,9 @@ function renderStocks(){
 
   if(!byStock.length && !spotHoldings.length && !marginHoldings.length){
     document.getElementById('stock-table').innerHTML='<div class="empty">まだデータがありません</div>';
+    document.getElementById('stocks-total-val').textContent='--';
+    document.getElementById('stocks-total-val').className='hero-value';
+    document.getElementById('stocks-total-sub').textContent='';
     return;
   }
 
@@ -662,6 +627,16 @@ function renderStocks(){
   }).sort((a,b)=>b.total-a.total);
 
   const maxAbs=Math.max(...rows.map(r=>Math.abs(r.total)),1);
+
+  // 合計損益サマリー
+  const totalConfirmed=rows.reduce((a,r)=>a+r.confirmed,0);
+  const totalUnreal=rows.reduce((a,r)=>a+r.spot+r.margin,0);
+  const grandTotal=totalConfirmed+totalUnreal;
+  const labels={all:'全期間',year:'今年',month:'今月',custom:'指定期間'};
+  document.getElementById('stocks-total-label').textContent=labels[currentPeriod]+' 合計損益';
+  document.getElementById('stocks-total-val').textContent=(grandTotal>0?'+':grandTotal<0?'-':'')+Math.abs(grandTotal).toLocaleString()+'円';
+  document.getElementById('stocks-total-val').className='hero-value '+cls(grandTotal);
+  document.getElementById('stocks-total-sub').textContent=`確定 ${fmt(totalConfirmed)} ／ 含み ${fmt(totalUnreal)}`;
 
   document.getElementById('stock-table').innerHTML=`
     <table class="tbl">
@@ -775,6 +750,7 @@ function closeCategoryModal(){
 function openCategoryDetail(catName){
   // その手法の銘柄ごとに損益を集計
   const stockMap={};
+  const monthMap={};
   pnlRecords.forEach(r=>{
     const cat=catName==='未分類'?(stockCategories[r.code]?null:'未分類'):stockCategories[r.code];
     if(cat!==catName) return;
@@ -782,17 +758,25 @@ function openCategoryDetail(catName){
     stockMap[r.code].pnl+=r.pnl;
     stockMap[r.code].count++;
     if(r.pnl>0) stockMap[r.code].wins++;
+    // 月別集計
+    const ym=r.date||'不明';
+    if(!monthMap[ym]) monthMap[ym]={ym,pnl:0,count:0};
+    monthMap[ym].pnl+=r.pnl; monthMap[ym].count++;
   });
   const stocks=Object.values(stockMap).sort((a,b)=>b.pnl-a.pnl);
+  const months=Object.values(monthMap).sort((a,b)=>a.ym.localeCompare(b.ym));
   const total=stocks.reduce((a,s)=>a+s.pnl,0);
   const wins=stocks.reduce((a,s)=>a+s.wins,0);
   const count=stocks.reduce((a,s)=>a+s.count,0);
   const wr2=count?Math.round(wins/count*100):0;
 
   const html=`<div class="modal-bg" id="cat-detail-modal" onclick="if(event.target.id==='cat-detail-modal')closeCatDetailModal()">
-    <div class="modal" style="max-height:85vh;">
+    <div class="modal" style="max-height:88vh;">
       <div class="modal-title">${catName}</div>
       <div class="modal-sub">${stocks.length}銘柄 / ${count}トレード / 勝率${wr2}% / 合計 <span class="${cls(total)}">${fmt(total)}</span></div>
+      ${months.length?`<div style="font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:8px;">月別損益推移</div>
+      <div style="position:relative;height:160px;margin-bottom:20px;"><canvas id="cat-detail-chart"></canvas></div>`:''}
+      <div style="font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:8px;">銘柄別損益</div>
       <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
         <thead><tr>
           <th style="text-align:left;font-size:11px;color:rgba(255,255,255,.5);padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.15);">銘柄</th>
@@ -817,6 +801,30 @@ function openCategoryDetail(catName){
     </div>
   </div>`;
   document.body.insertAdjacentHTML('beforeend', html);
+
+  // 月別グラフ描画
+  if(months.length){
+    const ctx=document.getElementById('cat-detail-chart');
+    if(ctx){
+      const mpnl=months.map(m=>m.pnl);
+      new Chart(ctx,{
+        type:'bar',
+        data:{labels:months.map(m=>m.ym),datasets:[{
+          data:mpnl,
+          backgroundColor:mpnl.map(v=>v>=0?'rgba(0,228,170,.65)':'rgba(255,128,112,.65)'),
+          borderColor:mpnl.map(v=>v>=0?'#00e4aa':'#ff8070'),
+          borderWidth:1,borderRadius:4
+        }]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:c=>(c.raw>=0?'+':'')+c.raw.toLocaleString()+'円'}}},
+          scales:{
+            x:{ticks:{color:'rgba(255,255,255,.5)',font:{size:9}},grid:{display:false},border:{color:'rgba(255,255,255,.1)'}},
+            y:{ticks:{callback:v=>(v>=0?'+':'')+Math.round(v/10000)+'万',color:'rgba(255,255,255,.5)',font:{size:9}},grid:{color:'rgba(255,255,255,.08)'},border:{color:'rgba(255,255,255,.1)'}}
+          }
+        }
+      });
+    }
+  }
 }
 function closeCatDetailModal(){
   const m=document.getElementById('cat-detail-modal');
@@ -877,73 +885,8 @@ function renderMonthly(){
     renderPeriodRows(calcByYear(),'y');
   } else {
     titleEl.textContent='月次サマリー';
-    renderMonthlyTable(calcByMonth());
+    renderPeriodRows(calcByMonth(),'ym');
   }
-}
-function renderMonthlyTable(rows){
-  if(!rows.length){
-    document.getElementById('monthly-table').innerHTML='<div class="empty">まだデータがありません</div>';
-    return;
-  }
-  const hasSnap=rows.some(r=>r.totalPnl!==null);
-  const maxAbs=Math.max(...rows.map(r=>Math.abs(r.totalPnl!==null?r.totalPnl:r.pnl)),1);
-  document.getElementById('monthly-table').innerHTML=`
-    ${hasSnap?'<div class="note" style="margin-bottom:12px;">📸マークの月はスナップショットあり。時価損益＝(当月末含み−前月末含み)＋確定損益（カビュウ方式）</div>':''}
-    <table class="tbl" style="margin-bottom:16px;">
-      <thead><tr>
-        <th style="text-align:left;">月</th>
-        <th>取引数</th>
-        <th>勝率</th>
-        <th>確定損益</th>
-        ${hasSnap?'<th>時価変化</th><th>時価損益</th>':''}
-      </tr></thead>
-      <tbody>${rows.slice().reverse().map(r=>{
-        const wr2=r.count?Math.round(r.wins/r.count*100):0;
-        const hasT=r.totalPnl!==null;
-        return `<tr>
-          <td style="font-weight:800;font-size:15px;">${r.ym}${snapshots[r.ym]?' 📸':''}</td>
-          <td style="color:rgba(255,255,255,.7);">${r.count}回</td>
-          <td class="${wr2>=50?'pos':'neg'}" style="font-weight:700;">${r.count?wr2+'%':'--'}</td>
-          <td class="${cls(r.pnl)}">${r.count?fmt(r.pnl):'--'}</td>
-          ${hasSnap?`<td class="${hasT?cls(r.evalChange):''}">${hasT?fmt(r.evalChange):'--'}</td><td class="${hasT?cls(r.totalPnl):''}" style="font-size:15px;font-weight:800;">${hasT?fmt(r.totalPnl):'--'}</td>`:''}
-        </tr>`;
-      }).join('')}</tbody>
-    </table>
-    ${rows.slice().reverse().map(r=>{
-      const val=r.totalPnl!==null?r.totalPnl:r.pnl;
-      const pct=Math.round(Math.abs(val)/maxAbs*100);
-      const isT=r.totalPnl!==null;
-      return `<div class="pnl-bar-wrap">
-        <div class="pnl-bar-label">${r.ym}${snapshots[r.ym]?' 📸':''}<small>${isT?'時価損益':'確定のみ'} / ${r.count}回</small></div>
-        <div class="pnl-bar-track">
-          <div class="pnl-bar-fill" style="width:${pct}%;background:${val>=0?'#00e4aa':'#ff8070'};"></div>
-        </div>
-        <div class="pnl-bar-val ${cls(val)}">${fmt(val)}</div>
-      </div>`;
-    }).join('')}`;
-}
-
-// ===== 月末スナップショット =====
-function recordSnapshot(){
-  const month=document.getElementById('snapshot-month').value;
-  const msgEl=document.getElementById('msg-snapshot');
-  if(!month){ msgEl.innerHTML='<div class="alert alert-err">対象月を選択してください</div>'; return; }
-  if(!spotHoldings.length && !marginHoldings.length){
-    msgEl.innerHTML='<div class="alert alert-err">先に現物または信用のCSVを取り込んでください</div>'; return;
-  }
-  // 現在の含み損益を月末スナップショットとして保存
-  const spotMap={}; spotHoldings.forEach(h=>{spotMap[h.code]=(spotMap[h.code]||0)+h.unrealized;});
-  const marginMap={}; marginHoldings.forEach(h=>{marginMap[h.code]=(marginMap[h.code]||0)+h.unrealized;});
-  const total=spotHoldings.reduce((a,h)=>a+h.unrealized,0)+marginHoldings.reduce((a,h)=>a+h.unrealized,0);
-  snapshots[month]={spot:spotMap, margin:marginMap, total, recordedAt:new Date().toISOString()};
-  save();
-  msgEl.innerHTML=`<div class="alert alert-ok">✓ ${month}月末のスナップショットを記録しました（含み損益 ${fmt(total)}）</div>`;
-  renderImportStatus();
-}
-function deleteSnapshot(month){
-  if(!confirm(`${month}のスナップショットを削除しますか？`)) return;
-  delete snapshots[month];
-  save(); renderImportStatus();
 }
 
 // ===== 取込状況 =====
@@ -965,23 +908,6 @@ function renderImportStatus(){
       </div>
     </div>`;
 
-  // スナップショット一覧
-  const snapEl=document.getElementById('snapshot-list');
-  if(snapEl){
-    const months=Object.keys(snapshots).sort();
-    if(months.length){
-      snapEl.innerHTML=`<div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:6px;font-weight:600;">記録済みスナップショット</div>`+
-        months.map(m=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08);">
-          <span style="font-size:13px;font-weight:600;">${m}月末</span>
-          <span style="display:flex;gap:10px;align-items:center;">
-            <span class="${cls(snapshots[m].total)}" style="font-weight:700;font-size:13px;">${fmt(snapshots[m].total)}</span>
-            <button onclick="deleteSnapshot('${m}')" style="background:none;border:none;color:rgba(255,128,112,.7);cursor:pointer;font-size:12px;">削除</button>
-          </span>
-        </div>`).join('');
-    } else {
-      snapEl.innerHTML='';
-    }
-  }
 }
 
 // ===== 設定 =====
@@ -1015,7 +941,7 @@ function removeCategory(i){
   save(); renderSettings();
 }
 function exportData(){
-  const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories,snapshots},null,2);
+  const data=JSON.stringify({pnlRecords,spotHoldings,marginHoldings,stockCategories,categories},null,2);
   const a=document.createElement('a');
   a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);
   a.download='mykaview_'+new Date().toISOString().slice(0,10)+'.json';
