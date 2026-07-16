@@ -179,6 +179,20 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:transparent;color:
 
   <!-- 手法別 -->
   <div id="sec-category" class="section">
+    <div class="period-bar">
+      <button class="period-btn active" onclick="setCatPeriod('all')">全期間</button>
+      <button class="period-btn" onclick="setCatPeriod('year')">今年</button>
+      <button class="period-btn" onclick="setCatPeriod('month')">今月</button>
+      <button class="period-btn" onclick="setCatPeriod('custom')">期間指定</button>
+    </div>
+    <div id="cat-custom-range" style="display:none;margin-bottom:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="font-size:12px;color:rgba(255,255,255,.6);">開始</span>
+        <input type="month" id="cat-range-from" onchange="onCatRangeChange()" style="padding:6px 10px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
+        <span style="font-size:12px;color:rgba(255,255,255,.6);">〜 終了</span>
+        <input type="month" id="cat-range-to" onchange="onCatRangeChange()" style="padding:6px 10px;font-size:13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;outline:none;">
+      </div>
+    </div>
     <div class="card">
       <div class="card-title">手法別 損益一覧</div>
       <div id="category-table"></div>
@@ -289,6 +303,7 @@ let stockCategories = {}; // {code: 'カテゴリ名'} 銘柄単位のデフォ�
 let tradeCategories = {}; // {'code|date': 'カテゴリ名'} トレード個別の上書き
 let categories = ['決算跨ぎ','決算初動','押し目買い','ブレイクアウト','リバウンド','材料株','テーマ株','需給','大口追随','スイング','デイトレ','感情トレード'];
 let currentPeriod = 'all';
+let catPeriod = 'all';
 
 // ===== localStorage =====
 function save(){
@@ -361,6 +376,42 @@ function setPeriod(p){
     if(!to.value) to.value=nowYM();
   }
   renderStocks();
+}
+function setCatPeriod(p){
+  catPeriod=p;
+  const labels={all:'全期間',year:'今年',month:'今月',custom:'期間指定'};
+  document.querySelectorAll('#sec-category .period-btn').forEach(b=>b.classList.toggle('active',b.textContent===labels[p]));
+  document.getElementById('cat-custom-range').style.display = p==='custom'?'block':'none';
+  if(p==='custom'){
+    const from=document.getElementById('cat-range-from');
+    const to=document.getElementById('cat-range-to');
+    if(!from.value) from.value=nowY()+'-01';
+    if(!to.value) to.value=nowYM();
+  }
+  renderCategory();
+}
+function onCatRangeChange(){
+  const from=document.getElementById('cat-range-from');
+  const to=document.getElementById('cat-range-to');
+  if(from.value && to.value && from.value > to.value) to.value=from.value;
+  if(from.value) to.min=from.value;
+  if(to.value) from.max=to.value;
+  renderCategory();
+}
+function filterByCatPeriod(records){
+  if(catPeriod==='all') return records;
+  const ym=nowYM(), y=nowY();
+  if(catPeriod==='custom'){
+    const from=document.getElementById('cat-range-from').value;
+    const to=document.getElementById('cat-range-to').value;
+    if(!from||!to) return records;
+    return records.filter(r=>{ const d=r.date||''; return d>=from && d<=to; });
+  }
+  return records.filter(r=>{
+    if(catPeriod==='month') return (r.date||'').startsWith(ym);
+    if(catPeriod==='year')  return (r.date||'').startsWith(y);
+    return true;
+  });
 }
 function onRangeChange(){
   const from=document.getElementById('range-from');
@@ -701,7 +752,8 @@ function renderCategory(){
   // カテゴリ別に確定損益を集計
   const catMap={};
   const uncategorized={name:'未分類', pnl:0, count:0, wins:0, codes:[]};
-  pnlRecords.forEach(r=>{
+  const filtered=filterByCatPeriod(pnlRecords);
+  filtered.forEach(r=>{
     const cat=getTradeCategory(r);
     if(cat){
       if(!catMap[cat]) catMap[cat]={name:cat, pnl:0, count:0, wins:0, codes:[]};
@@ -718,7 +770,8 @@ function renderCategory(){
   if(uncategorized.count>0) rows.push(uncategorized);
 
   if(!rows.length){
-    document.getElementById('category-table').innerHTML='<div class="empty">銘柄別タブで銘柄をタップして手法を設定してください</div>';
+    const msg=catPeriod==='all'?'銘柄別タブで銘柄をタップして手法を設定してください':'この期間のトレードはありません';
+    document.getElementById('category-table').innerHTML='<div class="empty">'+msg+'</div>';
     return;
   }
   const maxAbs=Math.max(...rows.map(r=>Math.abs(r.pnl)),1);
