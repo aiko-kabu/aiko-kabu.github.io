@@ -835,49 +835,91 @@ function closeCategoryModal(){
 }
 
 function openCategoryDetail(catName){
-  // その手法の銘柄ごとに損益を集計
+  // 対象年を決定（データがある最新年をデフォルト）
+  const yearsSet=new Set();
+  pnlRecords.forEach(r=>{
+    const tc=getTradeCategory(r);
+    const cat=catName==='未分類'?(tc?null:'未分類'):tc;
+    if(cat===catName && r.date) yearsSet.add(r.date.substring(0,4));
+  });
+  const years=[...yearsSet].sort();
+  const defaultYear=years.length?years[years.length-1]:nowY();
+  window._catDetailName=catName;
+  window._catDetailYears=years;
+  renderCatDetailModal(catName, defaultYear, null);
+}
+
+function renderCatDetailModal(catName, year, selectedMonth){
+  // 集計
   const stockMap={};
-  const monthMap={};
+  const monthMap={}; // 'MM' -> {pnl,count}
+  const monthStockMap={}; // 'MM' -> {code:{code,name,pnl,count,wins}}
   pnlRecords.forEach(r=>{
     const tc=getTradeCategory(r);
     const cat=catName==='未分類'?(tc?null:'未分類'):tc;
     if(cat!==catName) return;
     if(!stockMap[r.code]) stockMap[r.code]={code:r.code,name:r.name,pnl:0,count:0,wins:0};
-    stockMap[r.code].pnl+=r.pnl;
-    stockMap[r.code].count++;
+    stockMap[r.code].pnl+=r.pnl; stockMap[r.code].count++;
     if(r.pnl>0) stockMap[r.code].wins++;
-    // 月別集計
-    const ym=r.date||'不明';
-    if(!monthMap[ym]) monthMap[ym]={ym,pnl:0,count:0};
-    monthMap[ym].pnl+=r.pnl; monthMap[ym].count++;
+    // 対象年の月別
+    if((r.date||'').startsWith(year)){
+      const mm=r.date.substring(5,7);
+      if(!monthMap[mm]) monthMap[mm]={pnl:0,count:0};
+      monthMap[mm].pnl+=r.pnl; monthMap[mm].count++;
+      if(!monthStockMap[mm]) monthStockMap[mm]={};
+      if(!monthStockMap[mm][r.code]) monthStockMap[mm][r.code]={code:r.code,name:r.name,pnl:0,count:0,wins:0};
+      monthStockMap[mm][r.code].pnl+=r.pnl; monthStockMap[mm][r.code].count++;
+      if(r.pnl>0) monthStockMap[mm][r.code].wins++;
+    }
   });
   const stocks=Object.values(stockMap).sort((a,b)=>b.pnl-a.pnl);
-  // 連続した月を生成（データのある最初〜最後の月まで、間の月も0で埋める）
-  const rawMonths=Object.keys(monthMap).filter(m=>m!=='不明').sort();
-  let months=[];
-  if(rawMonths.length){
-    const [sy,sm]=rawMonths[0].split('-').map(Number);
-    const [ey,em]=rawMonths[rawMonths.length-1].split('-').map(Number);
-    let cur=new Date(sy,sm-1,1);
-    const end=new Date(ey,em-1,1);
-    while(cur<=end){
-      const ym=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0');
-      months.push(monthMap[ym]||{ym,pnl:0,count:0});
-      cur.setMonth(cur.getMonth()+1);
-    }
-  }
   const total=stocks.reduce((a,s)=>a+s.pnl,0);
   const wins=stocks.reduce((a,s)=>a+s.wins,0);
   const count=stocks.reduce((a,s)=>a+s.count,0);
   const wr2=count?Math.round(wins/count*100):0;
 
+  // 12ヶ月固定
+  const months12=[];
+  for(let m=1;m<=12;m++){
+    const mm=String(m).padStart(2,'0');
+    months12.push({mm, pnl:(monthMap[mm]||{}).pnl||0, count:(monthMap[mm]||{}).count||0});
+  }
+
+  const years=window._catDetailYears||[year];
+  const yearBtns=years.length>1?years.map(y=>`<button onclick="renderCatDetailModal('${catName.replace(/'/g,"\\'")}','${y}',null)" style="padding:5px 14px;font-size:13px;font-weight:700;border-radius:16px;border:1px solid ${y===year?'#00e4aa':'rgba(255,255,255,.25)'};background:${y===year?'rgba(0,228,170,.2)':'rgba(255,255,255,.08)'};color:${y===year?'#00e4aa':'rgba(255,255,255,.6)'};cursor:pointer;margin-right:6px;">${y}年</button>`).join(''):'';
+
+  // 選択月の銘柄内訳
+  let monthDetail='';
+  if(selectedMonth){
+    const ms=Object.values(monthStockMap[selectedMonth]||{}).sort((a,b)=>b.pnl-a.pnl);
+    const mTotal=ms.reduce((a,s)=>a+s.pnl,0);
+    monthDetail=`<div style="background:rgba(0,228,170,.08);border:1px solid rgba(0,228,170,.25);border-radius:10px;padding:12px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-weight:800;font-size:14px;color:#00e4aa;">${year}年${parseInt(selectedMonth)}月の内訳</span>
+        <span class="${cls(mTotal)}" style="font-weight:800;font-size:15px;">${fmt(mTotal)}</span>
+      </div>
+      ${ms.length?ms.map(s=>{
+        const swr=s.count?Math.round(s.wins/s.count*100):0;
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.08);">
+          <span><b style="font-size:13px;">${s.code}</b> <span style="font-size:11px;color:rgba(255,255,255,.5);">${s.name}</span></span>
+          <span style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:11px;color:rgba(255,255,255,.5);">${s.count}回 ${swr}%</span>
+            <span class="${cls(s.pnl)}" style="font-weight:800;font-size:13px;min-width:80px;text-align:right;">${fmt(s.pnl)}</span>
+          </span>
+        </div>`;
+      }).join(''):'<div style="color:rgba(255,255,255,.4);font-size:12px;">この月のトレードはありません</div>'}
+    </div>`;
+  }
+
   const html=`<div class="modal-bg" id="cat-detail-modal" onclick="if(event.target.id==='cat-detail-modal')closeCatDetailModal()">
     <div class="modal" style="max-height:88vh;">
       <div class="modal-title">${catName}</div>
       <div class="modal-sub">${stocks.length}銘柄 / ${count}トレード / 勝率${wr2}% / 合計 <span class="${cls(total)}">${fmt(total)}</span></div>
-      ${months.length?`<div style="font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:8px;">月別損益推移</div>
-      <div style="position:relative;height:160px;margin-bottom:20px;"><canvas id="cat-detail-chart"></canvas></div>`:''}
-      <div style="font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:8px;">銘柄別損益</div>
+      ${yearBtns?`<div style="margin-bottom:12px;">${yearBtns}</div>`:''}
+      <div style="font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:8px;">月別損益推移（${year}年）<span style="font-weight:400;color:rgba(255,255,255,.4);">　棒をタップで内訳表示</span></div>
+      <div style="position:relative;height:170px;margin-bottom:16px;"><canvas id="cat-detail-chart"></canvas></div>
+      ${monthDetail}
+      <div style="font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:8px;">銘柄別損益（全期間）</div>
       <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
         <thead><tr>
           <th style="text-align:left;font-size:11px;color:rgba(255,255,255,.5);padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.15);">銘柄</th>
@@ -901,30 +943,38 @@ function openCategoryDetail(catName){
       <button class="modal-close" onclick="closeCatDetailModal()">閉じる</button>
     </div>
   </div>`;
+  // 既存モーダルを消して差し替え
+  closeCatDetailModal();
   document.body.insertAdjacentHTML('beforeend', html);
 
-  // 月別グラフ描画
-  if(months.length){
-    const ctx=document.getElementById('cat-detail-chart');
-    if(ctx){
-      const mpnl=months.map(m=>m.pnl);
-      new Chart(ctx,{
-        type:'bar',
-        data:{labels:months.map(m=>m.ym),datasets:[{
-          data:mpnl,
-          backgroundColor:mpnl.map(v=>v>=0?'rgba(0,228,170,.65)':'rgba(255,128,112,.65)'),
-          borderColor:mpnl.map(v=>v>=0?'#00e4aa':'#ff8070'),
-          borderWidth:1,borderRadius:4
-        }]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
-          tooltip:{callbacks:{label:c=>(c.raw>=0?'+':'')+c.raw.toLocaleString()+'円'}}},
-          scales:{
-            x:{ticks:{color:'rgba(255,255,255,.5)',font:{size:9}},grid:{display:false},border:{color:'rgba(255,255,255,.1)'}},
-            y:{ticks:{callback:v=>(v>=0?'+':'')+Math.round(v/10000)+'万',color:'rgba(255,255,255,.5)',font:{size:9}},grid:{color:'rgba(255,255,255,.08)'},border:{color:'rgba(255,255,255,.1)'}}
+  // 12ヶ月グラフ描画
+  const ctx=document.getElementById('cat-detail-chart');
+  if(ctx){
+    const mpnl=months12.map(m=>m.pnl);
+    new Chart(ctx,{
+      type:'bar',
+      data:{labels:months12.map(m=>parseInt(m.mm)+'月'),datasets:[{
+        data:mpnl,
+        backgroundColor:months12.map((m,i)=>m.mm===selectedMonth?'rgba(255,255,255,.9)':(mpnl[i]>=0?'rgba(0,228,170,.65)':'rgba(255,128,112,.65)')),
+        borderColor:mpnl.map(v=>v>=0?'#00e4aa':'#ff8070'),
+        borderWidth:1,borderRadius:4
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,
+        onClick:(e,els)=>{
+          if(els.length){
+            const idx=els[0].index;
+            const mm=String(idx+1).padStart(2,'0');
+            renderCatDetailModal(catName, year, mm===selectedMonth?null:mm);
           }
+        },
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:c=>(c.raw>=0?'+':'')+c.raw.toLocaleString()+'円'}}},
+        scales:{
+          x:{ticks:{color:'rgba(255,255,255,.5)',font:{size:9}},grid:{display:false},border:{color:'rgba(255,255,255,.1)'}},
+          y:{ticks:{callback:v=>(v>=0?'+':'')+Math.round(v/10000)+'万',color:'rgba(255,255,255,.5)',font:{size:9}},grid:{color:'rgba(255,255,255,.08)'},border:{color:'rgba(255,255,255,.1)'}}
         }
-      });
-    }
+      }
+    });
   }
 }
 function closeCatDetailModal(){
