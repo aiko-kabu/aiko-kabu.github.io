@@ -457,7 +457,9 @@ function parsePNL(text){
     if(!pnlStr||pnlStr==='-'||pnlStr==='+') continue;
     const pnl=parseInt(pnlStr,10);
     if(isNaN(pnl)) continue;
-    out.push({code:cols[0].replace(/\s/g,''), name:cols[1], date:dateRaw.replace(/\//g,'-').substring(0,7), pnl});
+    const tradeType=cols[5]||'';
+    const isDividend=tradeType.includes('配当金'); // 株式配当金・信用配当金・外国株式配当金
+    out.push({code:cols[0].replace(/\s/g,''), name:cols[1], date:dateRaw.replace(/\//g,'-').substring(0,7), pnl, type:tradeType, isDividend});
   }
   return out;
 }
@@ -570,6 +572,12 @@ function readFile(file,type){
 function calcTotals(records){
   return records.reduce((a,r)=>a+r.pnl, 0);
 }
+function calcDividends(records){
+  return (records||pnlRecords).filter(r=>r.isDividend).reduce((a,r)=>a+r.pnl,0);
+}
+function calcTradingPnl(records){
+  return (records||pnlRecords).filter(r=>!r.isDividend).reduce((a,r)=>a+r.pnl,0);
+}
 function calcUnrealized(){
   const spot=spotHoldings.reduce((a,h)=>a+h.unrealized, 0);
   const margin=marginHoldings.reduce((a,h)=>a+h.unrealized, 0);
@@ -637,20 +645,22 @@ let monthlyChart=null;
 function renderDash(){
   const unreal=calcUnrealized();
   const confirmed=calcTotals(pnlRecords);
+  const dividends=calcDividends(pnlRecords);
+  const trading=calcTradingPnl(pnlRecords);
   const total=confirmed+unreal.total;
 
   // ヒーロー
   const totalDisp = total>0?'+'+total.toLocaleString():total<0?'-'+Math.abs(total).toLocaleString():'0';
   document.getElementById('hero-val').textContent=pnlRecords.length||spotHoldings.length||marginHoldings.length ? totalDisp+'円' : '--';
   document.getElementById('hero-val').className='hero-value '+(total>0?'pos':total<0?'neg':'neu');
-  document.getElementById('hero-sub').textContent=pnlRecords.length ? `確定 ${fmt(confirmed)} ／ 含み ${fmt(unreal.total)}` : 'CSVを取り込んでください';
+  document.getElementById('hero-sub').textContent=pnlRecords.length ? `売買 ${fmt(trading)} ／ 配当 ${fmt(dividends)} ／ 含み ${fmt(unreal.total)}` : 'CSVを取り込んでください';
 
   // サマリー
   const items=[
-    {label:'確定損益（累計）', val:confirmed, sub:`${pnlRecords.length}トレード`},
-    {label:'含み損益（現在）', val:unreal.total, sub:`現物${spotHoldings.length}・信用${marginHoldings.length}銘柄`},
-    {label:'現物 含み', val:unreal.spot, sub:`${spotHoldings.length}銘柄`},
-    {label:'信用 含み', val:unreal.margin, sub:`${marginHoldings.length}件`},
+    {label:'売買確定損益', val:trading, sub:`${pnlRecords.filter(r=>!r.isDividend).length}トレード`},
+    {label:'配当金（累計）', val:dividends, sub:`${pnlRecords.filter(r=>r.isDividend).length}件`},
+    {label:'含み損益（現在）', val:unreal.total, sub:`現物${spotHoldings.length}・信用${marginHoldings.length}`},
+    {label:'総合損益', val:total, sub:'売買＋配当＋含み'},
   ];
   document.getElementById('summary-grid').innerHTML=items.map(it=>`
     <div class="sum-card">
@@ -752,7 +762,7 @@ function renderCategory(){
   // カテゴリ別に確定損益を集計
   const catMap={};
   const uncategorized={name:'未分類', pnl:0, count:0, wins:0, codes:[]};
-  const filtered=filterByCatPeriod(pnlRecords);
+  const filtered=filterByCatPeriod(pnlRecords).filter(r=>!r.isDividend);
   filtered.forEach(r=>{
     const cat=getTradeCategory(r);
     if(cat){
@@ -815,7 +825,7 @@ function renderCategory(){
 function openCategoryModal(code, name){
   const current = stockCategories[code]||'';
   // その銘柄の約定日ごとのトレード一覧
-  const trades=pnlRecords.filter(r=>r.code===code).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const trades=pnlRecords.filter(r=>r.code===code&&!r.isDividend).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   // 日付ごとにまとめる
   const byDate={};
   trades.forEach(r=>{
@@ -890,7 +900,7 @@ function closeCategoryModal(){
 function openCategoryDetail(catName){
   // 対象年を決定（データがある最新年をデフォルト）
   const yearsSet=new Set();
-  pnlRecords.forEach(r=>{
+  pnlRecords.filter(r=>!r.isDividend).forEach(r=>{
     const tc=getTradeCategory(r);
     const cat=catName==='未分類'?(tc?null:'未分類'):tc;
     if(cat===catName && r.date) yearsSet.add(r.date.substring(0,4));
@@ -903,11 +913,11 @@ function openCategoryDetail(catName){
 }
 
 function renderCatDetailModal(catName, year, selectedMonth){
-  // 集計
+  // 集計（配当は除外）
   const stockMap={};
   const monthMap={}; // 'MM' -> {pnl,count}
   const monthStockMap={}; // 'MM' -> {code:{code,name,pnl,count,wins}}
-  pnlRecords.forEach(r=>{
+  pnlRecords.filter(r=>!r.isDividend).forEach(r=>{
     const tc=getTradeCategory(r);
     const cat=catName==='未分類'?(tc?null:'未分類'):tc;
     if(cat!==catName) return;
@@ -1099,8 +1109,12 @@ function renderImportStatus(){
   document.getElementById('import-status').innerHTML=`
     <div style="display:grid;gap:8px;">
       <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);">
-        <span style="color:rgba(255,255,255,.6);font-size:13px;">損益明細（確定）</span>
-        <span style="font-weight:700;">${pnlRecords.length}件 / ${fmt(calcTotals(pnlRecords))}</span>
+        <span style="color:rgba(255,255,255,.6);font-size:13px;">売買確定損益</span>
+        <span style="font-weight:700;">${pnlRecords.filter(r=>!r.isDividend).length}件 / <span class="${cls(calcTradingPnl(pnlRecords))}">${fmt(calcTradingPnl(pnlRecords))}</span></span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);">
+        <span style="color:rgba(255,255,255,.6);font-size:13px;">配当金</span>
+        <span style="font-weight:700;">${pnlRecords.filter(r=>r.isDividend).length}件 / <span class="${cls(calcDividends(pnlRecords))}">${fmt(calcDividends(pnlRecords))}</span></span>
       </div>
       <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);">
         <span style="color:rgba(255,255,255,.6);font-size:13px;">現物保有株（最新）</span>
